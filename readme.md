@@ -4,9 +4,11 @@ A sandbox application designed to streamline and test onboarding processes.
 
 ## Features
 
-- Modular onboarding flows
-- Customizable user journeys
-- Integration-ready architecture
+- API port 5005
+- Data base port 1433
+- Data base credentials
+- - sa
+- - OnboardingWorld2025
 
 ## Getting Started
 
@@ -16,17 +18,31 @@ A sandbox application designed to streamline and test onboarding processes.
     ```
 2. **Install dependencies:**
     ```bash
-    npm install
+    docker compose -f docker-compose-dev.yml build
     ```
-3. **Run the app:**
+3. **Run the app debug:**
     ```bash
-    npm start
+    docker compose -f docker-compose-dev.yml up
+    ```
+4. **Stop the app:**
+    ```bash
+    Ctrl + C
+    ```
+5. **Delete images (optonal):**
+    ```bash
+    docker compose -f docker-compose-dev.yml down
+    ```
+
+## Release
+1. **Release the container:**
+    ```bash
+    docker compose up
     ```
 
 ## Project Structure
 
-- `/src` — Main application source code
-- `/docs` — Documentation and guides
+- `/WebApp_Onboarding` — Web Aplicaton (Frontend)
+- `/WS_Onboarding` — Web Service and Data Base (Backend)
 
 ## Contributing
 

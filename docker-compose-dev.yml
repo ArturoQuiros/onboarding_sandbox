@@ -1,0 +1,38 @@
+services:
+  container_ws_onboarding:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: docker_ws_onboarding
+    ports:
+      - "5005:5005"
+    depends_on:
+      - container_db_onboarding
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=container_db_onboarding;Initial Catalog=DB_Onboarding;User Id=sa;Password=OnboardingWorld2025;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;
+    networks:
+      - onboarding_net
+    volumes:
+      - ./WS_Onboarding:/app  # Mount the source code into the container for Hot Reload
+      - /app/bin
+      - /app/obj
+    restart: unless-stopped
+    command: ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5005"]
+  container_db_onboarding:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: docker_db_onboarding
+    environment:
+      SA_PASSWORD: "OnboardingWorld2025"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - onboarding_net
+    volumes:
+      - db_onboarding_data:/var/opt/mssql
+    restart: unless-stopped
+networks:
+  onboarding_net:
+volumes:
+  db_onboarding_data:

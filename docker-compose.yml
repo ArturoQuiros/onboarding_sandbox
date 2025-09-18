@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  container_ws_onboarding:
+    build: .
+    container_name: docker_ws_onboarding
+    ports:
+      - "5005:5005"
+    depends_on:
+      - container_db_onboarding
+    environment:
+      - ConnectionStrings__DefaultConnection=Data Source=container_db_onboarding;Initial Catalog=DB_Onboarding;User Id=sa;Password=OnboardingWorld2025;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;
+    networks:
+      - onboarding_net
+  container_db_onboarding:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: docker_db_onboarding
+    environment:
+      SA_PASSWORD: "OnboardingWorld2025"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    networks:
+      - onboarding_net
+networks:
+  onboarding_net:

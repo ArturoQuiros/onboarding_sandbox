@@ -1,0 +1,30 @@
+# Use the full .NET SDK image for development
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS dev
+
+# Set working directory inside the container
+WORKDIR /app
+
+# Copy only the project file(s) to leverage Docker cache
+COPY WS_Onboarding/WS_Onboarding.sln ./
+COPY WS_Onboarding/WS_Onboarding.csproj ./
+
+# Restore dependencies (via NuGet)
+RUN dotnet restore WS_Onboarding.sln
+
+# Copy the rest of the source code
+COPY ./WS_Onboarding/ ./
+
+# Build the project (optional for watch mode)
+RUN dotnet build -c Debug
+
+# Optional: expose the port your app listens on
+EXPOSE 5005
+
+# Enable Hot Reload (if supported)
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+# Run the app
+# CMD ["dotnet", "watch", "run"]
+
+CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5005"]
