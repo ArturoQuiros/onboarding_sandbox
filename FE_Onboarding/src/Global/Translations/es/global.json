@@ -1,0 +1,29 @@
+{
+  "sidebar": {
+    "home": "Inicio",
+    "countries": "Países",
+    "staff": "Personal",
+    "customers": "Clientes"
+  },
+  "countries": {
+    "title": "Países",
+    "createButton": "Crear Nuevo País",
+    "table": {
+      "id": "ID",
+      "name": "Nombre del País"
+    },
+    "form": {
+      "editTitle": "Editar País",
+      "createTitle": "Crear Nuevo País",
+      "nameLabel": "Nombre"
+    }
+  },
+  "common": {
+    "actions": "Acciones",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "save": "Guardar",
+    "cancel": "Cancelar"
+  }
+}

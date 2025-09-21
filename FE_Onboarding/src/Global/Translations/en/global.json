@@ -1,0 +1,29 @@
+{
+  "sidebar": {
+    "home": "Home",
+    "countries": "Countries",
+    "staff": "Staff",
+    "customers": "Customers"
+  },
+  "countries": {
+    "title": "Countries",
+    "createButton": "Create New Country",
+    "table": {
+      "id": "ID",
+      "name": "Country Name"
+    },
+    "form": {
+      "editTitle": "Edit Country",
+      "createTitle": "Create New Country",
+      "nameLabel": "Name"
+    }
+  },
+  "common": {
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel"
+  }
+}
