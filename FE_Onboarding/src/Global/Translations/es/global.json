@@ -3,7 +3,10 @@
     "home": "Inicio",
     "countries": "Países",
     "staff": "Personal",
-    "customers": "Clientes"
+    "customers": "Clientes",
+    "services": "Servicios",
+    "users": "Usuarios",
+    "contracts": "Contratos"
   },
   "countries": {
     "title": "Países",
@@ -16,6 +19,69 @@
       "editTitle": "Editar País",
       "createTitle": "Crear Nuevo País",
       "nameLabel": "Nombre"
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este país?",
+    "deleting": "Eliminando país...",
+    "deleteSuccess": "País eliminado con éxito!",
+    "deleteError": "¡No se pudo eliminar el país!"
+  },
+  "customers": {
+    "title": "Clientes",
+    "createButton": "Crear Nuevo Cliente",
+    "table": {
+      "id": "ID",
+      "nombre": "Nombre",
+      "email": "Correo Electrónico",
+      "telefono": "Teléfono",
+      "direccion": "Dirección"
+    },
+    "form": {
+      "editTitle": "Editar Cliente",
+      "createTitle": "Crear Nuevo Cliente",
+      "nombreLabel": "Nombre",
+      "emailLabel": "Correo Electrónico",
+      "telefonoLabel": "Teléfono",
+      "direccionLabel": "Dirección"
+    }
+  },
+  "services": {
+    "title": "Servicios",
+    "createButton": "Crear Nuevo Servicio",
+    "table": {
+      "id": "ID",
+      "name": "Nombre",
+      "country": "País"
+    },
+    "form": {
+      "editTitle": "Editar Servicio",
+      "createTitle": "Crear Nuevo Servicio",
+      "nameLabel": "Nombre",
+      "countryLabel": "País"
+    }
+  },
+  "users": {
+    "title": "Usuarios",
+    "table": {
+      "id": "ID",
+      "name": "Nombre",
+      "role": "Rol",
+      "country": "País",
+      "photo": "Foto"
+    }
+  },
+  "contracts": {
+    "title": "Contratos",
+    "createButton": "Crear Nuevo Contrato",
+    "table": {
+      "id": "ID",
+      "country": "País",
+      "customer": "Cliente"
+    },
+    "form": {
+      "editTitle": "Editar Contrato",
+      "createTitle": "Crear Nuevo Contrato",
+      "countryLabel": "País",
+      "customerLabel": "Cliente"
     }
   },
   "common": {
@@ -24,6 +90,12 @@
     "delete": "Eliminar",
     "create": "Crear",
     "save": "Guardar",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "updating": "Actualizando...",
+    "creating": "Creando...",
+    "updateSuccess": "Elemento actualizado con éxito!",
+    "createSuccess": "Elemento creado con éxito!",
+    "genericError": "¡Ha ocurrido un error!",
+    "confirmAction": "Confirmar Acción"
   }
 }

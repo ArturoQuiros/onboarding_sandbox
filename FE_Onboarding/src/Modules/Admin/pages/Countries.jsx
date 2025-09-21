@@ -1,38 +1,69 @@
 // src/Admin/pages/Countries.jsx
+
 import React, { useContext } from "react";
 import { Navbar, Sidebar, CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
+import axiosClient from "../../../Api/axiosClient";
 
 import styles from "./Countries.module.css";
 
 export const Countries = () => {
-  const { isSidebarOpen } = useContext(UIContext); // --- CONFIGURACIÓN ESPECÍFICA PARA PAÍSES ---
+  const { isSidebarOpen } = useContext(UIContext);
 
-  const getCountries = async () => [
-    { id: 1, name: "Costa Rica" },
-    { id: 2, name: "México" },
-    { id: 3, name: "Colombia" },
-  ];
+  // Obtener datos de la API (ya usa /Pais, que parece ser la correcta)
+  const getCountries = async () => {
+    try {
+      const response = await axiosClient.get("/Pais");
+      return response.data.map((country) => ({
+        id: country.id,
+        name: country.nombre,
+      }));
+    } catch (error) {
+      console.error("Error al obtener países:", error);
+      return [];
+    }
+  };
 
+  // Crear un nuevo país en la API
   const createCountry = async (country) => {
-    console.log("Creando país:", country);
-    return { ...country, id: Date.now() };
+    try {
+      const payload = { nombre: country.name };
+      const response = await axiosClient.post("/Pais", payload);
+      return { id: response.data.id, name: response.data.nombre };
+    } catch (error) {
+      console.error("Error al crear país:", error);
+      throw error; // ✅ Lanza el error
+    }
   };
 
+  // Actualizar un país en la API
   const updateCountry = async (country) => {
-    console.log("Actualizando país:", country);
-    return country;
+    try {
+      const payload = { id: country.id, nombre: country.name };
+      const response = await axiosClient.put(`/Pais/${country.id}`, payload);
+      return { id: response.data.id, name: response.data.nombre };
+    } catch (error) {
+      console.error("Error al actualizar país:", error);
+      throw error; // ✅ Lanza el error
+    }
   };
 
+  // Eliminar un país de la API
   const deleteCountry = async (id) => {
-    console.log("Eliminando país con ID:", id);
-    return true;
+    try {
+      await axiosClient.delete(`/Pais/${id}`);
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar país:", error);
+      throw error; // ✅ Lanza el error
+    }
   };
 
   const countryFields = [
     { key: "id", labelKey: "countries.table.id", type: "text" },
     { key: "name", labelKey: "countries.table.name", type: "text" },
-  ]; // ---------------------------------------------
+  ];
+
   return (
     <div className={styles.container}>
       <Navbar />
@@ -42,7 +73,6 @@ export const Countries = () => {
           isSidebarOpen ? styles.mainContentOpen : styles.mainContentClosed
         }`}
       >
-        {/* NUEVA LÍNEA: Se agrega el contenedor para el ancho máximo */}
         <div className={styles.contentWrapper}>
           <CrudDashboard
             entityName="countries"

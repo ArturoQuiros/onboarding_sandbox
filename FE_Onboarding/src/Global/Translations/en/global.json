@@ -3,7 +3,10 @@
     "home": "Home",
     "countries": "Countries",
     "staff": "Staff",
-    "customers": "Customers"
+    "customers": "Customers",
+    "services": "Services",
+    "users": "Users",
+    "contracts": "Contracts"
   },
   "countries": {
     "title": "Countries",
@@ -16,6 +19,69 @@
       "editTitle": "Edit Country",
       "createTitle": "Create New Country",
       "nameLabel": "Name"
+    },
+    "confirmDelete": "Are you sure you want to delete this country?",
+    "deleting": "Deleting country...",
+    "deleteSuccess": "Country deleted successfully!",
+    "deleteError": "Could not delete country!"
+  },
+  "customers": {
+    "title": "Customers",
+    "createButton": "Create New Customer",
+    "table": {
+      "id": "ID",
+      "nombre": "Name",
+      "email": "Email",
+      "telefono": "Phone",
+      "direccion": "Address"
+    },
+    "form": {
+      "editTitle": "Edit Customer",
+      "createTitle": "Create New Customer",
+      "nombreLabel": "Name",
+      "emailLabel": "Email",
+      "telefonoLabel": "Phone",
+      "direccionLabel": "Address"
+    }
+  },
+  "services": {
+    "title": "Services",
+    "createButton": "Create New Service",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "country": "Country"
+    },
+    "form": {
+      "editTitle": "Edit Service",
+      "createTitle": "Create New Service",
+      "nameLabel": "Name",
+      "countryLabel": "Country"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "role": "Role",
+      "country": "Country",
+      "photo": "Photo"
+    }
+  },
+  "contracts": {
+    "title": "Contracts",
+    "createButton": "Create New Contract",
+    "table": {
+      "id": "ID",
+      "country": "Country",
+      "customer": "Customer"
+    },
+    "form": {
+      "editTitle": "Edit Contract",
+      "createTitle": "Create New Contract",
+      "countryLabel": "Country",
+      "customerLabel": "Customer"
     }
   },
   "common": {
@@ -24,6 +90,12 @@
     "delete": "Delete",
     "create": "Create",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "creating": "Creating...",
+    "updateSuccess": "Item updated successfully!",
+    "createSuccess": "Item created successfully!",
+    "genericError": "An error has occurred!",
+    "confirmAction": "Confirm Action"
   }
 }

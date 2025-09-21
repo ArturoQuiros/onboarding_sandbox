@@ -1,0 +1,33 @@
+/* src/Admin/pages/Contracts.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--bdo-pale-charcoal);
+}
+
+.mainContent {
+  position: absolute;
+  top: 60px;
+  bottom: 0;
+  right: 0;
+  padding: 20px;
+  overflow-y: auto;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mainContentOpen {
+  left: 180px; /* Ancho del sidebar cuando está abierto */
+}
+
+.mainContentClosed {
+  left: 80px; /* Ancho del sidebar cuando está cerrado */
+}
+
+.contentWrapper {
+  max-width: 95%;
+  margin: 0 auto; /* Centra el contenido dentro del mainContent */
+}

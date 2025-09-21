@@ -9,6 +9,10 @@ import {
   BsGlobeAmericas,
   BsPeople,
   BsPersonBadge,
+  BsTools,
+  BsChevronContract,
+  BsPerson,
+  BsNewspaper,
 } from "react-icons/bs";
 import { UIContext } from "../../../Global/Context";
 import styles from "./Sidebar.module.css";
@@ -25,11 +29,25 @@ export const Sidebar = () => {
       label: t("sidebar.countries"),
       path: "/admin/countries",
     },
-    { icon: <BsPeople />, label: t("sidebar.staff"), path: "/admin/staff" },
     {
-      icon: <BsPersonBadge />,
+      icon: <BsPerson />,
       label: t("sidebar.customers"),
       path: "/admin/customers",
+    },
+    {
+      icon: <BsTools />,
+      label: t("sidebar.services"),
+      path: "/admin/services",
+    },
+    {
+      icon: <BsPeople />,
+      label: t("sidebar.users"),
+      path: "/admin/users",
+    },
+    {
+      icon: <BsNewspaper />,
+      label: t("sidebar.contracts"),
+      path: "/admin/contracts",
     },
   ];
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { DataTable, CrudForm } from "./";
+import { DataTable, CrudForm, ConfirmModal } from "./";
 import { useTranslation } from "react-i18next";
+import toast from "react-hot-toast";
 import styles from "./CrudDashboard.module.css";
 
 export const CrudDashboard = ({
@@ -15,6 +16,8 @@ export const CrudDashboard = ({
   const [items, setItems] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,25 +37,53 @@ export const CrudDashboard = ({
     setIsFormOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    await deleteItem(id);
-    setItems(items.filter((item) => item.id !== id));
-  };
-
-  const handleSave = async (item) => {
-    if (item.id) {
-      const updatedItem = await updateItem(item);
-      setItems(items.map((i) => (i.id === updatedItem.id ? updatedItem : i)));
-    } else {
-      const newItem = await createItem(item);
-      setItems([...items, newItem]);
-    }
-    setIsFormOpen(false);
-  };
-
   const handleCancel = () => {
     setIsFormOpen(false);
     setSelectedItem(null);
+  };
+
+  const handleDelete = (id) => {
+    setItemIdToDelete(id);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await toast.promise(deleteItem(itemIdToDelete), {
+        loading: t(`${entityName}.deleting`),
+        success: t(`${entityName}.deleteSuccess`),
+        error: t(`${entityName}.deleteError`),
+      });
+      setItems(items.filter((item) => item.id !== itemIdToDelete));
+    } catch (error) {
+      console.error("Error al eliminar el elemento:", error);
+      // El toast ya maneja el error, por lo que no es necesario un `catch` adicional aquí
+    }
+    setIsConfirmModalOpen(false);
+    setItemIdToDelete(null);
+  };
+
+  const handleSave = async (item) => {
+    const promise = selectedItem
+      ? updateItem(item)
+      : createItem({ name: item.name });
+
+    try {
+      await toast.promise(promise, {
+        loading: selectedItem ? t("common.updating") : t("common.creating"),
+        success: selectedItem
+          ? t("common.updateSuccess")
+          : t("common.createSuccess"),
+        error: t("common.genericError"),
+      });
+
+      setIsFormOpen(false);
+      const data = await getItems();
+      setItems(data);
+    } catch (error) {
+      console.error("Error al guardar el elemento:", error);
+      // El toast ya maneja el error, por lo que no es necesario un `catch` adicional aquí
+    }
   };
 
   return (
@@ -79,6 +110,13 @@ export const CrudDashboard = ({
           onDelete={handleDelete}
         />
       )}
+
+      <ConfirmModal
+        isOpen={isConfirmModalOpen}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setIsConfirmModalOpen(false)}
+        messageKey={`${entityName}.confirmDelete`}
+      />
     </div>
   );
 };
