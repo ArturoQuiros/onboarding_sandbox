@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\Backend\\v0.0.4\\WS_Onboarding\\WS_Onboarding.csproj": {}
+    "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\Backend\\v0.0.4\\WS_Onboarding\\WS_Onboarding.csproj": {
+    "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\Backend\\v0.0.4\\WS_Onboarding\\WS_Onboarding.csproj",
+        "projectUniqueName": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
         "projectName": "WS_Onboarding",
-        "projectPath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\Backend\\v0.0.4\\WS_Onboarding\\WS_Onboarding.csproj",
+        "projectPath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
         "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\Backend\\v0.0.4\\WS_Onboarding\\obj\\",
+        "outputPath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
