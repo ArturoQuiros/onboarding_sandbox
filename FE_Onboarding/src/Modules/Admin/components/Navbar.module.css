@@ -1,0 +1,72 @@
+/* src/Global/components/Navbar/Navbar.module.css */
+
+.navbar {
+  background-color: white; /* You can also use var(--bdo-pale-charcoal) or define a specific variable for the navbar background */
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* This is a good place to use a variable for shadows, e.g., var(--shadow-small) */
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.title {
+  color: var(--bdo-red);
+  font-family: "Trebuchet MS", sans-serif;
+  font-size: 20px;
+  margin-left: 20px;
+  transition: color 0.3s ease-in-out;
+}
+
+.menu {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.langButton {
+  color: var(--bdo-red);
+  background-color: transparent;
+  border: 1px solid var(--bdo-red);
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin-right: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  outline: none;
+}
+
+/* Pseudo-clase para el hover */
+.langButton:hover {
+  background-color: var(--bdo-red);
+  color: white; /* You can also use var(--bdo-pale-charcoal) or another light variable */
+  border-color: var(--bdo-red);
+}
+
+.langButton:active {
+  background-color: var(--bdo-burgundy);
+  border-color: var(--bdo-burgundy);
+}
+
+/* Estilos para el ícono de traducción */
+.translateIcon {
+  font-size: 20px;
+  color: inherit; /* Inherits the color from the parent .langButton */
+}
