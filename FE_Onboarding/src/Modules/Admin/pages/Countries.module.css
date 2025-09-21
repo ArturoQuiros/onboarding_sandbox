@@ -1,0 +1,31 @@
+/* src/Admin/pages/Countries.module.css */
+
+.container {
+  /* No se necesita padding-top en el contenedor principal si los elementos son fijos */
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background-color: var(--bdo-pale-charcoal);
+}
+
+.mainContent {
+  position: absolute;
+  top: 60px; /* Start below the Navbar */
+  bottom: 0; /* Fill the rest of the height */
+  right: 0;
+  padding: 20px;
+  overflow-y: auto;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Cuando el sidebar está abierto, el contenido principal se desplaza a la derecha */
+.mainContentOpen {
+  left: 220px; /* Ancho del sidebar abierto */
+}
+
+/* Cuando el sidebar está cerrado, el contenido principal se desplaza a la izquierda */
+.mainContentClosed {
+  left: 70px; /* Ancho del sidebar cerrado */
+}

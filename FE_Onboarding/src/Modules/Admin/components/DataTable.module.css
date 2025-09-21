@@ -1,0 +1,80 @@
+/* src/Modules/Admin/components/Crud/DataTable.module.css */
+.tableContainer {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tableHeader {
+  background-color: var(--bdo-pale-charcoal);
+}
+
+.tableHeaderCell {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+  color: var(--bdo-charcoal);
+  border: 1px solid var(--bdo-pale-charcoal);
+}
+
+.tableRow:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.tableRow:hover {
+  background-color: var(--bdo-pale-charcoal);
+  cursor: pointer;
+}
+
+.tableCell {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  color: var(--bdo-charcoal);
+}
+
+.actionsCell {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.editButton,
+.deleteButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: color 0.2s ease-in-out;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.editButton {
+  color: var(--bdo-ocean);
+}
+
+.editButton:hover {
+  color: #0073b6;
+}
+
+.deleteButton {
+  color: var(--bdo-red);
+}
+
+.deleteButton:hover {
+  color: var(--bdo-burgundy);
+}
+
+.emptyTableMessage {
+  text-align: center;
+  padding: 20px;
+  color: var(--bdo-slate);
+}
