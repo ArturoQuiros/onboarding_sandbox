@@ -1,5 +1,5 @@
 // src/Modules/Admin/components/Sidebar/Sidebar.jsx
-import React, { useContext } from "react";
+import React, { useContext, useRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router";
 import {
@@ -37,6 +37,22 @@ export const Sidebar = () => {
     ? styles.sidebar
     : `${styles.sidebar} ${styles.sidebarClosed}`;
 
+  // refs y estado para la barra activa
+  const menuRef = useRef(null);
+  const itemRefs = useRef([]);
+  const [activeStyle, setActiveStyle] = useState({ top: 0, height: 0 });
+
+  useEffect(() => {
+    const activeIndex = menuItems.findIndex(
+      (item) => item.path === location.pathname
+    );
+    if (activeIndex !== -1 && itemRefs.current[activeIndex]) {
+      const el = itemRefs.current[activeIndex];
+      const { offsetTop, offsetHeight } = el;
+      setActiveStyle({ top: offsetTop, height: offsetHeight });
+    }
+  }, [location.pathname, isSidebarOpen]); // recalcula al cambiar de ruta o al abrir/cerrar sidebar
+
   return (
     <div className={sidebarClasses}>
       <button
@@ -46,7 +62,8 @@ export const Sidebar = () => {
       >
         {isSidebarOpen ? <BsArrowBarLeft /> : <BsList />}
       </button>
-      <div className={styles.menu}>
+
+      <div className={styles.menu} ref={menuRef}>
         {menuItems.map((item, idx) => {
           const isActive = location.pathname === item.path;
           const linkClasses = isActive
@@ -54,13 +71,25 @@ export const Sidebar = () => {
             : styles.menuItem;
 
           return (
-            <Link to={item.path} key={idx} className={linkClasses} tabIndex={0}>
+            <Link
+              to={item.path}
+              key={idx}
+              className={linkClasses}
+              ref={(el) => (itemRefs.current[idx] = el)}
+            >
               <span className={styles.icon}>{item.icon}</span>
               <span className={styles.text}>{item.label}</span>
-              {isActive && <div className={styles.activeBar} />}
             </Link>
           );
         })}
+        {/* Barra activa */}
+        <div
+          className={styles.activeBar}
+          style={{
+            top: activeStyle.top,
+            height: activeStyle.height,
+          }}
+        />
       </div>
     </div>
   );

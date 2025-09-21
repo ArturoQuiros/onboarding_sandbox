@@ -3,13 +3,11 @@ import React, { useContext } from "react";
 import { Navbar, Sidebar, CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 
-// Importa el archivo de estilos modulares
 import styles from "./Countries.module.css";
 
 export const Countries = () => {
-  const { isSidebarOpen } = useContext(UIContext);
+  const { isSidebarOpen } = useContext(UIContext); // --- CONFIGURACIÓN ESPECÍFICA PARA PAÍSES ---
 
-  // --- CONFIGURACIÓN ESPECÍFICA PARA PAÍSES ---
   const getCountries = async () => [
     { id: 1, name: "Costa Rica" },
     { id: 2, name: "México" },
@@ -34,11 +32,8 @@ export const Countries = () => {
   const countryFields = [
     { key: "id", labelKey: "countries.table.id", type: "text" },
     { key: "name", labelKey: "countries.table.name", type: "text" },
-  ];
-  // ---------------------------------------------
-
+  ]; // ---------------------------------------------
   return (
-    // Aplica las clases de 'styles'
     <div className={styles.container}>
       <Navbar />
       <Sidebar />
@@ -47,14 +42,17 @@ export const Countries = () => {
           isSidebarOpen ? styles.mainContentOpen : styles.mainContentClosed
         }`}
       >
-        <CrudDashboard
-          entityName="countries"
-          fields={countryFields}
-          getItems={getCountries}
-          createItem={createCountry}
-          updateItem={updateCountry}
-          deleteItem={deleteCountry}
-        />
+        {/* NUEVA LÍNEA: Se agrega el contenedor para el ancho máximo */}
+        <div className={styles.contentWrapper}>
+          <CrudDashboard
+            entityName="countries"
+            fields={countryFields}
+            getItems={getCountries}
+            createItem={createCountry}
+            updateItem={updateCountry}
+            deleteItem={deleteCountry}
+          />
+        </div>
       </div>
     </div>
   );

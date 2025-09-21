@@ -1,4 +1,5 @@
 /* src/Modules/Admin/components/Crud/DataTable.module.css */
+
 .tableContainer {
   overflow-x: auto;
   margin-top: 20px;
@@ -7,41 +8,58 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
 }
 
 .tableHeader {
-  background-color: var(--bdo-pale-charcoal);
+  background-color: var(--bdo-red);
+  color: white;
 }
 
 .tableHeaderCell {
-  padding: 12px 15px;
+  padding: 16px 20px;
   text-align: left;
   font-weight: bold;
-  color: var(--bdo-charcoal);
-  border: 1px solid var(--bdo-pale-charcoal);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tableHeaderCell:last-child {
+  border-right: none;
+  text-align: center;
+}
+
+/* Filas de la tabla */
+.tableRow {
+  background-color: #ffffff; /* Las filas impares son blancas */
+  transition: background-color 0.2s ease-in-out;
 }
 
 .tableRow:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f0f0f0; /* Color diferente para filas pares para evitar confusión con el fondo */
 }
 
 .tableRow:hover {
-  background-color: var(--bdo-pale-charcoal);
+  background-color: #e0e0e0;
   cursor: pointer;
 }
 
 .tableCell {
-  padding: 12px 15px;
-  border: 1px solid #ddd;
+  padding: 12px 20px;
+  border-right: 1px solid var(--bdo-pale-charcoal);
+  border-bottom: 1px solid var(--bdo-pale-charcoal);
   color: var(--bdo-charcoal);
 }
 
+.tableCell:last-child {
+  border-right: none;
+}
+
+/* Celda de Acciones y botones */
 .actionsCell {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   justify-content: center;
   align-items: center;
 }
@@ -51,10 +69,10 @@
   background-color: transparent;
   border: none;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 20px;
   transition: color 0.2s ease-in-out;
-  padding: 8px;
-  border-radius: 4px;
+  padding: 6px;
+  border-radius: 50%;
 }
 
 .editButton {
@@ -63,6 +81,7 @@
 
 .editButton:hover {
   color: #0073b6;
+  background-color: rgba(0, 143, 210, 0.1);
 }
 
 .deleteButton {
@@ -71,6 +90,7 @@
 
 .deleteButton:hover {
   color: var(--bdo-burgundy);
+  background-color: rgba(232, 26, 59, 0.1);
 }
 
 .emptyTableMessage {
