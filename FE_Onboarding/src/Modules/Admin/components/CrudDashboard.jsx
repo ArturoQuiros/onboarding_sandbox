@@ -1,6 +1,5 @@
 // src/Modules/Admin/components/Crud/CrudDashboard.jsx
-
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { CrudDataTable, CrudForm, SearchBar, ItemsPerPageSelector } from "./";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -15,40 +14,42 @@ export const CrudDashboard = ({
   createItem,
   updateItem,
   deleteItem,
+  entityIcon,
+  validations, // ✅ Recibimos validaciones
 }) => {
   const { t } = useTranslation("global");
+
   const [items, setItems] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // Fetch initial data on component mount
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getItems();
-        setItems(data);
-      } catch (error) {
-        toast.error(t("common.loadError"));
-        console.error("Error fetching items:", error);
-      }
-    };
-    fetchData();
+  // --- Recargar datos ---
+  const reloadItems = useCallback(async () => {
+    try {
+      const data = await getItems();
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      toast.error(t("common.loadError"));
+      console.error("Error fetching items:", error);
+    }
   }, [getItems, t]);
 
-  // --- Lógica de filtrado, ordenamiento y paginación
+  useEffect(() => {
+    reloadItems();
+  }, [reloadItems]);
 
+  // --- Ordenamiento ---
   const handleSort = (key) => {
     setSortKey(key);
-    setSortDirection((prevDirection) =>
-      prevDirection === "asc" ? "desc" : "asc"
-    );
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     setCurrentPage(1);
   };
 
@@ -59,25 +60,22 @@ export const CrudDashboard = ({
 
   const sortedItems = useMemo(() => {
     if (!sortKey) return items;
-
-    const sorted = [...items].sort((a, b) => {
-      const aValue = String(a[sortKey] || "").toLowerCase();
-      const bValue = String(b[sortKey] || "").toLowerCase();
-
+    return [...items].sort((a, b) => {
+      const aValue = String(a[sortKey] ?? "").toLowerCase();
+      const bValue = String(b[sortKey] ?? "").toLowerCase();
       return sortDirection === "asc"
         ? aValue.localeCompare(bValue)
         : bValue.localeCompare(aValue);
     });
-
-    return sorted;
   }, [items, sortKey, sortDirection]);
 
   const filteredItems = useMemo(() => {
     if (!searchTerm) return sortedItems;
-
     return sortedItems.filter((item) =>
       fields.some((field) =>
-        String(item[field.key]).toLowerCase().includes(searchTerm.toLowerCase())
+        String(item[field.key] ?? "")
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
       )
     );
   }, [sortedItems, searchTerm, fields]);
@@ -89,8 +87,7 @@ export const CrudDashboard = ({
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  // --- Manejo de acciones (crear, editar, eliminar)
-
+  // --- Acciones CRUD ---
   const handleCreate = () => {
     setSelectedItem(null);
     setIsFormOpen(true);
@@ -119,8 +116,7 @@ export const CrudDashboard = ({
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
-      const data = await getItems();
-      setItems(data);
+      await reloadItems();
     } catch (error) {
       console.error("Error deleting item:", error);
     } finally {
@@ -129,11 +125,11 @@ export const CrudDashboard = ({
   };
 
   const handleSave = async (item) => {
-    const isEditing = !!selectedItem;
-    const promise = isEditing ? updateItem(item) : createItem(item);
+    const isEditing = Boolean(selectedItem);
+    const action = isEditing ? updateItem(item) : createItem(item);
 
     try {
-      await toast.promise(promise, {
+      await toast.promise(action, {
         loading: isEditing ? t("common.updating") : t("common.creating"),
         success: isEditing
           ? t("common.updateSuccess")
@@ -142,19 +138,21 @@ export const CrudDashboard = ({
       });
 
       setIsFormOpen(false);
-      const data = await getItems();
-      setItems(data);
+      setSelectedItem(null);
+      await reloadItems();
     } catch (error) {
       console.error("Error saving item:", error);
     }
   };
 
-  // --- Renderizado del componente
-
+  // --- Renderizado ---
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.title}>{t(`${entityName}.title`)}</h2>
+        <h2 className={styles.title}>
+          {entityIcon && <span className={styles.icon}>{entityIcon}</span>}
+          {t(`${entityName}.title`)}
+        </h2>
         <button className={styles.createButton} onClick={handleCreate}>
           <FaPlus /> {t(`${entityName}.createButton`)}
         </button>
@@ -166,6 +164,8 @@ export const CrudDashboard = ({
           item={selectedItem}
           onSave={handleSave}
           onCancel={handleCancel}
+          validations={validations}
+          entityIcon={entityIcon}
         />
       ) : (
         <>

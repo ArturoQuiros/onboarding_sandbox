@@ -1,37 +1,28 @@
 // src/Admin/pages/Users.jsx
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Navbar, Sidebar, CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
+import { BsPeople } from "react-icons/bs";
 
 import styles from "./Users.module.css";
 
 export const Users = () => {
-  const { isSidebarOpen } = useContext(UIContext);
+  const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+
+  // ✅ Setear icono del sidebar y CrudForm
+  useEffect(() => {
+    setEntityIcon(<BsPeople />);
+  }, [setEntityIcon]);
 
   // --- CONFIGURACIÓN ESPECÍFICA PARA USUARIOS DE AD ---
-  const getUsers = async () => [
-    {
-      id: 1,
-      name: "Ana Pérez",
-      role: "Manager",
-      country: "Costa Rica",
-    },
-    {
-      id: 2,
-      name: "Luis Gómez",
-      role: "Auditor",
-      country: "México",
-    },
-    {
-      id: 3,
-      name: "Sofía Vargas",
-      role: "Staff",
-      country: "Colombia",
-    },
-  ];
+  const getUsers = async () =>
+    Promise.resolve([
+      { id: 1, name: "Ana Pérez", role: "Manager", country: "Costa Rica" },
+      { id: 2, name: "Luis Gómez", role: "Auditor", country: "México" },
+      { id: 3, name: "Sofía Vargas", role: "Staff", country: "Colombia" },
+    ]);
 
-  // Estas funciones se marcan como "no implementadas" ya que los usuarios de AD
-  // se gestionan desde el propio Active Directory, no desde la aplicación.
+  // Estas funciones no implementadas porque se gestionan desde Active Directory
   const createUser = async (user) => {
     console.warn("Creación de usuarios no implementada, se gestiona desde AD.");
     return null;

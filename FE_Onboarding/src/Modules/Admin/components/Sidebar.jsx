@@ -8,9 +8,7 @@ import {
   BsHouse,
   BsGlobeAmericas,
   BsPeople,
-  BsPersonBadge,
   BsTools,
-  BsChevronContract,
   BsPerson,
   BsNewspaper,
 } from "react-icons/bs";
@@ -19,9 +17,14 @@ import styles from "./Sidebar.module.css";
 
 export const Sidebar = () => {
   const { t } = useTranslation("global");
-  const { isSidebarOpen, setIsSidebarOpen } = useContext(UIContext);
+  const {
+    isSidebarOpen,
+    setIsSidebarOpen,
+    setActiveEntity, // 👈 lo usamos para guardar la entidad activa
+  } = useContext(UIContext);
   const location = useLocation();
 
+  // Definición de items del menú
   const menuItems = [
     { icon: <BsHouse />, label: t("sidebar.home"), path: "/admin" },
     {
@@ -51,6 +54,7 @@ export const Sidebar = () => {
     },
   ];
 
+  // Manejo de clases del sidebar
   const sidebarClasses = isSidebarOpen
     ? styles.sidebar
     : `${styles.sidebar} ${styles.sidebarClosed}`;
@@ -69,10 +73,11 @@ export const Sidebar = () => {
       const { offsetTop, offsetHeight } = el;
       setActiveStyle({ top: offsetTop, height: offsetHeight });
     }
-  }, [location.pathname, isSidebarOpen]); // recalcula al cambiar de ruta o al abrir/cerrar sidebar
+  }, [location.pathname, isSidebarOpen]);
 
   return (
     <div className={sidebarClasses}>
+      {/* Botón toggle */}
       <button
         className={styles.toggleButton}
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -81,6 +86,7 @@ export const Sidebar = () => {
         {isSidebarOpen ? <BsArrowBarLeft /> : <BsList />}
       </button>
 
+      {/* Menú */}
       <div className={styles.menu} ref={menuRef}>
         {menuItems.map((item, idx) => {
           const isActive = location.pathname === item.path;
@@ -94,12 +100,21 @@ export const Sidebar = () => {
               key={idx}
               className={linkClasses}
               ref={(el) => (itemRefs.current[idx] = el)}
+              onClick={() =>
+                setActiveEntity({
+                  name: item.label,
+                  icon: item.icon,
+                })
+              } // ✅ guardamos entidad activa en contexto
             >
               <span className={styles.icon}>{item.icon}</span>
-              <span className={styles.text}>{item.label}</span>
+              {isSidebarOpen && (
+                <span className={styles.text}>{item.label}</span>
+              )}
             </Link>
           );
         })}
+
         {/* Barra activa */}
         <div
           className={styles.activeBar}

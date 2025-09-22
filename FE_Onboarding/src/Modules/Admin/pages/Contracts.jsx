@@ -1,19 +1,26 @@
 // src/Admin/pages/Contracts.jsx
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Navbar, Sidebar, CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
+import { BsNewspaper } from "react-icons/bs"; // Icono del sidebar
 
 import styles from "./Contracts.module.css";
 
 export const Contracts = () => {
-  const { isSidebarOpen } = useContext(UIContext);
+  const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+
+  // ✅ Setear icono del sidebar para el CrudForm
+  useEffect(() => {
+    setEntityIcon(<BsNewspaper />);
+  }, [setEntityIcon]);
 
   // --- CONFIGURACIÓN ESPECÍFICA PARA CONTRATOS ---
-  const getContracts = async () => [
-    { id: 1, country: "Costa Rica", customer: "Juan Pérez" },
-    { id: 2, country: "México", customer: "María González" },
-    { id: 3, country: "Colombia", customer: "Carlos Rodríguez" },
-  ];
+  const getContracts = async () =>
+    Promise.resolve([
+      { id: 1, country: "Costa Rica", customer: "Juan Pérez" },
+      { id: 2, country: "México", customer: "María González" },
+      { id: 3, country: "Colombia", customer: "Carlos Rodríguez" },
+    ]);
 
   const createContract = async (contract) => {
     console.log("Creando contrato:", contract);
@@ -30,10 +37,21 @@ export const Contracts = () => {
     return true;
   };
 
+  // --- Campos del formulario con validaciones ---
   const contractFields = [
     { key: "id", labelKey: "contracts.table.id", type: "text" },
-    { key: "country", labelKey: "contracts.table.country", type: "text" },
-    { key: "customer", labelKey: "contracts.table.customer", type: "text" },
+    {
+      key: "country",
+      labelKey: "contracts.table.country",
+      type: "text",
+      validation: { required: true, minLength: 3, maxLength: 50 },
+    },
+    {
+      key: "customer",
+      labelKey: "contracts.table.customer",
+      type: "text",
+      validation: { required: true, minLength: 3, maxLength: 100 },
+    },
   ];
   // ---------------------------------------------
 

@@ -1,19 +1,26 @@
 // src/Admin/pages/Services.jsx
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Navbar, Sidebar, CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
+import { BsTools } from "react-icons/bs";
 
 import styles from "./Services.module.css";
 
 export const Services = () => {
-  const { isSidebarOpen } = useContext(UIContext);
+  const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+
+  // ✅ Setear icono del sidebar y CrudForm
+  useEffect(() => {
+    setEntityIcon(<BsTools />);
+  }, [setEntityIcon]);
 
   // --- CONFIGURACIÓN ESPECÍFICA PARA SERVICIOS ---
-  const getServices = async () => [
-    { id: 1, name: "Consultoría de Negocios", country: "Costa Rica" },
-    { id: 2, name: "Auditoría Financiera", country: "México" },
-    { id: 3, name: "Asesoría Fiscal", country: "Colombia" },
-  ];
+  const getServices = async () =>
+    Promise.resolve([
+      { id: 1, name: "Consultoría de Negocios", country: "Costa Rica" },
+      { id: 2, name: "Auditoría Financiera", country: "México" },
+      { id: 3, name: "Asesoría Fiscal", country: "Colombia" },
+    ]);
 
   const createService = async (service) => {
     console.log("Creando servicio:", service);
