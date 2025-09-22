@@ -96,6 +96,12 @@
     "updateSuccess": "Elemento actualizado con éxito!",
     "createSuccess": "Elemento creado con éxito!",
     "genericError": "¡Ha ocurrido un error!",
-    "confirmAction": "Confirmar Acción"
+    "confirmAction": "Confirmar Acción",
+    "noData": "No hay datos disponibles.",
+    "search": "Buscar...",
+    "showingRecords": "Mostrando {{from}} a {{to}} de {{total}} registros.",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "itemsPerPage": "Registros por página"
   }
 }

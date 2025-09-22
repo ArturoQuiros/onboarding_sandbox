@@ -1,8 +1,8 @@
 .container {
   padding: 20px;
-  box-sizing: border-box; /* Esto ya lo tienes, ¡perfecto! */
+  box-sizing: border-box;
   overflow-x: auto;
-  height: 100%; /* Fill the height of its parent */
+  height: 100%;
   background-color: var(--bdo-pale-charcoal);
 }
 
@@ -15,8 +15,10 @@
 
 .title {
   color: var(--bdo-charcoal);
-  font-size: 2em;
-  font-weight: bold;
+  font-size: 2.2em; /* ✅ Ligeramente más grande */
+  font-weight: 700; /* ✅ Peso más específico */
+  letter-spacing: 0.03em; /* ✅ Añade un poco de espacio entre letras */
+  margin-bottom: 0.5em; /* ✅ Separa el título del contenido */
 }
 
 .createButton {
@@ -28,10 +30,23 @@
   cursor: pointer;
   font-size: 1em;
   transition: background-color 0.3s ease;
+
+  /* ✅ Ajustes para alinear el ícono y el texto */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .createButton:hover {
-  background-color: var(--bdo-blue);
+  background-color: var(--bdo-slate);
+}
+
+.controlsBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 .loading {

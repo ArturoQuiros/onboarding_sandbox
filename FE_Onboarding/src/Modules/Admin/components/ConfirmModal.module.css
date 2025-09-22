@@ -19,6 +19,21 @@
   text-align: center;
   max-width: 400px;
   width: 90%;
+  position: relative; /* ✅ Es importante para posicionar el ícono si es necesario */
+}
+
+/* ✅ Estilos para el ícono */
+.modalIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.deleteIcon {
+  color: #e53e3e; /* Rojo de eliminación */
+}
+
+.warningIcon {
+  color: #f6ad55; /* Naranja de advertencia */
 }
 
 .modalTitle {

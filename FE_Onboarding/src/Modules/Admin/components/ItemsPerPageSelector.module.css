@@ -1,0 +1,38 @@
+/* src/Modules/Admin/components/Crud/ItemsPerPageSelector.module.css */
+
+.itemsPerPage {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.itemsPerPage label {
+  color: var(--bdo-charcoal);
+  font-weight: 500;
+}
+
+.itemsPerPage select {
+  padding: 0.5rem 2rem 0.5rem 0.5rem; /* ✅ Ajuste clave: más padding a la derecha (2rem) */
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--bdo-charcoal);
+  background-color: white;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" fill="currentColor" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 0.7em top 50%;
+  background-size: 0.65em auto;
+}
+
+.itemsPerPage select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.5);
+}

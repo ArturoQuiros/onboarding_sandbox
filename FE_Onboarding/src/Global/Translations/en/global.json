@@ -96,6 +96,12 @@
     "updateSuccess": "Item updated successfully!",
     "createSuccess": "Item created successfully!",
     "genericError": "An error has occurred!",
-    "confirmAction": "Confirm Action"
+    "confirmAction": "Confirm Action",
+    "noData": "No data available.",
+    "search": "Search...",
+    "showingRecords": "Showing {{from}} to {{to}} of {{total}} records.",
+    "previous": "Previous",
+    "next": "Next",
+    "itemsPerPage": "Records per page"
   }
 }

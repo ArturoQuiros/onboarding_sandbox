@@ -30,7 +30,7 @@ export const Navbar = () => {
           title="Cambiar idioma"
         >
           <BsTranslate className={styles.translateIcon} />
-          <span>{i18n.language === "es" ? "EN" : "ES"}</span>
+          <span>{i18n.language === "es" ? "ES" : "EN"}</span>
         </button>
       </div>
     </nav>
