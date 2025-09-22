@@ -1,5 +1,5 @@
-import { Routes, Route } from "react-router"; // Importa de react-router-dom
-import { Landing } from "./Modules/Landing/pages/";
+// src/App.jsx
+import { Routes, Route } from "react-router-dom";
 import {
   Admin,
   Countries,
@@ -8,6 +8,7 @@ import {
   Users,
   Contracts,
 } from "./Modules/Admin/pages";
+import { Landing } from "./Modules/Landing/pages";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/admin" element={<Admin />} />
+
         <Route path="/admin/countries" element={<Countries />} />
         <Route path="/admin/customers" element={<Customers />} />
         <Route path="/admin/services" element={<Services />} />

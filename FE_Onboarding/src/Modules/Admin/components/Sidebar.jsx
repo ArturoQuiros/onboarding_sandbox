@@ -1,7 +1,12 @@
-// src/Modules/Admin/components/Sidebar/Sidebar.jsx
-import React, { useContext, useRef, useEffect, useState } from "react";
+import React, {
+  useContext,
+  useRef,
+  useLayoutEffect,
+  useState,
+  useMemo,
+} from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation } from "react-router-dom";
 import {
   BsArrowBarLeft,
   BsList,
@@ -17,54 +22,51 @@ import styles from "./Sidebar.module.css";
 
 export const Sidebar = () => {
   const { t } = useTranslation("global");
-  const {
-    isSidebarOpen,
-    setIsSidebarOpen,
-    setActiveEntity, // 👈 lo usamos para guardar la entidad activa
-  } = useContext(UIContext);
+  const { isSidebarOpen, setIsSidebarOpen, setActiveEntity } =
+    useContext(UIContext);
   const location = useLocation();
 
-  // Definición de items del menú
-  const menuItems = [
-    { icon: <BsHouse />, label: t("sidebar.home"), path: "/admin" },
-    {
-      icon: <BsGlobeAmericas />,
-      label: t("sidebar.countries"),
-      path: "/admin/countries",
-    },
-    {
-      icon: <BsPerson />,
-      label: t("sidebar.customers"),
-      path: "/admin/customers",
-    },
-    {
-      icon: <BsTools />,
-      label: t("sidebar.services"),
-      path: "/admin/services",
-    },
-    {
-      icon: <BsPeople />,
-      label: t("sidebar.users"),
-      path: "/admin/users",
-    },
-    {
-      icon: <BsNewspaper />,
-      label: t("sidebar.contracts"),
-      path: "/admin/contracts",
-    },
-  ];
+  // 👈 Usamos useMemo para evitar que se cree un nuevo array en cada render
+  const menuItems = useMemo(
+    () => [
+      { icon: <BsHouse />, label: t("sidebar.home"), path: "/admin" },
+      {
+        icon: <BsGlobeAmericas />,
+        label: t("sidebar.countries"),
+        path: "/admin/countries",
+      },
+      {
+        icon: <BsPerson />,
+        label: t("sidebar.customers"),
+        path: "/admin/customers",
+      },
+      {
+        icon: <BsTools />,
+        label: t("sidebar.services"),
+        path: "/admin/services",
+      },
+      {
+        icon: <BsPeople />,
+        label: t("sidebar.users"),
+        path: "/admin/users",
+      },
+      {
+        icon: <BsNewspaper />,
+        label: t("sidebar.contracts"),
+        path: "/admin/contracts",
+      },
+    ],
+    [t]
+  ); // 👈 La única dependencia es la función de traducción 't'
 
-  // Manejo de clases del sidebar
   const sidebarClasses = isSidebarOpen
     ? styles.sidebar
     : `${styles.sidebar} ${styles.sidebarClosed}`;
 
-  // refs y estado para la barra activa
-  const menuRef = useRef(null);
   const itemRefs = useRef([]);
   const [activeStyle, setActiveStyle] = useState({ top: 0, height: 0 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const activeIndex = menuItems.findIndex(
       (item) => item.path === location.pathname
     );
@@ -73,11 +75,10 @@ export const Sidebar = () => {
       const { offsetTop, offsetHeight } = el;
       setActiveStyle({ top: offsetTop, height: offsetHeight });
     }
-  }, [location.pathname, isSidebarOpen]);
+  }, [location.pathname, isSidebarOpen, menuItems]);
 
   return (
     <div className={sidebarClasses}>
-      {/* Botón toggle */}
       <button
         className={styles.toggleButton}
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -86,8 +87,7 @@ export const Sidebar = () => {
         {isSidebarOpen ? <BsArrowBarLeft /> : <BsList />}
       </button>
 
-      {/* Menú */}
-      <div className={styles.menu} ref={menuRef}>
+      <div className={styles.menu}>
         {menuItems.map((item, idx) => {
           const isActive = location.pathname === item.path;
           const linkClasses = isActive
@@ -100,12 +100,15 @@ export const Sidebar = () => {
               key={idx}
               className={linkClasses}
               ref={(el) => (itemRefs.current[idx] = el)}
-              onClick={() =>
+              onClick={() => {
                 setActiveEntity({
                   name: item.label,
                   icon: item.icon,
-                })
-              } // ✅ guardamos entidad activa en contexto
+                });
+                if (!isSidebarOpen) {
+                  setIsSidebarOpen(true);
+                }
+              }}
             >
               <span className={styles.icon}>{item.icon}</span>
               {isSidebarOpen && (
@@ -115,7 +118,6 @@ export const Sidebar = () => {
           );
         })}
 
-        {/* Barra activa */}
         <div
           className={styles.activeBar}
           style={{

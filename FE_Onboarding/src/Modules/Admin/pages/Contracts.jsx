@@ -5,9 +5,11 @@ import { UIContext } from "../../../Global/Context";
 import { BsNewspaper } from "react-icons/bs"; // Icono del sidebar
 
 import styles from "./Contracts.module.css";
+import { usePageTitle } from "../../../Global/hooks";
 
 export const Contracts = () => {
   const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+  //usePageTitle("Gestión de Contratos");
 
   // ✅ Setear icono del sidebar para el CrudForm
   useEffect(() => {

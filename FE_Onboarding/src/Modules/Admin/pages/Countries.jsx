@@ -6,9 +6,11 @@ import { BsGlobeAmericas } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 
 import styles from "./Countries.module.css";
+import { usePageTitle } from "../../../Global/hooks";
 
 export const Countries = () => {
   const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+  //usePageTitle("Gestión de Paises");
 
   // Configura el icono del formulario
   useEffect(() => {
