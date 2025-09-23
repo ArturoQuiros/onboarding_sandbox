@@ -62,7 +62,6 @@ body {
   /* Usar la fuente y el color de texto de tus variables */
   font-family: var(--bdo-font-family, "Trebuchet MS", sans-serif);
   color: var(--bdo-charcoal);
-  background-color: var(--bdo-pale-charcoal); /* Usar la variable de fondo */
 }
 
 h1 {

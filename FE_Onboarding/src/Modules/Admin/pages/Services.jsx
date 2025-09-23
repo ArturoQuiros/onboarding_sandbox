@@ -1,20 +1,20 @@
-// src/Admin/pages/Services.jsx
 import React, { useContext, useEffect } from "react";
-import { Navbar, Sidebar, CrudDashboard } from "../components";
+import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsTools } from "react-icons/bs";
 
-import styles from "./Services.module.css";
+// No need to import Navbar, Sidebar, or the local CSS module
 
 export const Services = () => {
-  const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+  // We still need to use useContext to set the entity icon
+  const { setEntityIcon } = useContext(UIContext);
 
-  // ✅ Setear icono del sidebar y CrudForm
+  // Set sidebar and CRUD form icon
   useEffect(() => {
     setEntityIcon(<BsTools />);
   }, [setEntityIcon]);
 
-  // --- CONFIGURACIÓN ESPECÍFICA PARA SERVICIOS ---
+  // --- SERVICE-SPECIFIC CONFIGURATION ---
   const getServices = async () =>
     Promise.resolve([
       { id: 1, name: "Consultoría de Negocios", country: "Costa Rica" },
@@ -45,25 +45,13 @@ export const Services = () => {
   // ---------------------------------------------
 
   return (
-    <div className={styles.container}>
-      <Navbar />
-      <Sidebar />
-      <div
-        className={`${styles.mainContent} ${
-          isSidebarOpen ? styles.mainContentOpen : styles.mainContentClosed
-        }`}
-      >
-        <div className={styles.contentWrapper}>
-          <CrudDashboard
-            entityName="services"
-            fields={serviceFields}
-            getItems={getServices}
-            createItem={createService}
-            updateItem={updateService}
-            deleteItem={deleteService}
-          />
-        </div>
-      </div>
-    </div>
+    <CrudDashboard
+      entityName="services"
+      fields={serviceFields}
+      getItems={getServices}
+      createItem={createService}
+      updateItem={updateService}
+      deleteItem={deleteService}
+    />
   );
 };

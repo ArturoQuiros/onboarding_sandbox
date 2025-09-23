@@ -1,15 +1,17 @@
-// src/Admin/pages/Users.jsx
 import React, { useContext, useEffect } from "react";
-import { Navbar, Sidebar, CrudDashboard } from "../components";
+import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsPeople } from "react-icons/bs";
 
-import styles from "./Users.module.css";
+// Ya no se necesitan Navbar, Sidebar ni el módulo de estilos local
+// import { Navbar, Sidebar } from "../components";
+// import styles from "./Users.module.css";
 
 export const Users = () => {
-  const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
+  // Solo se necesita el setEntityIcon del contexto
+  const { setEntityIcon } = useContext(UIContext);
 
-  // ✅ Setear icono del sidebar y CrudForm
+  // Setea el ícono del sidebar para el CrudForm
   useEffect(() => {
     setEntityIcon(<BsPeople />);
   }, [setEntityIcon]);
@@ -22,7 +24,7 @@ export const Users = () => {
       { id: 3, name: "Sofía Vargas", role: "Staff", country: "Colombia" },
     ]);
 
-  // Estas funciones no implementadas porque se gestionan desde Active Directory
+  // Estas funciones no están implementadas porque se gestionan desde Active Directory
   const createUser = async (user) => {
     console.warn("Creación de usuarios no implementada, se gestiona desde AD.");
     return null;
@@ -51,25 +53,13 @@ export const Users = () => {
   // ---------------------------------------------
 
   return (
-    <div className={styles.container}>
-      <Navbar />
-      <Sidebar />
-      <div
-        className={`${styles.mainContent} ${
-          isSidebarOpen ? styles.mainContentOpen : styles.mainContentClosed
-        }`}
-      >
-        <div className={styles.contentWrapper}>
-          <CrudDashboard
-            entityName="users"
-            fields={userFields}
-            getItems={getUsers}
-            createItem={createUser}
-            updateItem={updateUser}
-            deleteItem={deleteUser}
-          />
-        </div>
-      </div>
-    </div>
+    <CrudDashboard
+      entityName="users"
+      fields={userFields}
+      getItems={getUsers}
+      createItem={createUser}
+      updateItem={updateUser}
+      deleteItem={deleteUser}
+    />
   );
 };

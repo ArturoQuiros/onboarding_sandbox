@@ -1,22 +1,16 @@
-// src/Admin/pages/Contracts.jsx
 import React, { useContext, useEffect } from "react";
-import { Navbar, Sidebar, CrudDashboard } from "../components";
+import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
-import { BsNewspaper } from "react-icons/bs"; // Icono del sidebar
-
-import styles from "./Contracts.module.css";
-import { usePageTitle } from "../../../Global/hooks";
+import { BsNewspaper } from "react-icons/bs";
 
 export const Contracts = () => {
-  const { isSidebarOpen, setEntityIcon } = useContext(UIContext);
-  //usePageTitle("Gestión de Contratos");
+  const { setEntityIcon } = useContext(UIContext);
 
-  // ✅ Setear icono del sidebar para el CrudForm
   useEffect(() => {
     setEntityIcon(<BsNewspaper />);
   }, [setEntityIcon]);
 
-  // --- CONFIGURACIÓN ESPECÍFICA PARA CONTRATOS ---
+  // --- CONTRACT-SPECIFIC CONFIGURATION ---
   const getContracts = async () =>
     Promise.resolve([
       { id: 1, country: "Costa Rica", customer: "Juan Pérez" },
@@ -39,7 +33,6 @@ export const Contracts = () => {
     return true;
   };
 
-  // --- Campos del formulario con validaciones ---
   const contractFields = [
     { key: "id", labelKey: "contracts.table.id", type: "text" },
     {
@@ -58,25 +51,13 @@ export const Contracts = () => {
   // ---------------------------------------------
 
   return (
-    <div className={styles.container}>
-      <Navbar />
-      <Sidebar />
-      <div
-        className={`${styles.mainContent} ${
-          isSidebarOpen ? styles.mainContentOpen : styles.mainContentClosed
-        }`}
-      >
-        <div className={styles.contentWrapper}>
-          <CrudDashboard
-            entityName="contracts"
-            fields={contractFields}
-            getItems={getContracts}
-            createItem={createContract}
-            updateItem={updateContract}
-            deleteItem={deleteContract}
-          />
-        </div>
-      </div>
-    </div>
+    <CrudDashboard
+      entityName="contracts"
+      fields={contractFields}
+      getItems={getContracts}
+      createItem={createContract}
+      updateItem={updateContract}
+      deleteItem={deleteContract}
+    />
   );
 };
