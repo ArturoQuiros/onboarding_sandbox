@@ -1,4 +1,3 @@
-// src/Modules/Admin/components/Crud/CrudDashboard.jsx
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { CrudDataTable, CrudForm, SearchBar, ItemsPerPageSelector } from "./";
 import { useTranslation } from "react-i18next";
@@ -15,7 +14,7 @@ export const CrudDashboard = ({
   updateItem,
   deleteItem,
   entityIcon,
-  validations, // ✅ Recibimos validaciones
+  validations,
 }) => {
   const { t } = useTranslation("global");
 
@@ -27,18 +26,16 @@ export const CrudDashboard = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // --- Recargar datos ---
   const reloadItems = useCallback(async () => {
     try {
       const data = await getItems();
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error(t("common.loadError"));
-      console.error("Error fetching items:", error);
     }
   }, [getItems, t]);
 
@@ -46,7 +43,6 @@ export const CrudDashboard = ({
     reloadItems();
   }, [reloadItems]);
 
-  // --- Ordenamiento ---
   const handleSort = (key) => {
     setSortKey(key);
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
@@ -87,7 +83,6 @@ export const CrudDashboard = ({
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  // --- Acciones CRUD ---
   const handleCreate = () => {
     setSelectedItem(null);
     setIsFormOpen(true);
@@ -118,7 +113,7 @@ export const CrudDashboard = ({
       });
       await reloadItems();
     } catch (error) {
-      console.error("Error deleting item:", error);
+      console.error(error);
     } finally {
       setItemIdToDelete(null);
     }
@@ -141,11 +136,10 @@ export const CrudDashboard = ({
       setSelectedItem(null);
       await reloadItems();
     } catch (error) {
-      console.error("Error saving item:", error);
+      console.error(error);
     }
   };
 
-  // --- Renderizado ---
   return (
     <div className={styles.container}>
       <div className={styles.header}>

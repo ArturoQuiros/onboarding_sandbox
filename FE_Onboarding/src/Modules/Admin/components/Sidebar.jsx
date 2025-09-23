@@ -5,7 +5,6 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import {
   BsArrowBarLeft,
@@ -19,6 +18,7 @@ import {
 } from "react-icons/bs";
 import { UIContext } from "../../../Global/Context";
 import styles from "./Sidebar.module.css";
+import { useTranslation } from "react-i18next";
 
 export const Sidebar = () => {
   const { t } = useTranslation("global");
@@ -26,7 +26,6 @@ export const Sidebar = () => {
     useContext(UIContext);
   const location = useLocation();
 
-  // 👈 Usamos useMemo para evitar que se cree un nuevo array en cada render
   const menuItems = useMemo(
     () => [
       { icon: <BsHouse />, label: t("sidebar.home"), path: "/admin" },
@@ -45,11 +44,7 @@ export const Sidebar = () => {
         label: t("sidebar.services"),
         path: "/admin/services",
       },
-      {
-        icon: <BsPeople />,
-        label: t("sidebar.users"),
-        path: "/admin/users",
-      },
+      { icon: <BsPeople />, label: t("sidebar.users"), path: "/admin/users" },
       {
         icon: <BsNewspaper />,
         label: t("sidebar.contracts"),
@@ -57,12 +52,11 @@ export const Sidebar = () => {
       },
     ],
     [t]
-  ); // 👈 La única dependencia es la función de traducción 't'
+  );
 
   const sidebarClasses = isSidebarOpen
     ? styles.sidebar
     : `${styles.sidebar} ${styles.sidebarClosed}`;
-
   const itemRefs = useRef([]);
   const [activeStyle, setActiveStyle] = useState({ top: 0, height: 0 });
 
@@ -101,13 +95,8 @@ export const Sidebar = () => {
               className={linkClasses}
               ref={(el) => (itemRefs.current[idx] = el)}
               onClick={() => {
-                setActiveEntity({
-                  name: item.label,
-                  icon: item.icon,
-                });
-                if (!isSidebarOpen) {
-                  setIsSidebarOpen(true);
-                }
+                setActiveEntity({ name: item.label, icon: item.icon });
+                if (!isSidebarOpen) setIsSidebarOpen(true);
               }}
             >
               <span className={styles.icon}>{item.icon}</span>
@@ -117,13 +106,9 @@ export const Sidebar = () => {
             </Link>
           );
         })}
-
         <div
           className={styles.activeBar}
-          style={{
-            top: activeStyle.top,
-            height: activeStyle.height,
-          }}
+          style={{ top: activeStyle.top, height: activeStyle.height }}
         />
       </div>
     </div>

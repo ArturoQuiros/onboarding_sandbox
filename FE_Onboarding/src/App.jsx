@@ -1,5 +1,6 @@
-// src/App.jsx
 import { Routes, Route } from "react-router-dom";
+// 1. Importa el componente de layout
+import AdminLayout from "./Modules/Admin/layouts/AdminLayout";
 import {
   Admin,
   Countries,
@@ -17,13 +18,18 @@ function App() {
       <Toaster position="bottom-center" />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/admin" element={<Admin />} />
 
-        <Route path="/admin/countries" element={<Countries />} />
-        <Route path="/admin/customers" element={<Customers />} />
-        <Route path="/admin/services" element={<Services />} />
-        <Route path="/admin/users" element={<Users />} />
-        <Route path="/admin/contracts" element={<Contracts />} />
+        {/* 2. Ruta padre con el AdminLayout */}
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* 3. Rutas anidadas sin el prefijo /admin */}
+          <Route index element={<Admin />} />{" "}
+          {/* 4. Ruta por defecto para /admin */}
+          <Route path="countries" element={<Countries />} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="services" element={<Services />} />
+          <Route path="users" element={<Users />} />
+          <Route path="contracts" element={<Contracts />} />
+        </Route>
       </Routes>
     </>
   );

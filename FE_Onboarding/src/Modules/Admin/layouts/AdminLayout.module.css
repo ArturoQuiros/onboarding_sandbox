@@ -1,0 +1,43 @@
+/* Layout general */
+.pageLayout {
+  display: grid;
+  grid-template-areas:
+    "navbar navbar"
+    "sidebar content";
+  grid-template-rows: var(--navbar-height) 1fr;
+  grid-template-columns: var(--sidebar-width-open) 1fr; /* Por defecto, sidebar está abierto */
+  height: 100vh;
+  width: 100%;
+}
+
+/* Estado de la sidebar cerrada */
+.pageLayout.closed {
+  grid-template-columns: var(--sidebar-width-closed) 1fr;
+}
+
+/* Asignación de áreas a los elementos */
+.navbar {
+  grid-area: navbar;
+  top: 0;
+  z-index: 100;
+  background-color: var(--bdo-charcoal); /* Usando la variable de color */
+  color: #fff; /* O puedes usar una variable como --bdo-light-text si la tienes */
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: var(--bdo-pale-charcoal); /* Usando la variable de color */
+  padding: 20px;
+}
+
+.mainContent {
+  grid-area: content;
+  overflow-y: auto;
+  padding: 20px;
+  background-color: var(
+    --bdo-pale-charcoal
+  ); /* Puedes usar #fff o definir una variable para el fondo del contenido */
+}

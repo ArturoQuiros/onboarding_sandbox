@@ -30,18 +30,34 @@
     "createButton": "Create New Customer",
     "table": {
       "id": "ID",
-      "nombre": "Name",
+      "name": "Name",
       "email": "Email",
-      "telefono": "Phone",
-      "direccion": "Address"
+      "phone": "Phone",
+      "address": "Address"
     },
     "form": {
       "editTitle": "Edit Customer",
       "createTitle": "Create New Customer",
-      "nombreLabel": "Name",
+      "nameLabel": "Name",
       "emailLabel": "Email",
-      "telefonoLabel": "Phone",
-      "direccionLabel": "Address"
+      "phoneLabel": "Phone",
+      "addressLabel": "Address"
+    },
+    "confirmDelete": "Are you sure you want to delete this customer?",
+    "deleting": "Deleting customer...",
+    "deleteSuccess": "Customer deleted successfully!",
+    "deleteError": "Could not delete customer!",
+    "formValidation": {
+      "nameRequired": "The name is required",
+      "nameMinLength": "Must have at least 3 characters",
+      "nameMaxLength": "Cannot exceed 50 characters",
+      "nameInvalidChars": "Only letters and spaces are allowed",
+      "emailRequired": "The email is required",
+      "emailInvalid": "The email is not valid",
+      "phoneRequired": "The phone number is required",
+      "phoneInvalid": "The phone number must have 8 numeric digits",
+      "addressRequired": "The address is required",
+      "addressMinLength": "The address must have at least 5 characters"
     }
   },
   "services": {

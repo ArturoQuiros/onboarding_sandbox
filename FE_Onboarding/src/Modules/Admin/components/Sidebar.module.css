@@ -1,28 +1,14 @@
-/* src/Modules/Admin/components/Sidebar/Sidebar.module.css */
-
 .sidebar {
-  /* Mantener el resto de los estilos del sidebar */
-  position: fixed;
-  top: 60px;
-  left: 0;
-  height: calc(100vh - 60px);
-  width: 220px;
-  background: var(--bdo-red);
-  color: #fff;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: var(--sidebar-width-open);
+  background-color: var(--bdo-red);
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 16px;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
-  z-index: 999;
-  border-top-right-radius: 18px;
-  border-bottom-right-radius: 18px;
-  overflow: hidden;
 }
 
 .sidebarClosed {
-  width: 70px;
+  width: var(--sidebar-width-closed);
 }
 
 .toggleButton {
@@ -32,25 +18,18 @@
   font-size: 24px;
   cursor: pointer;
   padding: 12px;
-  width: 100%;
-  text-align: left; /* Alinea el botón a la izquierda */
-  margin-bottom: 24px;
-  border-radius: 0;
-  transition: background 0.3s, box-shadow 0.3s;
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Alinea el ícono del botón a la izquierda */
+  justify-content: flex-start;
+  border-radius: 0;
 }
 
-/* Cuando el sidebar está cerrado */
 .sidebarClosed .toggleButton {
-  justify-content: center; /* Centra el ícono cuando el sidebar está cerrado */
-  border: none;
+  justify-content: center;
 }
 
 .toggleButton:hover {
-  background: var(--bdo-charcoal);
-
+  background: var(--bdo-burgundy);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
@@ -58,68 +37,48 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 100%;
-  padding: 0 8px;
-  margin: 0 0 0 0;
-  border: 0;
+  padding: 10px 0;
 }
 
 .menuItem {
   display: flex;
-  align-items: center; /* Cambia de 'center' a 'baseline' para una mejor alineación del texto */
-  gap: 12px; /* Ajusta este valor si es necesario */
-  padding: 10px 10px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-size: 16px;
-  white-space: nowrap;
-  background: transparent;
-  transform: translateX(0);
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
-  position: relative;
-  overflow: hidden;
 }
 
-.menuItem:hover {
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 12px rgba(232, 28, 59, 0.12);
-  transform: translateX(4px);
-}
-
+.menuItem:hover,
 .menuItemActive {
   background: rgba(255, 255, 255, 0.2);
   transform: translateX(4px);
   box-shadow: 0 2px 12px rgba(232, 28, 59, 0.12);
-  color: #ffffff;
 }
 
 .icon {
   font-size: 22px;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
   min-width: 22px;
-  padding-top: 10px;
   text-align: center;
-  transition: color 0.3s;
 }
 
 .text {
-  opacity: 1;
-  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: 0;
-  pointer-events: auto;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .sidebarClosed .text {
   opacity: 0;
-  margin-left: -12px;
   pointer-events: none;
+  width: 0;
 }
 
 .activeBar {
   position: absolute;
   left: 0;
-  width: 12px;
-  border: no;
+  width: 4px;
+  border-radius: 2px;
   background-color: #fff;
 }

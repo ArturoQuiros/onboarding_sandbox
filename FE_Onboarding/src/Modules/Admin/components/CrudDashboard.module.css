@@ -1,9 +1,13 @@
 .container {
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-x: auto;
+  width: 90%;
   height: 100%;
+  padding: 0;
+  box-sizing: border-box;
   background-color: var(--bdo-pale-charcoal);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto; /* ⭐ Centrar contenedor */
 }
 
 .header {
@@ -11,30 +15,34 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  width: 100%; /* ⭐ Asegurar ancho completo */
+  flex-shrink: 0; /* ⭐ Evitar que se encoja */
 }
 
 .title {
   color: var(--bdo-charcoal);
-  font-size: 2.2em; /* ✅ Ligeramente más grande */
-  font-weight: 700; /* ✅ Peso más específico */
-  letter-spacing: 0.03em; /* ✅ Añade un poco de espacio entre letras */
-  margin-bottom: 0.5em; /* ✅ Separa el título del contenido */
+  font-size: 2.2em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5em;
+  flex-grow: 1; /* ⭐ Permitir que crezca */
+  display: flex;
+  align-items: center; /* ⭐ Alinear con el icono */
 }
 
 .createButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   background-color: var(--bdo-ocean);
-  color: white;
+  color: #fff;
   border: none;
   border-radius: 4px;
   padding: 10px 20px;
   cursor: pointer;
   font-size: 1em;
   transition: background-color 0.3s ease;
-
-  /* ✅ Ajustes para alinear el ícono y el texto */
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-shrink: 0; /* ⭐ Evitar que se encoja */
 }
 
 .createButton:hover {
@@ -43,15 +51,36 @@
 
 .controlsBar {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
   margin-bottom: 2rem;
+  width: 100%; /* ⭐ Asegurar ancho completo */
+  flex-shrink: 0; /* ⭐ Evitar que se encoja */
 }
 
-.loading {
-  text-align: center;
-  font-size: 1.2em;
-  color: var(--bdo-slate);
-  margin-top: 50px;
+/* ⭐ Asegurar que los elementos hijos también ocupen todo el ancho */
+.container > * {
+  width: 100%;
+}
+
+/* ========================= */
+/* Íconos                    */
+/* ========================= */
+
+.icon {
+  font-size: 1.2em; /* Tamaño consistente */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bdo-ocean); /* Hereda color del padre */
+  line-height: 1; /* Evita espacios verticales extra */
+  padding-right: 10px;
+}
+
+/* Variante para íconos de títulos */
+.titleIcon {
+  font-size: 1.5em;
+  margin-right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  color: var(--bdo-charcoal);
 }

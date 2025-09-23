@@ -13,6 +13,11 @@
   --bdo-jade: #009966;
   --bdo-ocean: #008fd2;
 
+  /*tamaños de componentes*/
+  --navbar-height: 100px;
+  --sidebar-width-open: 220px;
+  --sidebar-width-closed: 70px;
+
   /* Tipografía */
   font-family: "Trebuchet MS", sans-serif; /* Tipografía oficial */
   line-height: 1.5;
@@ -49,10 +54,15 @@ a:hover {
 /* Estilos para el cuerpo de la página */
 body {
   margin: 0;
-  display: flex; /* Asegura que el contenido esté centrado si App.jsx ocupa menos del 100% */
-  place-items: center; /* Centra horizontal y verticalmente el App */
+  /* Eliminar: display: flex; y place-items: center; */
   min-width: 320px;
   min-height: 100vh;
+  /* La línea de abajo asegura que el cuerpo ocupe toda la altura */
+  height: 100vh;
+  /* Usar la fuente y el color de texto de tus variables */
+  font-family: var(--bdo-font-family, "Trebuchet MS", sans-serif);
+  color: var(--bdo-charcoal);
+  background-color: var(--bdo-pale-charcoal); /* Usar la variable de fondo */
 }
 
 h1 {
