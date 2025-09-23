@@ -1,29 +1,36 @@
-// src/context/LanguageContext.jsx
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useMemo } from "react";
 import i18next from "i18next";
 
-// Crea el contexto para el idioma.
 export const LanguageContext = createContext();
 
-// Función auxiliar para obtener el idioma de localStorage al inicio.
-const getInitialLanguage = () => {
-  const storedLang = localStorage.getItem("language");
-  return storedLang || "es"; // Retorna el idioma guardado o 'es' por defecto.
-};
-
 export const LanguageProvider = ({ children }) => {
-  const [language, setLanguage] = useState(getInitialLanguage());
+  const [language, setLanguage] = useState("es"); // Valor por defecto inmediato
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Sincroniza el idioma del contexto con i18next y localStorage.
+  // Inicializar desde localStorage solo después del montaje
   useEffect(() => {
-    i18next.changeLanguage(language);
-    localStorage.setItem("language", language);
-  }, [language]);
+    const storedLang = localStorage.getItem("language");
+    if (storedLang && storedLang !== language) {
+      setLanguage(storedLang);
+    }
+    setIsInitialized(true);
+  }, []);
 
-  const value = {
-    language,
-    setLanguage,
-  };
+  // Sincronizar con i18next y localStorage solo después de la inicialización
+  useEffect(() => {
+    if (isInitialized) {
+      i18next.changeLanguage(language);
+      localStorage.setItem("language", language);
+    }
+  }, [language, isInitialized]);
+
+  const value = useMemo(
+    () => ({
+      language,
+      setLanguage,
+    }),
+    [language]
+  );
 
   return (
     <LanguageContext.Provider value={value}>
