@@ -9,7 +9,7 @@ import {
   Users,
   Contracts,
 } from "./Modules/Admin/pages";
-import { Landing } from "./Modules/Landing/pages";
+import { Landing, CustomerLogin } from "./Modules/Landing/pages";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -18,8 +18,8 @@ function App() {
       <Toaster position="bottom-center" />
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/client-login" element={<CustomerLogin />} />
 
-        {/* 2. Ruta padre con el AdminLayout */}
         <Route path="/admin" element={<AdminLayout />}>
           {/* 3. Rutas anidadas sin el prefijo /admin */}
           <Route index element={<Admin />} />{" "}
