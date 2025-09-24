@@ -10,10 +10,10 @@ namespace WS_Onboarding.Dtos
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }
-        public required string AzureAdUserId { get; set; }
+        public required string Azure_AD_User_Id { get; set; }
         public required string Email { get; set; }
-        public int? IdPais { get; set; }
-        public int? RoleId { get; set; }
+        public int? Id_Pais { get; set; }
+        public int? Role_Id { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
     }
@@ -26,15 +26,15 @@ namespace WS_Onboarding.Dtos
 
         [Required]
         [MaxLength(100)]
-        public required string AzureAdUserId { get; set; }
+        public required string Azure_AD_User_Id { get; set; }
 
         [Required]
         [EmailAddress]
         [MaxLength(255)]
         public required string Email { get; set; }
 
-        public int? IdPais { get; set; }
-        public int? RoleId { get; set; }
+        public int? Id_Pais { get; set; }
+        public int? Role_Id { get; set; }
     }
 
     public class UpdateUsuarioDto : CreateUsuarioDto

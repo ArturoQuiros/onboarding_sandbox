@@ -10,7 +10,7 @@ namespace WS_Onboarding.Dtos
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }
-        public int? IdPais { get; set; }
+        public int? Id_pais { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
     }
@@ -21,7 +21,7 @@ namespace WS_Onboarding.Dtos
         [MaxLength(50)]
         public required string Nombre { get; set; }
 
-        public int? IdPais { get; set; }
+        public int? Id_pais { get; set; }
     }
 
     public class UpdateServicioDto : CreateServicioDto

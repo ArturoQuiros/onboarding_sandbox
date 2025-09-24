@@ -47,7 +47,7 @@ namespace WS_Onboarding.Controllers
         public IActionResult GetContratoServicioByIdContrato([FromQuery] int IdContrato)
         {
             var ContratoServicios = _context.Contrato_Servicios
-            .Where(c => c.IdContrato == IdContrato)
+            .Where(c => c.Id_Contrato == IdContrato)
             .ToList();
 
             if (ContratoServicios == null)
@@ -64,7 +64,7 @@ namespace WS_Onboarding.Controllers
         public IActionResult GetContratoServicioByIdServicio([FromQuery] int IdServicio)
         {
             var ContratoServicioModel = _context.Contrato_Servicios
-            .Where(c => c.IdServicio == IdServicio)
+            .Where(c => c.Id_Servicio == IdServicio)
             .ToList();
 
             if (ContratoServicioModel == null)
@@ -81,7 +81,7 @@ namespace WS_Onboarding.Controllers
         public IActionResult GetContratoServicioByIdContratoAndIdServicio([FromQuery] CreateContratoServicioDto ContratoServicioDto)
         {
             var ContratoServicioModel = _context.Contrato_Servicios
-            .Where(c => c.IdContrato == ContratoServicioDto.IdContrato && c.IdServicio == ContratoServicioDto.IdServicio)
+            .Where(c => c.Id_Contrato == ContratoServicioDto.Id_Contrato && c.Id_Servicio == ContratoServicioDto.Id_Servicio)
             .FirstOrDefault();
 
             if (ContratoServicioModel == null)
@@ -103,7 +103,7 @@ namespace WS_Onboarding.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetContratoServicioByIdContratoAndIdServicio),
-            new { ContratoServicioModel.IdContrato, ContratoServicioModel.IdServicio},
+            new { ContratoServicioModel.Id_Contrato, ContratoServicioModel.Id_Servicio},
             ContratoServicioModel.ToContratoServicioDto());
         }
 

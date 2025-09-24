@@ -14,10 +14,10 @@ namespace WS_Onboarding.Mappers
             return new ContratoDto
             {
                 Id = ContratoModel.Id,
-                IdCliente = ContratoModel.IdCliente,
-                NumeroContrato = ContratoModel.NumeroContrato,
+                Id_Cliente = ContratoModel.Id_Cliente,
+                Numero_contrato = ContratoModel.Numero_contrato,
                 Estado = ContratoModel.Estado,
-                AccountManager = ContratoModel.AccountManager,
+                Account_manager = ContratoModel.Account_manager,
                 Fecha_Creacion = ContratoModel.Fecha_Creacion,
                 Fecha_Modificacion = ContratoModel.Fecha_Modificacion,
             };
@@ -27,10 +27,10 @@ namespace WS_Onboarding.Mappers
         {
             return new Contrato
             {
-                IdCliente = ContratoModel.IdCliente,
-                NumeroContrato = ContratoModel.NumeroContrato,
+                Id_Cliente = ContratoModel.Id_Cliente,
+                Numero_contrato = ContratoModel.Numero_contrato,
                 Estado = ContratoModel.Estado,
-                AccountManager = ContratoModel.AccountManager,
+                Account_manager = ContratoModel.Account_manager,
             };
         }
     }
