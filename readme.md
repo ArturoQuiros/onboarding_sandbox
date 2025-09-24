@@ -15,16 +15,17 @@ A sandbox application designed to streamline and test onboarding processes.
 
 ### Seed
 **/WS_Onboarding/Default/GetAll**
-Return all data from all tables
+
+- Return all data from all tables
 
 **/WS_Onboarding/Default/Seed**
-Generate default values
+
+- Generate default values
 
 **/WS_Onboarding/Default/Clean**
-Remove all data from tables
-:::warning
-This action will delete all entire data, not only default data
-:::
+
+- Remove all data from tables
+⚠️ **Warning:** This action will delete all entire data, not only default data
 
 ## Getting Started
 
