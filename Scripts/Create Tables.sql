@@ -1,3 +1,5 @@
+CREATE DATABASE DB_Onboarding
+
 -- Table: Paises
 DROP TABLE IF EXISTS Paises
 CREATE TABLE Paises (

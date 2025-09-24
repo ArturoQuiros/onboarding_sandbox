@@ -15,7 +15,9 @@ namespace WS_Onboarding.Mappers
             {
                 Id = UsuarioModel.Id,
                 Nombre = UsuarioModel.Nombre,
-                AzureAdUserId = UsuarioModel.AzureAdUserId,
+                Azure_AD_User_Id = UsuarioModel.Azure_AD_User_Id,
+                Id_Pais = UsuarioModel.Id_Pais,
+                Role_Id = UsuarioModel.Role_Id,
                 Email = UsuarioModel.Email,
                 Fecha_Creacion = UsuarioModel.Fecha_Creacion,
                 Fecha_Modificacion = UsuarioModel.Fecha_Modificacion,
@@ -27,7 +29,7 @@ namespace WS_Onboarding.Mappers
             return new Usuario
             {
                 Nombre = UsuarioModel.Nombre,
-                AzureAdUserId = UsuarioModel.AzureAdUserId,
+                Azure_AD_User_Id = UsuarioModel.Azure_AD_User_Id,
                 Email = UsuarioModel.Email
             };
         }

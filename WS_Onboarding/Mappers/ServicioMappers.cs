@@ -14,6 +14,7 @@ namespace WS_Onboarding.Mappers
             return new ServicioDto
             {
                 Id = ServicioModel.Id,
+                Id_pais = ServicioModel.Id_pais,
                 Nombre = ServicioModel.Nombre,
                 Fecha_Creacion = ServicioModel.Fecha_Creacion,
                 Fecha_Modificacion = ServicioModel.Fecha_Modificacion,

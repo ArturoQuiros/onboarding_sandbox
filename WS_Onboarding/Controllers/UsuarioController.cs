@@ -67,7 +67,7 @@ namespace WS_Onboarding.Controllers
             else
             {
                 UsuarioModel.Nombre = UsuarioDto.Nombre;
-                UsuarioModel.AzureAdUserId = UsuarioDto.AzureAdUserId;
+                UsuarioModel.Azure_AD_User_Id = UsuarioDto.Azure_AD_User_Id;
                 UsuarioModel.Email = UsuarioDto.Email;
                 _context.SaveChanges();
 

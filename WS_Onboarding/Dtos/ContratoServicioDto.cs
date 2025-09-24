@@ -9,17 +9,17 @@ namespace WS_Onboarding.Dtos
     public class ContratoServicioDto
     {
         public int Id { get; set; }
-        public int IdContrato { get; set; }
-        public int IdServicio { get; set; }
+        public int Id_Contrato { get; set; }
+        public int Id_Servicio { get; set; }
     }
 
     public class CreateContratoServicioDto
     {
         [Required]
-        public int IdContrato { get; set; }
+        public int Id_Contrato { get; set; }
 
         [Required]
-        public int IdServicio { get; set; }
+        public int Id_Servicio { get; set; }
     }
 
     public class UpdateContratoServicioDto : CreateContratoServicioDto

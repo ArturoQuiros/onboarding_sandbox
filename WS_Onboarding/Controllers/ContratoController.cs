@@ -66,10 +66,10 @@ namespace WS_Onboarding.Controllers
             }
             else
             {
-                ContratoModel.IdCliente = ContratoDto.IdCliente;
-                ContratoModel.NumeroContrato = ContratoDto.NumeroContrato;
+                ContratoModel.Id_Cliente = ContratoDto.Id_Cliente;
+                ContratoModel.Numero_contrato = ContratoDto.Numero_contrato;
                 ContratoModel.Estado = ContratoDto.Estado;
-                ContratoModel.AccountManager = ContratoDto.AccountManager;
+                ContratoModel.Account_manager = ContratoDto.Account_manager;
                 _context.SaveChanges();
 
                 return Ok(ContratoModel.ToContratoDto());

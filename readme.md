@@ -3,7 +3,6 @@
 A sandbox application designed to streamline and test onboarding processes.
 
 ## Features
-
 - API port 5005
 - Data base port 1433
 - Data base credentials
@@ -11,9 +10,21 @@ A sandbox application designed to streamline and test onboarding processes.
     - OnboardingWorld2025
 
 ## Test EndPoints
-
 - http://localhost:5005/swagger/index.html
 - http://localhost:5005/scalar/v1
+
+### Seed
+**/WS_Onboarding/Default/GetAll**
+Return all data from all tables
+
+**/WS_Onboarding/Default/Seed**
+Generate default values
+
+**/WS_Onboarding/Default/Clean**
+Remove all data from tables
+:::warning
+This action will delete all entire data, not only default data
+:::
 
 ## Getting Started
 

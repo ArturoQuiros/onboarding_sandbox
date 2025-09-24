@@ -13,8 +13,9 @@ namespace WS_Onboarding.Mappers
         {
             return new ContratoServicioDto
             {
-                IdContrato = ContratoServicioModel.IdContrato,
-                IdServicio = ContratoServicioModel.IdServicio
+                Id = ContratoServicioModel.Id,
+                Id_Contrato = ContratoServicioModel.Id_Contrato,
+                Id_Servicio = ContratoServicioModel.Id_Servicio
             };
         }
 
@@ -22,8 +23,8 @@ namespace WS_Onboarding.Mappers
         {
             return new ContratoServicio
             {
-                IdContrato = ContratoServicioModel.IdContrato,
-                IdServicio = ContratoServicioModel.IdServicio
+                Id_Contrato = ContratoServicioModel.Id_Contrato,
+                Id_Servicio = ContratoServicioModel.Id_Servicio
             };
         }
     }
