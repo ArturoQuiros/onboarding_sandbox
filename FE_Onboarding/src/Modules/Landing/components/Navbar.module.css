@@ -1,6 +1,6 @@
 /* src/Global/components/Navbar/Navbar.module.css */
 .header {
-  background-color: white; /* Usa un color sólido, o si tienes una variable para fondo de componentes, úsala */
+  background-color: white;
   padding: 10px 20px;
   position: fixed;
   top: 0;
@@ -10,6 +10,7 @@
   display: flex;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Set a high z-index to make sure it's always on top */
 }
 
 .logo {
@@ -18,7 +19,7 @@
 }
 
 .title {
-  color: var(--bdo-red); /* ¡Ajustado! Usa la variable de color de marca */
+  color: var(--bdo-red);
   font-family: "Trebuchet MS", sans-serif;
   font-size: 20px;
   margin-left: 20px;
