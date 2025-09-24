@@ -1,0 +1,123 @@
+{
+  "sidebar": {
+    "home": "Home",
+    "countries": "Países",
+    "staff": "Personal",
+    "customers": "Clientes",
+    "services": "Servicios",
+    "users": "Usuarios",
+    "contracts": "Contratos"
+  },
+  "countries": {
+    "title": "Países",
+    "createButton": "Crear Nuevo País",
+    "table": {
+      "id": "ID",
+      "name": "Nombre del País"
+    },
+    "form": {
+      "editTitle": "Editar País",
+      "createTitle": "Crear Nuevo País",
+      "nameLabel": "Nombre"
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este país?",
+    "deleting": "Eliminando país...",
+    "deleteSuccess": "¡País eliminado con éxito!",
+    "deleteError": "¡No se pudo eliminar el país!"
+  },
+  "customers": {
+    "title": "Clientes",
+    "createButton": "Crear Nuevo Cliente",
+    "table": {
+      "id": "ID",
+      "name": "Nombre",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección"
+    },
+    "form": {
+      "editTitle": "Editar Cliente",
+      "createTitle": "Crear Nuevo Cliente",
+      "nameLabel": "Nombre",
+      "emailLabel": "Correo Electrónico",
+      "phoneLabel": "Teléfono",
+      "addressLabel": "Dirección"
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este cliente?",
+    "deleting": "Eliminando cliente...",
+    "deleteSuccess": "¡Cliente eliminado con éxito!",
+    "deleteError": "¡No se pudo eliminar el cliente!",
+    "formValidation": {
+      "nameRequired": "El nombre es obligatorio",
+      "nameMinLength": "Debe tener al menos 3 caracteres",
+      "nameMaxLength": "No puede superar 50 caracteres",
+      "nameInvalidChars": "Solo se permiten letras y espacios",
+      "emailRequired": "El correo electrónico es obligatorio",
+      "emailInvalid": "El correo electrónico no es válido",
+      "phoneRequired": "El teléfono es obligatorio",
+      "phoneInvalid": "El teléfono debe tener 8 dígitos numéricos",
+      "addressRequired": "La dirección es obligatoria",
+      "addressMinLength": "La dirección debe tener al menos 5 caracteres"
+    }
+  },
+  "services": {
+    "title": "Servicios",
+    "createButton": "Crear Nuevo Servicio",
+    "table": {
+      "id": "ID",
+      "name": "Nombre",
+      "country": "País"
+    },
+    "form": {
+      "editTitle": "Editar Servicio",
+      "createTitle": "Crear Nuevo Servicio",
+      "nameLabel": "Nombre",
+      "countryLabel": "País"
+    }
+  },
+  "users": {
+    "title": "Usuarios",
+    "table": {
+      "id": "ID",
+      "name": "Nombre",
+      "role": "Rol",
+      "country": "País",
+      "photo": "Foto"
+    }
+  },
+  "contracts": {
+    "title": "Contratos",
+    "createButton": "Crear Nuevo Contrato",
+    "table": {
+      "id": "ID",
+      "country": "País",
+      "customer": "Cliente"
+    },
+    "form": {
+      "editTitle": "Editar Contrato",
+      "createTitle": "Crear Nuevo Contrato",
+      "countryLabel": "País",
+      "customerLabel": "Cliente"
+    }
+  },
+  "common": {
+    "actions": "Acciones",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "updating": "Actualizando...",
+    "creating": "Creando...",
+    "updateSuccess": "¡Elemento actualizado con éxito!",
+    "createSuccess": "¡Elemento creado con éxito!",
+    "genericError": "¡Ha ocurrido un error!",
+    "confirmAction": "Confirmar Acción",
+    "noData": "No hay datos disponibles.",
+    "search": "Buscar...",
+    "showingRecords": "Mostrando {{from}} a {{to}} de {{total}} registros.",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "itemsPerPage": "Registros por página"
+  }
+}

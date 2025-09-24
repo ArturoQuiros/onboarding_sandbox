@@ -1,0 +1,123 @@
+{
+  "sidebar": {
+    "home": "Home",
+    "countries": "Countries",
+    "staff": "Staff",
+    "customers": "Customers",
+    "services": "Services",
+    "users": "Users",
+    "contracts": "Contracts"
+  },
+  "countries": {
+    "title": "Countries",
+    "createButton": "Create New Country",
+    "table": {
+      "id": "ID",
+      "name": "Country Name"
+    },
+    "form": {
+      "editTitle": "Edit Country",
+      "createTitle": "Create New Country",
+      "nameLabel": "Name"
+    },
+    "confirmDelete": "Are you sure you want to delete this country?",
+    "deleting": "Deleting country...",
+    "deleteSuccess": "Country deleted successfully!",
+    "deleteError": "Could not delete country!"
+  },
+  "customers": {
+    "title": "Customers",
+    "createButton": "Create New Customer",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address"
+    },
+    "form": {
+      "editTitle": "Edit Customer",
+      "createTitle": "Create New Customer",
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone",
+      "addressLabel": "Address"
+    },
+    "confirmDelete": "Are you sure you want to delete this customer?",
+    "deleting": "Deleting customer...",
+    "deleteSuccess": "Customer deleted successfully!",
+    "deleteError": "Could not delete customer!",
+    "formValidation": {
+      "nameRequired": "The name is required",
+      "nameMinLength": "Must have at least 3 characters",
+      "nameMaxLength": "Cannot exceed 50 characters",
+      "nameInvalidChars": "Only letters and spaces are allowed",
+      "emailRequired": "The email is required",
+      "emailInvalid": "The email is not valid",
+      "phoneRequired": "The phone number is required",
+      "phoneInvalid": "The phone number must have 8 numeric digits",
+      "addressRequired": "The address is required",
+      "addressMinLength": "The address must have at least 5 characters"
+    }
+  },
+  "services": {
+    "title": "Services",
+    "createButton": "Create New Service",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "country": "Country"
+    },
+    "form": {
+      "editTitle": "Edit Service",
+      "createTitle": "Create New Service",
+      "nameLabel": "Name",
+      "countryLabel": "Country"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "role": "Role",
+      "country": "Country",
+      "photo": "Photo"
+    }
+  },
+  "contracts": {
+    "title": "Contracts",
+    "createButton": "Create New Contract",
+    "table": {
+      "id": "ID",
+      "country": "Country",
+      "customer": "Customer"
+    },
+    "form": {
+      "editTitle": "Edit Contract",
+      "createTitle": "Create New Contract",
+      "countryLabel": "Country",
+      "customerLabel": "Customer"
+    }
+  },
+  "common": {
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel",
+    "updating": "Updating...",
+    "creating": "Creating...",
+    "updateSuccess": "Item updated successfully!",
+    "createSuccess": "Item created successfully!",
+    "genericError": "An error has occurred!",
+    "confirmAction": "Confirm Action",
+    "noData": "No data available.",
+    "search": "Search...",
+    "showingRecords": "Showing {{from}} to {{to}} of {{total}} records.",
+    "previous": "Previous",
+    "next": "Next",
+    "itemsPerPage": "Records per page"
+  }
+}
