@@ -1,9 +1,6 @@
--- Create DB
-CREATE Database DB_Onboarding;
+CREATE DATABASE DB_Onboarding
 
-
-
--- Create Tables
+-- Table: Paises
 DROP TABLE IF EXISTS Paises
 CREATE TABLE Paises (
     Id INT PRIMARY KEY IDENTITY(1, 1),
