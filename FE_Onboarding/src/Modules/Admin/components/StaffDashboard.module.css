@@ -1,12 +1,71 @@
 .container {
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+  width: 90%;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--bdo-pale-charcoal);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .title {
-  font-size: 24px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #333;
+  color: var(--bdo-charcoal);
+  font-size: 2.2em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5em;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.createButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--bdo-ocean);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.createButton:hover {
+  background-color: var(--bdo-slate);
+}
+
+.controlsBar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.icon {
+  font-size: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bdo-ocean);
+  line-height: 1;
+  padding-right: 10px;
+}
+
+.container > * {
+  width: 100%;
 }
