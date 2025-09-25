@@ -15,18 +15,58 @@ export const CustomerLogin = () => {
   const hardcodedEmail = "client@bdo.cr";
   const hardcodedPassword = "password123";
 
-  const validateForm = () => {
+  const validateLoginForm = () => {
     let formErrors = {};
-    // ... (El resto de la lógica de validación sigue igual) ...
+
+    // Validar email
+    if (!email.trim()) {
+      formErrors.email = "El correo es obligatorio";
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      formErrors.email = "Formato de correo inválido";
+    }
+
+    // Validar password
+    if (!password.trim()) {
+      formErrors.password = "La contraseña es obligatoria";
+    } else if (password.length < 6) {
+      formErrors.password = "La contraseña debe tener al menos 6 caracteres";
+    }
+
+    setErrors(formErrors);
+    return Object.keys(formErrors).length === 0;
+  };
+
+  const validateResetForm = () => {
+    let formErrors = {};
+
+    if (!resetEmail.trim()) {
+      formErrors.resetEmail = "El correo es obligatorio";
+    } else if (!/\S+@\S+\.\S+/.test(resetEmail)) {
+      formErrors.resetEmail = "Formato de correo inválido";
+    }
+
+    setErrors(formErrors);
     return Object.keys(formErrors).length === 0;
   };
 
   const handleLogin = (e) => {
-    // ... (La lógica de handleLogin sigue igual) ...
+    e.preventDefault();
+    if (!validateLoginForm()) return;
+
+    if (email === hardcodedEmail && password === hardcodedPassword) {
+      alert("✅ Login exitoso");
+    } else {
+      setErrors({ general: "Credenciales incorrectas" });
+    }
   };
 
   const handleResetPassword = (e) => {
-    // ... (La lógica de handleResetPassword sigue igual) ...
+    e.preventDefault();
+    if (!validateResetForm()) return;
+
+    alert(`📧 Enlace de recuperación enviado a ${resetEmail}`);
+    setShowReset(false);
+    setResetEmail("");
   };
 
   return (
@@ -49,7 +89,6 @@ export const CustomerLogin = () => {
               value={email}
               placeholder="ejemplo@correo.com"
               onChange={(e) => setEmail(e.target.value)}
-              required
             />
             {errors.email && (
               <p className={styles.errorMessage}>{errors.email}</p>
@@ -64,7 +103,6 @@ export const CustomerLogin = () => {
               value={password}
               placeholder="********"
               onChange={(e) => setPassword(e.target.value)}
-              required
             />
             {errors.password && (
               <p className={styles.errorMessage}>{errors.password}</p>
@@ -85,7 +123,6 @@ export const CustomerLogin = () => {
               value={resetEmail}
               placeholder="ejemplo@correo.com"
               onChange={(e) => setResetEmail(e.target.value)}
-              required
             />
             {errors.resetEmail && (
               <p className={styles.errorMessage}>{errors.resetEmail}</p>

@@ -10,7 +10,7 @@ import {
   Users,
   Contracts,
 } from "./Modules/Admin/pages";
-import { Landing, CustomerLogin } from "./Modules/Landing/pages";
+import { Landing, CustomerLogin, StaffLogin } from "./Modules/Landing/pages";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
         <Route path="/" element={<LandingLayout />}>
           <Route index element={<Landing />} />
           <Route path="client-login" element={<CustomerLogin />} />
+          <Route path="staff-login" element={<StaffLogin />} />
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>

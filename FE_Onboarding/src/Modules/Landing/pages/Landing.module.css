@@ -62,6 +62,7 @@
 .button:hover {
   background-color: var(--bdo-burgundy);
   border-color: var(--bdo-burgundy);
+  color: white; /* Asegura que el color de texto se mantenga blanco en hover */
 }
 
 .button:focus,
