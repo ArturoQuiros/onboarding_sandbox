@@ -92,13 +92,13 @@
 }
 
 .saveButton {
-  background-color: var(--bdo-ocean);
+  background-color: var(--bdo-red);
   color: white;
   border: none;
 }
 
 .saveButton:hover {
-  background-color: var(--bdo-blue);
+  background-color: var(--bdo-ocean) !important;
 }
 
 .cancelButton {
