@@ -1,3 +1,4 @@
+/* src/Modules/Customer/pages/CustomerLogin.module.css */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -16,31 +17,6 @@
     transform: translateY(0);
     opacity: 1;
   }
-}
-
-.background {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  animation: fadeIn 1s ease-in-out forwards;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
-  z-index: 1;
 }
 
 .container {
@@ -111,7 +87,7 @@
   font-size: 1.1em;
   font-weight: 600;
   margin-top: 10px;
-  background-color: #004080;
+  background-color: var(--bdo-red); /* Usamos la variable de CSS */
   color: white;
   border: none;
   border-radius: 6px;
@@ -120,13 +96,13 @@
 }
 
 .submitButton:hover {
-  background-color: #003366;
+  background-color: var(--bdo-burgundy); /* Usamos la variable de CSS */
 }
 
 /* Variante secundaria (Volver al login) */
 .secondaryButton {
-  background-color: #ccc;
-  color: #333;
+  background-color: var(--bdo-pale-charcoal); /* Usamos la variable de CSS */
+  color: var(--bdo-charcoal); /* Usamos la variable de CSS */
 }
 
 .secondaryButton:hover {
