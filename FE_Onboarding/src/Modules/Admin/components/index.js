@@ -6,3 +6,7 @@ export * from "./CrudDataTable";
 export * from "./ConfirmModal";
 export * from "./SearchBar";
 export * from "./ItemsPerPageSelector";
+export * from "./StaffDashboard";
+export * from "./StaffTable";
+export * from "./EnableToggle";
+export * from "./RoleSelector";

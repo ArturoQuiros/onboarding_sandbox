@@ -7,7 +7,7 @@ import {
   Countries,
   Customers,
   Services,
-  Users,
+  Staff,
   Contracts,
 } from "./Modules/Admin/pages";
 import { Landing, CustomerLogin, StaffLogin } from "./Modules/Landing/pages";
@@ -30,7 +30,7 @@ function App() {
           <Route path="countries" element={<Countries />} />
           <Route path="customers" element={<Customers />} />
           <Route path="services" element={<Services />} />
-          <Route path="staff" element={<Users />} />
+          <Route path="staff" element={<Staff />} />
           <Route path="contracts" element={<Contracts />} />
         </Route>
       </Routes>

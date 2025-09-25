@@ -21,7 +21,7 @@ export const Users = () => {
     Promise.resolve([
       { id: 1, name: "Ana Pérez", role: "Manager", country: "Costa Rica" },
       { id: 2, name: "Luis Gómez", role: "Auditor", country: "México" },
-      { id: 3, name: "Sofía Vargas", role: "Staff", country: "Colombia" },
+      { id: 3, name: "Sofía Vargas", role: "Users", country: "Colombia" },
     ]);
 
   // Estas funciones no están implementadas porque se gestionan desde Active Directory
@@ -45,16 +45,16 @@ export const Users = () => {
   };
 
   const userFields = [
-    { key: "id", labelKey: "users.table.id", type: "text" },
-    { key: "country", labelKey: "users.table.country", type: "text" },
-    { key: "role", labelKey: "users.table.role", type: "text" },
-    { key: "name", labelKey: "users.table.name", type: "text" },
+    { key: "id", labelKey: "Users.table.id", type: "text" },
+    { key: "country", labelKey: "Users.table.country", type: "text" },
+    { key: "role", labelKey: "Users.table.role", type: "text" },
+    { key: "name", labelKey: "Users.table.name", type: "text" },
   ];
   // ---------------------------------------------
 
   return (
     <CrudDashboard
-      entityName="users"
+      entityName="Users"
       fields={userFields}
       getItems={getUsers}
       createItem={createUser}
