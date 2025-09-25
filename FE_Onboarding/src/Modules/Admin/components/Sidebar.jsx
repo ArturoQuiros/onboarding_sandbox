@@ -15,6 +15,7 @@ import {
   BsTools,
   BsPerson,
   BsNewspaper,
+  BsPersonAdd,
 } from "react-icons/bs";
 import { UIContext } from "../../../Global/Context";
 import styles from "./Sidebar.module.css";
@@ -36,15 +37,24 @@ export const Sidebar = () => {
       },
       {
         icon: <BsPerson />,
+        label: t("sidebar.staff"),
+        path: "/admin/staff",
+      },
+      {
+        icon: <BsPeople />,
         label: t("sidebar.customers"),
         path: "/admin/customers",
+      },
+      {
+        icon: <BsPersonAdd />,
+        label: t("sidebar.users"),
+        path: "/admin/users",
       },
       {
         icon: <BsTools />,
         label: t("sidebar.services"),
         path: "/admin/services",
       },
-      { icon: <BsPeople />, label: t("sidebar.users"), path: "/admin/users" },
       {
         icon: <BsNewspaper />,
         label: t("sidebar.contracts"),
