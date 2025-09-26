@@ -1,0 +1,159 @@
+/* src/Modules/Admin/components/Crud/CrudDataTable.module.css */
+
+.tableContainer {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* ✅ Se elimina el border-radius de la tabla para aplicarlo a las secciones internas */
+  /* ✅ Se elimina overflow: hidden; para evitar que las celdas inferiores se corten */
+}
+
+.tableHeader {
+  background-color: var(--bdo-red);
+  color: white;
+  /* ✅ Se aplica el redondeo superior al thead */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  overflow: hidden; /* Se usa aquí para redondear las esquinas de los th */
+}
+
+.tableHeaderCell {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: bold;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.tableHeaderCell:first-child {
+  border-top-left-radius: 8px; /* Redondea la primera celda */
+}
+
+.tableHeaderCell:last-child {
+  border-right: none;
+  text-align: center;
+  cursor: default;
+  border-top-right-radius: 8px; /* Redondea la última celda */
+}
+
+/* Filas de la tabla */
+.tableRow {
+  background-color: #ffffff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tableRow:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.tableRow:hover {
+  background-color: #e0e0e0;
+}
+
+.tableCell {
+  padding: 12px 20px;
+  border-right: 1px solid var(--bdo-pale-charcoal);
+  border-bottom: 1px solid var(--bdo-pale-charcoal);
+  color: var(--bdo-charcoal);
+}
+
+.tableCell:last-child {
+  border-right: none;
+}
+
+/* Celda de Acciones y botones */
+.actionsCell {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+.editButton,
+.deleteButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  transition: color 0.2s ease-in-out;
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.editButton {
+  color: var(--bdo-ocean);
+}
+
+.editButton:hover {
+  color: #0073b6;
+  background-color: rgba(0, 143, 210, 0.1);
+}
+
+.deleteButton {
+  color: var(--bdo-red);
+}
+
+.deleteButton:hover {
+  color: var(--bdo-burgundy);
+  background-color: rgba(232, 26, 59, 0.1);
+}
+
+.emptyTableMessage {
+  text-align: center;
+  padding: 20px;
+  color: var(--bdo-slate);
+}
+
+.sortIcon {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.tableFooter {
+  display: flex;
+  justify-content: space-between; /* ✅ Esta propiedad alinea los elementos a los extremos */
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f7fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.recordsInfo {
+  font-size: 0.9rem;
+  font-weight: 1000;
+  color: var(--bdo-charcoal);
+}
+
+/* ✅ Estilos para los controles de paginación */
+.paginationControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

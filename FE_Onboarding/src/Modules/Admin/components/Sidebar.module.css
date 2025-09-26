@@ -1,0 +1,84 @@
+.sidebar {
+  width: var(--sidebar-width-open);
+  background-color: var(--bdo-red);
+  z-index: 100;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebarClosed {
+  width: var(--sidebar-width-closed);
+}
+
+.toggleButton {
+  background: var(--bdo-charcoal);
+  border: none;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 0;
+}
+
+.sidebarClosed .toggleButton {
+  justify-content: center;
+}
+
+.toggleButton:hover {
+  background: var(--bdo-burgundy);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.menuItem:hover,
+.menuItemActive {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateX(4px);
+  box-shadow: 0 2px 12px rgba(232, 28, 59, 0.12);
+}
+
+.icon {
+  font-size: 22px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.text {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.sidebarClosed .text {
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+}
+
+.activeBar {
+  position: absolute;
+  left: 0;
+  width: 4px;
+  border-radius: 2px;
+  background-color: #fff;
+}

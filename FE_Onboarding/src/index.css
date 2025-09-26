@@ -1,0 +1,93 @@
+/* src/index.css */
+
+:root {
+  /* Variables de Color Primarias */
+  --bdo-red: #e81a3b;
+  --bdo-charcoal: #333333;
+  --bdo-slate: #5b6e7f;
+  --bdo-burgundy: #98002e;
+  --bdo-pale-charcoal: #e7e7e7;
+
+  /* Variables de Color Secundarias */
+  --bdo-gold: #d67900;
+  --bdo-jade: #009966;
+  --bdo-ocean: #008fd2;
+
+  /*tamaños de componentes*/
+  --navbar-height: 100px;
+  --sidebar-width-open: 220px;
+  --sidebar-width-closed: 70px;
+
+  /* Tipografía */
+  font-family: "Trebuchet MS", sans-serif; /* Tipografía oficial */
+  line-height: 1.5;
+  font-weight: 400;
+
+  /* Colores base para tema claro (por defecto si no hay preferencia) */
+  color: var(--bdo-charcoal); /* Texto principal */
+  background-color: #ffffff; /* Fondo principal claro */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tema Oscuro (si se implementa en el futuro o se mantiene) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: rgba(255, 255, 255, 0.87); /* Texto en modo oscuro */
+    background-color: var(--bdo-charcoal); /* Fondo en modo oscuro */
+  }
+}
+
+/* Estilos para enlaces */
+a {
+  font-weight: 500;
+  color: var(--bdo-red); /* Color de enlace principal de marca */
+  text-decoration: inherit;
+}
+a:hover {
+  color: var(--bdo-burgundy); /* Color de enlace al pasar el ratón */
+}
+
+/* Estilos para el cuerpo de la página */
+body {
+  margin: 0;
+  /* Eliminar: display: flex; y place-items: center; */
+  min-width: 320px;
+  min-height: 100vh;
+  /* La línea de abajo asegura que el cuerpo ocupe toda la altura */
+  height: 100vh;
+  /* Usar la fuente y el color de texto de tus variables */
+  font-family: var(--bdo-font-family, "Trebuchet MS", sans-serif);
+  color: var(--bdo-charcoal);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: var(--bdo-charcoal); /* Color de encabezado por defecto */
+}
+
+/* Estilos para botones */
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: "Trebuchet MS", sans-serif; /* Asegurar la fuente para botones */
+  background-color: var(--bdo-red); /* Fondo del botón con color de marca */
+  color: white; /* Texto del botón blanco */
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.25s;
+}
+button:hover {
+  border-color: var(--bdo-burgundy); /* Borde al pasar el ratón */
+  background-color: var(--bdo-burgundy); /* Fondo al pasar el ratón */
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto var(--bdo-gold); /* Un color secundario para el enfoque */
+}

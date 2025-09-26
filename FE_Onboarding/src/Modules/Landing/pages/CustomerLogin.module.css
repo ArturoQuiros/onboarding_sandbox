@@ -1,0 +1,189 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.background {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1s ease-in-out forwards;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+  z-index: 1;
+}
+
+.container {
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+  animation: slideInUp 0.8s ease-out forwards;
+  text-align: center;
+}
+
+.logo {
+  width: 60%;
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.title {
+  color: var(--bdo-charcoal);
+  margin-top: 0;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.form {
+  width: 100%;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.inputGroup label {
+  display: block;
+  font-weight: 500;
+  color: var(--bdo-charcoal);
+  margin-bottom: 5px;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--bdo-pale-charcoal);
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.25s;
+}
+
+.inputGroup input:focus {
+  outline: none;
+  border-color: var(--bdo-ocean);
+  box-shadow: 0 0 0 2px rgba(0, 143, 210, 0.2);
+}
+
+/* Botón principal */
+.submitButton {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-top: 10px;
+  background-color: #004080;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #003366;
+}
+
+/* Variante secundaria (Volver al login) */
+.secondaryButton {
+  background-color: #ccc;
+  color: #333;
+}
+
+.secondaryButton:hover {
+  background-color: #bbb;
+}
+
+/* Enlaces */
+.backLink {
+  margin-top: 20px;
+  color: var(--bdo-slate);
+  font-weight: 500;
+  transition: color 0.25s;
+}
+
+.backLink:hover {
+  color: var(--bdo-charcoal);
+}
+
+/* Mensajes de error y éxito */
+.errorMessage {
+  color: var(--bdo-red); /* mantenemos BDO red */
+  font-size: 0.9em;
+  margin-top: 4px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.successMessage {
+  color: var(--bdo-jade);
+  font-size: 0.9em;
+  margin-top: 4px;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Botón olvidaste contraseña */
+.forgotPassword {
+  margin-top: 15px;
+  background: none;
+  border: none;
+  color: var(--bdo-ocean);
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.25s;
+}
+
+.forgotPassword:hover {
+  color: var(--bdo-charcoal);
+}
+
+/* Clases genéricas para errores y éxito */
+.error {
+  color: var(--bdo-red);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.success {
+  color: var(--bdo-jade);
+  font-size: 0.95rem;
+  margin-top: 8px;
+}
