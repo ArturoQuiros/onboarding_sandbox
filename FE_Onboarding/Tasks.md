@@ -11,4 +11,5 @@ Backend
 
 - Conectar al AD
 - Crear tabla de USuarios (usuarios cliente, renombrar la de usuarios de BDO por otro nombre, tipo Staff o algo asi)
-- El API de Servicios debe permitir modificar el País
+- El API de Servicios no está funcionando, el POST no está tomando el ID Pais, aun cuando se le pase lo pone null.
+- No se está cargando nada en los campos de auditoria, estos deben ser llenados por el BE

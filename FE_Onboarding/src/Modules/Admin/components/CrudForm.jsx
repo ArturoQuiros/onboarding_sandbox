@@ -72,16 +72,36 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         return (
           <div key={field.key} className={styles.formGroup}>
             <label className={styles.label}>{t(field.labelKey)}</label>
-            <input
-              type={field.type || "text"}
-              name={field.key}
-              value={formData[field.key] || ""}
-              onChange={isIdField ? null : handleChange}
-              readOnly={isIdField}
-              className={`${styles.input} ${
-                formErrors[field.key] ? styles.inputError : ""
-              }`}
-            />
+
+            {field.type === "select" ? (
+              <select
+                name={field.key}
+                value={formData[field.key] || ""}
+                onChange={handleChange}
+                className={`${styles.input} ${
+                  formErrors[field.key] ? styles.inputError : ""
+                }`}
+              >
+                <option value="">{t("common.selectOption")}</option>
+                {field.options?.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                type={field.type || "text"}
+                name={field.key}
+                value={formData[field.key] || ""}
+                onChange={isIdField ? null : handleChange}
+                readOnly={isIdField}
+                className={`${styles.input} ${
+                  formErrors[field.key] ? styles.inputError : ""
+                }`}
+              />
+            )}
+
             {formErrors[field.key] && (
               <div className={styles.errorMessage}>{formErrors[field.key]}</div>
             )}

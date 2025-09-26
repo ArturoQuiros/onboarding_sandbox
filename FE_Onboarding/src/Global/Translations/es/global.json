@@ -130,6 +130,7 @@
     "previous": "Anterior",
     "next": "Siguiente",
     "itemsPerPage": "Registros por página",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "selectOption": "Seleccionar Opción"
   }
 }
