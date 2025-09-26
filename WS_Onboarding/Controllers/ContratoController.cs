@@ -22,57 +22,124 @@ namespace WS_Onboarding.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var Contratos = _context.Contratos.ToList()
-                .Select(c => c.ToContratoDto());
+            try
+            {
+                var Contratos = _context.Contratos.ToList()
+                    .Select(c => c.ToContratoDto());
 
-            return Ok(Contratos);
+                return Ok(Contratos);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetContratoById([FromRoute] int id)
         {
-            var ContratoModel = _context.Contratos.Find(id);
+            try
+            {
+                var ContratoModel = _context.Contratos.Find(id);
 
-            if (ContratoModel == null)
-            {
-                return NotFound();
+                if (ContratoModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(ContratoModel.ToContratoDto());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(ContratoModel.ToContratoDto());
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] CreateContratoDto ContratoDto)
         {
-            var ContratoModel = ContratoDto.ToContratoFromCreateDTO();
+            try
+            {
+                Models.Contrato ContratoModel = ContratoDto.ToContratoFromCreateDTO();
+                ContratoModel.Fecha_Creacion = DateTime.UtcNow;
+                ContratoModel.Fecha_Modificacion = DateTime.UtcNow;
 
-            _context.Contratos.Add(ContratoModel);
-            _context.SaveChanges();
+                _context.Contratos.Add(ContratoModel);
+                _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetContratoById), new { id = ContratoModel.Id }, ContratoModel.ToContratoDto());
+                return CreatedAtAction(nameof(GetContratoById), new { id = ContratoModel.Id }, ContratoModel.ToContratoDto());
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
         }
 
         [HttpPut]
         [Route("{id:int}")]
         public IActionResult Update([FromRoute] int id, [FromBody] UpdateContratoDto ContratoDto)
         {
-            var ContratoModel = _context.Contratos.FirstOrDefault(c => c.Id == id);
-
-            if (ContratoModel == null)
+            try
             {
-                return NotFound();
+                var ContratoModel = _context.Contratos.FirstOrDefault(c => c.Id == id);
+
+                if (ContratoModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    ContratoModel.Id_Cliente = ContratoDto.Id_Cliente;
+                    ContratoModel.Numero_contrato = ContratoDto.Numero_contrato;
+                    ContratoModel.Estado = ContratoDto.Estado;
+                    ContratoModel.Account_manager = ContratoDto.Account_manager;
+                    ContratoModel.Fecha_Modificacion = DateTime.UtcNow;
+                    _context.SaveChanges();
+
+                    return Ok(ContratoModel.ToContratoDto());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ContratoModel.Id_Cliente = ContratoDto.Id_Cliente;
-                ContratoModel.Numero_contrato = ContratoDto.Numero_contrato;
-                ContratoModel.Estado = ContratoDto.Estado;
-                ContratoModel.Account_manager = ContratoDto.Account_manager;
-                _context.SaveChanges();
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
 
-                return Ok(ContratoModel.ToContratoDto());
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
 
@@ -80,18 +147,34 @@ namespace WS_Onboarding.Controllers
         [Route("{id:int}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            var ContratoModel = _context.Contratos.FirstOrDefault(c => c.Id == id);
-
-            if (ContratoModel == null)
+            try
             {
-                return NotFound();
+                var ContratoModel = _context.Contratos.FirstOrDefault(c => c.Id == id);
+
+                if (ContratoModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    _context.Contratos.Remove(ContratoModel);
+                    _context.SaveChanges();
+
+                    return NoContent();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _context.Contratos.Remove(ContratoModel);
-                _context.SaveChanges();
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
 
-                return NoContent();
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
     }
