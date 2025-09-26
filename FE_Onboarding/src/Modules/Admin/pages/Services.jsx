@@ -1,57 +1,169 @@
-import React, { useContext, useEffect } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsTools } from "react-icons/bs";
-
-// No need to import Navbar, Sidebar, or the local CSS module
+import axiosClient from "../../../Api/axiosClient";
 
 export const Services = () => {
-  // We still need to use useContext to set the entity icon
-  const { setEntityIcon } = useContext(UIContext);
+  const { setEntityIcon, entityIcon } = useContext(UIContext);
 
-  // Set sidebar and CRUD form icon
+  const [countriesList, setCountriesList] = useState([]);
+  const [countryMap, setCountryMap] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  // --- FUNCIÓN DE CARGA Y MAPEADO DE PAÍSES ---
+  const fetchCountries = async () => {
+    try {
+      const { data: countries } = await axiosClient.get("/Pais");
+
+      const map = countries.reduce((acc, country) => {
+        acc[country.id] = country.nombre;
+        return acc;
+      }, {});
+      setCountryMap(map);
+
+      const list = countries.map((country) => ({
+        value: country.id,
+        label: country.nombre,
+      }));
+      setCountriesList(list);
+    } catch (error) {
+      console.error("Error al cargar la lista de países:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     setEntityIcon(<BsTools />);
+    fetchCountries();
   }, [setEntityIcon]);
 
-  // --- SERVICE-SPECIFIC CONFIGURATION ---
-  const getServices = async () =>
-    Promise.resolve([
-      { id: 1, name: "Consultoría de Negocios", country: "Costa Rica" },
-      { id: 2, name: "Auditoría Financiera", country: "México" },
-      { id: 3, name: "Asesoría Fiscal", country: "Colombia" },
-    ]);
+  // Definición de Campos
+  const serviceFields = useMemo(
+    () => [
+      {
+        key: "id",
+        labelKey: "services.table.id",
+        type: "text",
+        isReadOnly: true,
+        isHidden: true,
+      },
+      {
+        key: "country",
+        labelKey: "services.table.country",
+        type: "select",
+        options: countriesList,
+      },
+      { key: "name", labelKey: "services.table.name", type: "text" },
+    ],
+    [countriesList]
+  );
 
-  const createService = async (service) => {
-    console.log("Creando servicio:", service);
-    return { ...service, id: Date.now() };
-  };
+  // --- Operaciones CRUD (optimizadas con useCallback) ---
 
-  const updateService = async (service) => {
-    console.log("Actualizando servicio:", service);
-    return service;
-  };
+  const getServices = useCallback(async () => {
+    // 🚩 IMPORTANTE: Ya no se llama a fetchCountries aquí.
+    // Confiamos en que el useEffect inicial ya lo hizo.
+    try {
+      const { data: services } = await axiosClient.get("/Servicio");
 
-  const deleteService = async (id) => {
-    console.log("Eliminando servicio con ID:", id);
-    return true;
-  };
+      return services.map((service) => ({
+        id: service.id,
+        name: service.nombre,
+        country: countryMap[service.id_pais] || "Desconocido",
+        id_pais: service.id_pais,
+      }));
+    } catch (error) {
+      console.error("Error al obtener servicios:", error);
+      return [];
+    }
+  }, [countryMap]); // Depende del mapa de países
 
-  const serviceFields = [
-    { key: "id", labelKey: "services.table.id", type: "text" },
-    { key: "name", labelKey: "services.table.name", type: "text" },
-    { key: "country", labelKey: "services.table.country", type: "text" },
-  ];
-  // ---------------------------------------------
+  const createService = useCallback(
+    async (item) => {
+      const payload = {
+        nombre: item.name,
+        id_pais: item.country,
+      };
+
+      try {
+        const { data: newService } = await axiosClient.post(
+          "/Servicio",
+          payload
+        );
+
+        return {
+          id: newService.id,
+          name: newService.nombre,
+          country: countryMap[newService.id_pais] || "Desconocido",
+          id_pais: newService.id_pais,
+        };
+      } catch (error) {
+        console.error("Error al crear servicio:", error);
+        throw error;
+      }
+    },
+    [countryMap]
+  ); // Depende del mapa de países
+
+  const updateService = useCallback(
+    async (item) => {
+      const payload = {
+        id: item.id,
+        nombre: item.name,
+        id_pais: item.country,
+      };
+
+      try {
+        await axiosClient.put(`/Servicio/${item.id}`, payload);
+
+        return {
+          id: item.id,
+          name: item.name,
+          country: countryMap[item.country] || "Desconocido",
+          id_pais: item.country,
+        };
+      } catch (error) {
+        console.error("Error al actualizar servicio:", error);
+        throw error;
+      }
+    },
+    [countryMap]
+  ); // Depende del mapa de países
+
+  const deleteService = useCallback(async (id) => {
+    try {
+      await axiosClient.delete(`/Servicio/${id}`);
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar servicio:", error);
+      throw error;
+    }
+  }, []);
+
+  const initialFormValues = { name: "", country: "" };
+
+  if (isLoading) {
+    return <div>Cargando configuración de servicios...</div>;
+  }
 
   return (
     <CrudDashboard
       entityName="services"
+      entityIcon={entityIcon}
       fields={serviceFields}
       getItems={getServices}
       createItem={createService}
       updateItem={updateService}
       deleteItem={deleteService}
+      initialFormValues={initialFormValues}
     />
   );
 };

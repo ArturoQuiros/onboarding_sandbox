@@ -29,36 +29,43 @@ export const Sidebar = () => {
 
   const menuItems = useMemo(
     () => [
+      // 1. Home
       { icon: <BsHouse />, label: t("sidebar.home"), path: "/admin" },
-      {
-        icon: <BsGlobeAmericas />,
-        label: t("sidebar.countries"),
-        path: "/admin/countries",
-      },
-      {
-        icon: <BsPerson />,
-        label: t("sidebar.staff"),
-        path: "/admin/staff",
-      },
+      // 2. Clientes
       {
         icon: <BsPeople />,
         label: t("sidebar.customers"),
         path: "/admin/customers",
       },
+      // 3. Contratos
       {
-        icon: <BsPersonAdd />,
+        icon: <BsNewspaper />, // Icono para Contratos
+        label: t("sidebar.contracts"),
+        path: "/admin/contracts",
+      },
+      // 4. Usuarios
+      {
+        icon: <BsPersonAdd />, // Icono para Usuarios (Clientes)
         label: t("sidebar.users"),
         path: "/admin/users",
       },
+      // 5. Servicios
       {
-        icon: <BsTools />,
+        icon: <BsTools />, // Icono para Servicios
         label: t("sidebar.services"),
         path: "/admin/services",
       },
+      // 6. Países
       {
-        icon: <BsNewspaper />,
-        label: t("sidebar.contracts"),
-        path: "/admin/contracts",
+        icon: <BsGlobeAmericas />, // Icono para Países
+        label: t("sidebar.countries"),
+        path: "/admin/countries",
+      },
+      // 7. Staff
+      {
+        icon: <BsPerson />, // Icono para Staff
+        label: t("sidebar.staff"),
+        path: "/admin/staff",
       },
     ],
     [t]
