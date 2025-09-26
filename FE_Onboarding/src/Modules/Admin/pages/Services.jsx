@@ -1,3 +1,4 @@
+// src/Modules/Admin/pages/Services.jsx
 import React, {
   useContext,
   useEffect,
@@ -17,7 +18,6 @@ export const Services = () => {
   const [countryMap, setCountryMap] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // --- FUNCIÓN DE CARGA Y MAPEADO DE PAÍSES ---
   const fetchCountries = async () => {
     try {
       const { data: countries } = await axiosClient.get("/Pais");
@@ -45,7 +45,7 @@ export const Services = () => {
     fetchCountries();
   }, [setEntityIcon]);
 
-  // Definición de Campos
+  // --- Definición de Campos ---
   const serviceFields = useMemo(
     () => [
       {
@@ -66,11 +66,20 @@ export const Services = () => {
     [countriesList]
   );
 
-  // --- Operaciones CRUD (optimizadas con useCallback) ---
+  // --- Validaciones ---
+  const serviceValidations = {
+    country: (value) => {
+      if (!value) return "Debes seleccionar un país";
+      return null;
+    },
+    name: (value) => {
+      if (!value || value.trim() === "")
+        return "El nombre del servicio es obligatorio";
+      return null;
+    },
+  };
 
   const getServices = useCallback(async () => {
-    // 🚩 IMPORTANTE: Ya no se llama a fetchCountries aquí.
-    // Confiamos en que el useEffect inicial ya lo hizo.
     try {
       const { data: services } = await axiosClient.get("/Servicio");
 
@@ -84,21 +93,16 @@ export const Services = () => {
       console.error("Error al obtener servicios:", error);
       return [];
     }
-  }, [countryMap]); // Depende del mapa de países
+  }, [countryMap]);
 
   const createService = useCallback(
     async (item) => {
-      const payload = {
-        nombre: item.name,
-        id_pais: item.country,
-      };
-
+      const payload = { nombre: item.name, id_pais: item.country };
       try {
         const { data: newService } = await axiosClient.post(
           "/Servicio",
           payload
         );
-
         return {
           id: newService.id,
           name: newService.nombre,
@@ -111,19 +115,13 @@ export const Services = () => {
       }
     },
     [countryMap]
-  ); // Depende del mapa de países
+  );
 
   const updateService = useCallback(
     async (item) => {
-      const payload = {
-        id: item.id,
-        nombre: item.name,
-        id_pais: item.country,
-      };
-
+      const payload = { id: item.id, nombre: item.name, id_pais: item.country };
       try {
         await axiosClient.put(`/Servicio/${item.id}`, payload);
-
         return {
           id: item.id,
           name: item.name,
@@ -136,7 +134,7 @@ export const Services = () => {
       }
     },
     [countryMap]
-  ); // Depende del mapa de países
+  );
 
   const deleteService = useCallback(async (id) => {
     try {
@@ -150,9 +148,7 @@ export const Services = () => {
 
   const initialFormValues = { name: "", country: "" };
 
-  if (isLoading) {
-    return <div>Cargando configuración de servicios...</div>;
-  }
+  if (isLoading) return <div>Cargando configuración de servicios...</div>;
 
   return (
     <CrudDashboard
@@ -164,6 +160,7 @@ export const Services = () => {
       updateItem={updateService}
       deleteItem={deleteService}
       initialFormValues={initialFormValues}
+      validations={serviceValidations} // ✅ validaciones activas
     />
   );
 };
