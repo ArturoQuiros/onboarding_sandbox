@@ -25,7 +25,8 @@ namespace WS_Onboarding.Mappers
         {
             return new Servicio
             {
-                Nombre = ServicioModel.Nombre
+                Nombre = ServicioModel.Nombre,
+                Id_pais = ServicioModel.Id_pais
             };
         }
     }

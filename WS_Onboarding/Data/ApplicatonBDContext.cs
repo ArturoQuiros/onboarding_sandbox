@@ -10,7 +10,6 @@ public class ApplicatonDBContext : DbContext
     {
 
     }
-    public DbSet<Company> Company { get; set; }
     public DbSet<Comment> Comment { get; set; }
     public DbSet<Pais> Paises { get; set; }
     public DbSet<Rol> Roles { get; set; }

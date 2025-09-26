@@ -22,54 +22,121 @@ namespace WS_Onboarding.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var Paiss = _context.Paises.ToList()
-                .Select(c => c.ToPaisDto());
+            try
+            {
+                var Paiss = _context.Paises.ToList()
+                    .Select(c => c.ToPaisDto());
 
-            return Ok(Paiss);
+                return Ok(Paiss);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
         }
 
         [HttpGet("{id}")]
         public IActionResult GetPaisById([FromRoute] int id)
         {
-            var PaisModel = _context.Paises.Find(id);
+            try
+            {
+                var PaisModel = _context.Paises.Find(id);
 
-            if (PaisModel == null)
-            {
-                return NotFound();
+                if (PaisModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(PaisModel.ToPaisDto());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return Ok(PaisModel.ToPaisDto());
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
 
         [HttpPost]
         public IActionResult Create([FromBody] CreatePaisDto PaisDto)
         {
-            var PaisModel = PaisDto.ToPaisFromCreateDTO();
+            try
+            {
+                Models.Pais PaisModel = PaisDto.ToPaisFromCreateDTO();
+                PaisModel.Fecha_Creacion = DateTime.UtcNow;
+                PaisModel.Fecha_Modificacion = DateTime.UtcNow;
 
-            _context.Paises.Add(PaisModel);
-            _context.SaveChanges();
+                _context.Paises.Add(PaisModel);
+                _context.SaveChanges();
 
-            return CreatedAtAction(nameof(GetPaisById), new { id = PaisModel.Id }, PaisModel.ToPaisDto());
+                return CreatedAtAction(nameof(GetPaisById), new { id = PaisModel.Id }, PaisModel.ToPaisDto());
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
         }
 
         [HttpPut]
         [Route("{id:int}")]
         public IActionResult Update([FromRoute] int id, [FromBody] UpdatePaisDto PaisDto)
         {
-            var PaisModel = _context.Paises.FirstOrDefault(c => c.Id == id);
-
-            if (PaisModel == null)
+            try
             {
-                return NotFound();
+                var PaisModel = _context.Paises.FirstOrDefault(c => c.Id == id);
+
+                if (PaisModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    PaisModel.Nombre = PaisDto.Nombre;
+                    PaisModel.Fecha_Modificacion = DateTime.UtcNow;
+                    _context.SaveChanges();
+
+                    return Ok(PaisModel.ToPaisDto());
+                }
             }
-            else
+            catch (Exception ex)
             {
-                PaisModel.Nombre = PaisDto.Nombre;
-                _context.SaveChanges();
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
 
-                return Ok(PaisModel.ToPaisDto());
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
 
@@ -77,18 +144,34 @@ namespace WS_Onboarding.Controllers
         [Route("{id:int}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            var PaisModel = _context.Paises.FirstOrDefault(c => c.Id == id);
-
-            if (PaisModel == null)
+            try
             {
-                return NotFound();
+                var PaisModel = _context.Paises.FirstOrDefault(c => c.Id == id);
+
+                if (PaisModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    _context.Paises.Remove(PaisModel);
+                    _context.SaveChanges(); 
+
+                    return NoContent();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _context.Paises.Remove(PaisModel);
-                _context.SaveChanges();
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
 
-                return NoContent();
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
     }
