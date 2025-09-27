@@ -10,3 +10,5 @@ export * from "./StaffDashboard";
 export * from "./StaffTable";
 export * from "./EnableToggle";
 export * from "./RoleSelector";
+export * from "./ContractServicesTable";
+export * from "./ContractServicesDashboard";

@@ -1,0 +1,86 @@
+/* Contenedor de la tabla */
+.tableContainer {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+/* Tabla */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  table-layout: fixed;
+}
+
+/* Encabezado */
+.tableHeader {
+  background-color: var(--bdo-red, #cc0000);
+  color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  overflow: hidden;
+}
+
+.tableHeaderCell {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: bold;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tableHeaderCell:first-child {
+  border-top-left-radius: 8px;
+}
+
+/* Estilo para la última celda del encabezado (Contratado) */
+.tableHeaderCellLast {
+  border-right: none;
+  text-align: center;
+  border-top-right-radius: 8px;
+}
+
+/* Filas */
+.tableRow {
+  background-color: #ffffff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tableRow:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.tableRow:hover {
+  background-color: #e0e0e0;
+}
+
+/* Celdas */
+.tableCell {
+  padding: 12px 20px;
+  border-right: 1px solid var(--bdo-pale-charcoal, #e0e0e0);
+  border-bottom: 1px solid var(--bdo-pale-charcoal, #e0e0e0);
+  color: var(--bdo-charcoal, #333333);
+}
+
+/* Estilo para la última celda de datos (Contratado) */
+.tableCellLast {
+  border-right: none;
+  text-align: center;
+}
+
+/* Estilos para el Checkbox */
+.checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+/* Mensaje de tabla vacía */
+.emptyTableMessage {
+  text-align: center;
+  padding: 20px;
+  color: var(--bdo-slate, #666666);
+  background-color: #ffffff;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
