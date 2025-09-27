@@ -1,23 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { UIContext } from "../../../Global/Context";
 import { BsLayers } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 import toast from "react-hot-toast";
 
-// URL base para la tabla de relación ContratoServicio
-const BASE_URL = "/WS_Onboarding/ContratoServicio";
-
 export const ContractServices = () => {
-  // Obtiene el ID del contrato de la URL (ej: /admin/contracts/123/services)
   const { id: contractId } = useParams();
   const { setEntityIcon } = useContext(UIContext);
 
-  // Estado para la lista de servicios ya asignados al contrato
-  const [assignedServices, setAssignedServices] = useState([]);
+  // Estados
+  const [allServices, setAllServices] = useState([]); // Lista completa de servicios
+  const [assignedServiceIds, setAssignedServiceIds] = useState(new Map()); // Map: serviceId -> relationshipId
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
-  // Establece el ícono de la entidad en la UI global
   useEffect(() => {
     setEntityIcon(<BsLayers />);
   }, [setEntityIcon]);
@@ -25,136 +22,187 @@ export const ContractServices = () => {
   // --- FUNCIONES DE API ---
 
   /**
-   * Obtiene la lista de servicios asignados al contrato actual.
-   * Utiliza el endpoint /ByContrato.
+   * 1. Obtiene la lista completa de todos los servicios disponibles.
    */
-  const getContractServices = async () => {
-    if (!contractId) return;
-
+  const getAllAvailableServices = async () => {
     try {
-      setIsLoading(true);
-      // El endpoint ByContrato probablemente requiere el ID como parámetro de búsqueda o en el cuerpo.
-      // Asumimos que la API espera el ID como un parámetro de consulta (query parameter)
-      const response = await axiosClient.get(
-        `${BASE_URL}/ByContrato?idContrato=${contractId}`
-      );
-
-      // Mapeamos y guardamos la lista. Necesitamos los datos del servicio
-      // y el ID de la relación (id) para poder desasignarlo.
-      setAssignedServices(
-        response.data.map((item) => ({
-          id: item.id, // ID del registro de relación (necesario para el DELETE)
-          id_Contrato: item.id_Contrato,
-          id_Servicio: item.id_Servicio,
-          // (Asumimos que el API puede devolver más detalles del servicio aquí,
-          // si no, habría que hacer otra llamada para obtener el nombre del servicio)
-          // Por ahora, solo usamos los IDs que nos devuelve el ejemplo.
-        }))
-      );
-    } catch (error) {
-      console.error("Error al obtener servicios del contrato:", error);
-      toast.error("Error al cargar los servicios.");
-      setAssignedServices([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  /**
-   * Asigna un nuevo servicio al contrato.
-   * @param {number} serviceId - El ID del servicio a asignar.
-   */
-  const assignService = async (serviceId) => {
-    try {
-      const payload = {
-        id_Contrato: parseInt(contractId),
-        id_Servicio: serviceId,
-      };
-      const response = await axiosClient.post(BASE_URL, payload);
-      toast.success("Servicio asignado correctamente.");
-      // Recargar la lista después de la asignación
-      getContractServices();
+      // RUTA quemada: /Servicio
+      const response = await axiosClient.get("/Servicio");
       return response.data;
     } catch (error) {
-      console.error("Error al asignar servicio:", error);
-      toast.error("Error al asignar el servicio.");
-      throw error;
+      console.error("Error al obtener todos los servicios disponibles:", error);
+      return [];
     }
   };
 
   /**
-   * Desasigna un servicio del contrato.
-   * @param {number} relationshipId - El ID del registro de relación (item.id) a eliminar.
+   * 2. Obtiene los IDs de las relaciones (serviceId + relationshipId) asignadas al contrato actual.
    */
-  const unassignService = async (relationshipId) => {
+  const getAssignedServiceRelationships = async () => {
+    if (!contractId) return [];
     try {
-      await axiosClient.delete(`${BASE_URL}/${relationshipId}`);
-      toast.success("Servicio desasignado correctamente.");
-      // Recargar la lista después de la desasignación
-      getContractServices();
-      return true;
+      // RUTA quemada: /ContratoServicio/ByContrato
+      const response = await axiosClient.get(
+        `/ContratoServicio/ByContrato?idContrato=${contractId}`
+      );
+      return response.data;
     } catch (error) {
-      console.error("Error al desasignar servicio:", error);
-      toast.error("Error al desasignar el servicio.");
-      throw error;
+      console.error("Error al obtener relaciones de servicio:", error);
+      return [];
     }
   };
 
-  // Carga inicial de datos al montar el componente
+  /**
+   * Carga todos los datos al inicio (servicios y relaciones).
+   */
+  const loadData = async () => {
+    setIsLoading(true);
+    const [availableServices, assignedRelations] = await Promise.all([
+      getAllAvailableServices(),
+      getAssignedServiceRelationships(),
+    ]);
+
+    setAllServices(availableServices);
+
+    // Creamos un Map para almacenar [ID_Servicio] -> [ID_Relación] para el DELETE rápido
+    const assignedMap = new Map();
+    assignedRelations.forEach((rel) => {
+      assignedMap.set(rel.id_Servicio, rel.id);
+    });
+
+    setAssignedServiceIds(assignedMap);
+
+    setIsLoading(false);
+    toast.success(
+      `Datos cargados: ${availableServices.length} servicios disponibles.`
+    );
+  };
+
+  /**
+   * Alterna (asigna/desasigna) un servicio del contrato.
+   * @param {number} serviceId - El ID del servicio a modificar.
+   * @param {boolean} isChecked - Si la casilla está marcada (TRUE = Asignar, FALSE = Desasignar).
+   */
+  const handleServiceToggle = async (serviceId, isChecked) => {
+    if (isSaving) return;
+
+    setIsSaving(true);
+    try {
+      if (isChecked) {
+        // --- ASIGNAR (POST) ---
+        const payload = {
+          id_Contrato: parseInt(contractId),
+          id_Servicio: serviceId,
+        };
+        // RUTA quemada: POST /ContratoServicio
+        await axiosClient.post("/ContratoServicio", payload);
+        toast.success(`Servicio asignado.`);
+      } else {
+        // --- DESASIGNAR (DELETE) ---
+        const relationshipId = assignedServiceIds.get(serviceId);
+        if (relationshipId) {
+          // RUTA quemada: DELETE /ContratoServicio/{id}
+          await axiosClient.delete(`/ContratoServicio/${relationshipId}`);
+          toast.success(`Servicio desasignado.`);
+        }
+      }
+
+      // Recargamos los datos para obtener el nuevo relationshipId (si fue un POST)
+      // o para verificar que la eliminación fue exitosa.
+      await loadData();
+    } catch (error) {
+      console.error("Error al modificar el servicio:", error);
+      toast.error("Error al guardar los cambios.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Carga inicial
   useEffect(() => {
-    getContractServices();
-  }, [contractId]); // Dependencia del ID para recargar si cambia de contrato
+    loadData();
+  }, [contractId]);
 
   // --- RENDERIZADO DEL COMPONENTE ---
   return (
     <div className="p-6 bg-white rounded-xl shadow-lg m-4 md:m-8">
       <h1 className="text-3xl font-bold text-gray-800 mb-4">
-        Servicios del Contrato ID: {contractId}
+        Servicios del Contrato ID: **{contractId}**
       </h1>
+      <h2>
+        ACTUALMENTE TRAE LOS SERVICIOS DE TODOS LOS PAIES, FALTA DELIMITAR EL
+        API
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Marque la casilla para asignar un servicio o desmarque para desasignarlo
+        del contrato actual.
+      </p>
 
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-3">Servicios Asignados</h2>
-        {isLoading ? (
-          <p className="text-blue-500">Cargando servicios...</p>
-        ) : assignedServices.length === 0 ? (
-          <p className="text-gray-500">
-            No hay servicios asignados a este contrato.
-          </p>
-        ) : (
-          <ul className="border rounded-lg divide-y divide-gray-200">
-            {assignedServices.map((service) => (
-              <li
-                key={service.id}
-                className="p-3 flex justify-between items-center"
-              >
-                <span>
-                  Servicio ID: **{service.id_Servicio}** (Relación ID:{" "}
-                  {service.id})
-                  {/* Aquí deberías mostrar el nombre real del servicio */}
-                </span>
-                <button
-                  onClick={() => unassignService(service.id)}
-                  className="text-red-600 hover:text-red-800 p-2 border rounded"
-                >
-                  Desasignar
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {isLoading ? (
+        <p className="text-blue-500">Cargando servicios y relaciones...</p>
+      ) : (
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold mb-3">
+            Lista de Servicios Disponibles ({allServices.length})
+          </h2>
 
-      {/* Aquí irá el selector y botón para asignar nuevos servicios */}
-      <div className="p-4 border-t pt-6">
-        <h2 className="text-xl font-semibold mb-3">Asignar Nuevo Servicio</h2>
-        {/* Implementación pendiente: Dropdown con lista de todos los servicios 
-            y un botón que llame a assignService(selectedServiceId) */}
-        <p className="text-gray-500">
-          (Pendiente: Integrar la lista de todos los servicios disponibles para
-          asignación.)
+          <div className="overflow-x-auto border rounded-lg">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Servicio
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Estado
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {allServices.map((service) => (
+                  <tr key={service.id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {service.id}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {service.nombre}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                        // Se marca si el service.id existe como clave en el Map de asignados
+                        checked={assignedServiceIds.has(service.id)}
+                        disabled={isSaving}
+                        onChange={(e) =>
+                          handleServiceToggle(service.id, e.target.checked)
+                        }
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {isSaving && (
+        <p className="text-indigo-600 mt-4 font-semibold">
+          Guardando cambios...
         </p>
-        {/* Ejemplo de cómo usarías la función (reemplazar con UI real) */}
-        {/* <button onClick={() => assignService(99)} className="bg-green-500 text-white p-2 rounded">Asignar Servicio ID 99</button> */}
+      )}
+
+      <div className="p-4 border-t pt-6">
+        <h2 className="text-xl font-semibold mb-3">Información Adicional</h2>
+        <p className="text-gray-500">
+          La página ya está funcional. Cada vez que se marca o desmarca un
+          servicio, se realiza una llamada POST o DELETE al API, seguida de una
+          recarga de los datos para actualizar el estado.
+        </p>
       </div>
     </div>
   );
