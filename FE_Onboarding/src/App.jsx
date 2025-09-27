@@ -10,6 +10,7 @@ import {
   Staff,
   Contracts,
   Users,
+  ContractServices,
 } from "./Modules/Admin/pages";
 import { Landing, CustomerLogin, StaffLogin } from "./Modules/Landing/pages";
 import { Toaster } from "react-hot-toast";
@@ -34,6 +35,7 @@ function App() {
           <Route path="staff" element={<Staff />} />
           <Route path="contracts" element={<Contracts />} />
           <Route path="users" element={<Users />} />
+          <Route path="contracts/:id/services" element={<ContractServices />} />
         </Route>
       </Routes>
     </>
