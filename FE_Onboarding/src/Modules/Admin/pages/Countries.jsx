@@ -11,6 +11,7 @@ export const Countries = () => {
     setEntityIcon(<BsGlobeAmericas />);
   }, [setEntityIcon]);
 
+  // Trae los países y mapea solo id y nombre
   const getCountries = async () => {
     try {
       const response = await axiosClient.get("/Pais");
@@ -38,7 +39,7 @@ export const Countries = () => {
   const updateCountry = async (country) => {
     try {
       const payload = { id: country.id, nombre: country.name };
-      const response = await axiosClient.put(`/Pais/${country.id}`, payload); // ✅ Corrected
+      const response = await axiosClient.put(`/Pais/${country.id}`, payload);
       return { id: response.data.id, name: response.data.nombre };
     } catch (error) {
       console.error("Error al actualizar país:", error);
@@ -48,7 +49,7 @@ export const Countries = () => {
 
   const deleteCountry = async (id) => {
     try {
-      await axiosClient.delete(`/Pais/${id}`); // ✅ Corrected
+      await axiosClient.delete(`/Pais/${id}`);
       return true;
     } catch (error) {
       console.error("Error al eliminar país:", error);

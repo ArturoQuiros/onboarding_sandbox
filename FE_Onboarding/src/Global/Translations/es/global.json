@@ -2,7 +2,7 @@
   "sidebar": {
     "home": "Home",
     "countries": "Países",
-    "staff": "Personal",
+    "staff": "Staff",
     "customers": "Clientes",
     "services": "Servicios",
     "users": "Usuarios",
@@ -77,13 +77,24 @@
   },
   "users": {
     "title": "Usuarios",
+    "createButton": "Crear Nuevo Usuario",
     "table": {
       "id": "ID",
-      "name": "Nombre",
-      "role": "Rol",
-      "country": "País",
-      "photo": "Foto"
-    }
+      "client": "Cliente",
+      "email": "Correo",
+      "password": "Contraseña"
+    },
+    "form": {
+      "editTitle": "Editar Usuario",
+      "createTitle": "Crear Nuevo Usuario",
+      "clientLabel": "Cliente",
+      "emailLabel": "Correo Electrónico",
+      "passwordLabel": "Contraseña"
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este usuario?",
+    "deleting": "Eliminando usuario...",
+    "deleteSuccess": "¡Usuario eliminado con éxito!",
+    "deleteError": "¡No se pudo eliminar el usuario!"
   },
   "contracts": {
     "title": "Contratos",
@@ -118,6 +129,8 @@
     "showingRecords": "Mostrando {{from}} a {{to}} de {{total}} registros.",
     "previous": "Anterior",
     "next": "Siguiente",
-    "itemsPerPage": "Registros por página"
+    "itemsPerPage": "Registros por página",
+    "logout": "Cerrar Sesión",
+    "selectOption": "Seleccionar Opción"
   }
 }

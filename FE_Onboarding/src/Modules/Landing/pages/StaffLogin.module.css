@@ -1,4 +1,3 @@
-/* src/Modules/Customer/pages/CustomerLogin.module.css */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -71,7 +70,7 @@
   border: 1px solid var(--bdo-pale-charcoal);
   border-radius: 8px;
   box-sizing: border-box;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .inputGroup input:focus {
@@ -92,11 +91,18 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .submitButton:hover {
   background-color: var(--bdo-burgundy);
+  transform: translateY(-2px);
+}
+
+.submitButton:disabled {
+  background-color: var(--bdo-pale-charcoal);
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Variante secundaria (Volver al login) */
@@ -104,12 +110,10 @@
   background-color: var(--bdo-pale-charcoal);
   color: var(--bdo-charcoal);
   border: 1px solid var(--bdo-pale-charcoal);
-  /* Añadimos la transición para que el cambio de color sea suave */
   transition: background 0.3s ease, color 0.3s ease;
 }
 
 .secondaryButton:hover {
-  /* Al hacer hover, invertimos los colores para un efecto visual */
   background-color: var(--bdo-charcoal);
   color: white;
   border: 1px solid var(--bdo-charcoal);
@@ -154,7 +158,7 @@
 }
 
 .forgotPassword:hover {
-  background: none !important; /* Evita que aparezca color de fondo */
+  background: none !important;
   color: var(--bdo-charcoal);
 }
 
@@ -169,4 +173,19 @@
   color: var(--bdo-jade);
   font-size: 0.95rem;
   margin-top: 8px;
+}
+
+/* Placeholder para StaffLogin (cuadro blanco / futuro AD) */
+.placeholderBox {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed var(--bdo-pale-charcoal);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+  margin-top: 20px;
+  font-size: 0.95em;
+  color: var(--bdo-slate);
 }

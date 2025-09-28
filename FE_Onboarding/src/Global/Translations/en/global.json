@@ -77,13 +77,24 @@
   },
   "users": {
     "title": "Users",
+    "createButton": "Create New User",
     "table": {
       "id": "ID",
-      "name": "Name",
-      "role": "Role",
-      "country": "Country",
-      "photo": "Photo"
-    }
+      "client": "Client",
+      "email": "Email",
+      "password": "Password"
+    },
+    "form": {
+      "editTitle": "Edit User",
+      "createTitle": "Create New User",
+      "clientLabel": "Client",
+      "emailLabel": "Email",
+      "passwordLabel": "Password"
+    },
+    "confirmDelete": "¿Are you sure you want to delete this user?",
+    "deleting": "Deleting user...",
+    "deleteSuccess": "User deleted successfully!",
+    "deleteError": "Could not delete user!"
   },
   "contracts": {
     "title": "Contracts",
@@ -118,6 +129,8 @@
     "showingRecords": "Showing {{from}} to {{to}} of {{total}} records.",
     "previous": "Previous",
     "next": "Next",
-    "itemsPerPage": "Records per page"
+    "itemsPerPage": "Records per page",
+    "logout": "Logout",
+    "selectOption": "Select Option"
   }
 }
