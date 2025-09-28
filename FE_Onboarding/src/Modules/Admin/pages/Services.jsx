@@ -153,7 +153,6 @@ export const Services = () => {
   return (
     <CrudDashboard
       entityName="services"
-      entityIcon={entityIcon}
       fields={serviceFields}
       getItems={getServices}
       createItem={createService}

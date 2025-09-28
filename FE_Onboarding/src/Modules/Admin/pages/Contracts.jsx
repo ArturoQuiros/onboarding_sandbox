@@ -1,7 +1,9 @@
+// src/Modules/Admin/pages/Contracts.jsx
 import React, { useContext, useEffect } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsNewspaper } from "react-icons/bs";
+import axiosClient from "../../../Api/axiosClient";
 
 export const Contracts = () => {
   const { setEntityIcon } = useContext(UIContext);
@@ -10,45 +12,73 @@ export const Contracts = () => {
     setEntityIcon(<BsNewspaper />);
   }, [setEntityIcon]);
 
-  // --- CONTRACT-SPECIFIC CONFIGURATION ---
-  const getContracts = async () =>
-    Promise.resolve([
-      { id: 1, country: "Costa Rica", customer: "Juan Pérez" },
-      { id: 2, country: "México", customer: "María González" },
-      { id: 3, country: "Colombia", customer: "Carlos Rodríguez" },
-    ]);
+  // --- API CALLS ---
+  const getContracts = async () => {
+    try {
+      const [contractsRes, clientsRes, usersRes] = await Promise.all([
+        axiosClient.get("/Contrato"),
+        axiosClient.get("/cliente"),
+        axiosClient.get("/usuario"),
+      ]);
+
+      const contracts = contractsRes.data;
+      const clients = clientsRes.data;
+      const users = usersRes.data;
+
+      return contracts.map((c) => ({
+        id: c.id,
+        cliente: clients.find((cl) => cl.id === c.id_Cliente)?.nombre || "N/A",
+        accountManager:
+          users.find((u) => u.id === c.account_manager)?.nombre || "N/A",
+        estado: c.estado,
+      }));
+    } catch (error) {
+      console.error("Error al obtener contratos:", error);
+      return [];
+    }
+  };
 
   const createContract = async (contract) => {
-    console.log("Creando contrato:", contract);
-    return { ...contract, id: Date.now() };
+    try {
+      const res = await axiosClient.post("/Contrato", contract);
+      return res.data;
+    } catch (error) {
+      console.error("Error al crear contrato:", error);
+      throw error;
+    }
   };
 
   const updateContract = async (contract) => {
-    console.log("Actualizando contrato:", contract);
-    return contract;
+    try {
+      const res = await axiosClient.put(`/Contrato/${contract.id}`, contract);
+      return res.data;
+    } catch (error) {
+      console.error("Error al actualizar contrato:", error);
+      throw error;
+    }
   };
 
   const deleteContract = async (id) => {
-    console.log("Eliminando contrato con ID:", id);
-    return true;
+    try {
+      await axiosClient.delete(`/Contrato/${id}`);
+      return true;
+    } catch (error) {
+      console.error("Error al eliminar contrato:", error);
+      return false;
+    }
   };
 
+  // --- TABLE FIELDS (sin fechas de auditoría) ---
   const contractFields = [
     { key: "id", labelKey: "contracts.table.id", type: "text" },
+    { key: "cliente", labelKey: "contracts.table.client", type: "text" },
     {
-      key: "country",
-      labelKey: "contracts.table.country",
+      key: "accountManager",
+      labelKey: "contracts.table.accountManager",
       type: "text",
-      validation: { required: true, minLength: 3, maxLength: 50 },
     },
-    {
-      key: "customer",
-      labelKey: "contracts.table.customer",
-      type: "text",
-      validation: { required: true, minLength: 3, maxLength: 100 },
-    },
+    { key: "estado", labelKey: "contracts.table.estado", type: "text" },
   ];
-  // ---------------------------------------------
 
   return (
     <CrudDashboard

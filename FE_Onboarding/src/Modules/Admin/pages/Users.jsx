@@ -166,7 +166,6 @@ export const Users = () => {
   return (
     <CrudDashboard
       entityName="users" // Clave de traducción
-      entityIcon={entityIcon}
       fields={userFields}
       getItems={getUsers}
       createItem={createUser}

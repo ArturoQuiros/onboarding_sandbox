@@ -127,7 +127,6 @@ export const Customers = () => {
   return (
     <CrudDashboard
       entityName="customers"
-      entityIcon={entityIcon}
       fields={customerFields}
       getItems={getCustomers}
       createItem={createCustomer}

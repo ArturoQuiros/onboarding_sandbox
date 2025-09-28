@@ -76,7 +76,6 @@ export const Countries = () => {
   return (
     <CrudDashboard
       entityName="countries"
-      entityIcon={entityIcon}
       fields={countryFields}
       getItems={getCountries}
       createItem={createCountry}
