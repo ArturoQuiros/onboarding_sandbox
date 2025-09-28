@@ -10,7 +10,6 @@ namespace WS_Onboarding.Dtos
     {
         public int Id { get; set; }
         public int? Id_Cliente { get; set; }
-        public required string Numero_contrato { get; set; }
         public required string Estado { get; set; }
         public int? Account_manager { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
@@ -21,10 +20,6 @@ namespace WS_Onboarding.Dtos
     {
         [Required]
         public int Id_Cliente { get; set; }
-
-        [Required]
-        [MaxLength(50)]
-        public required string Numero_contrato { get; set; }
 
         [MaxLength(20)]
         public required string Estado { get; set; }

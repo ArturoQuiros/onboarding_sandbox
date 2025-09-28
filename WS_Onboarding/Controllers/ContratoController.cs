@@ -119,7 +119,6 @@ namespace WS_Onboarding.Controllers
                 else
                 {
                     ContratoModel.Id_Cliente = ContratoDto.Id_Cliente;
-                    ContratoModel.Numero_contrato = ContratoDto.Numero_contrato;
                     ContratoModel.Estado = ContratoDto.Estado;
                     ContratoModel.Account_manager = ContratoDto.Account_manager;
                     ContratoModel.Fecha_Modificacion = DateTime.UtcNow;

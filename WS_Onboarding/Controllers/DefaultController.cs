@@ -217,7 +217,6 @@ namespace WS_Onboarding.Controllers
                 var contrato1 = new Models.Contrato
                 {
                     Id_Cliente = 1,
-                    Numero_contrato = "CT-ARG-001",
                     Estado = "Activo",
                     Account_manager = 1,
                     Fecha_Creacion = DateTime.UtcNow,
@@ -227,7 +226,6 @@ namespace WS_Onboarding.Controllers
                 var contrato2 = new Models.Contrato
                 {
                     Id_Cliente = 2,
-                    Numero_contrato = "CT-MEX-001",
                     Estado = "Pendiente",
                     Account_manager = 2,
                     Fecha_Creacion = DateTime.UtcNow,
@@ -240,13 +238,19 @@ namespace WS_Onboarding.Controllers
                 var contratoServicio1 = new Models.ContratoServicio
                 {
                     Id_Contrato = 1,
-                    Id_Servicio = 1
+                    Id_Servicio = 1,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                    Estado = false
                 };
 
                 var contratoServicio2 = new Models.ContratoServicio
                 {
                     Id_Contrato = 2,
-                    Id_Servicio = 2
+                    Id_Servicio = 2,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.Now,
+                    Estado = false
                 };
 
                 _context.Contrato_Servicios.AddRange(contratoServicio1, contratoServicio2);

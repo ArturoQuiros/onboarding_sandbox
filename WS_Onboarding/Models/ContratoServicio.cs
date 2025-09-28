@@ -13,6 +13,9 @@ namespace WS_Onboarding.Models
         public int Id_Contrato { get; set; }
         [Column("Id_Servicio")]
         public int Id_Servicio { get; set; }
+        public bool? Estado { get; set; }
+        public DateTime? Fecha_Creacion { get; set; }
+        public DateTime? Fecha_Modificacion { get; set; }
 
         // Navigation
         [ForeignKey("Id_Contrato")]

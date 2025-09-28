@@ -119,7 +119,7 @@ namespace WS_Onboarding.Controllers
                 else
                 {
                     ServicioModel.Nombre = ServicioDto.Nombre;
-                    ServicioModel.Id_pais = (ServicioDto.Id_pais == null || ServicioDto.Equals("")) ? ServicioDto.Id_pais : ServicioModel.Id_pais;
+                    ServicioModel.Id_pais = (ServicioDto.Id_pais == null || ServicioDto.Id_pais.Equals("")) ? ServicioModel.Id_pais : ServicioDto.Id_pais;
                     ServicioModel.Fecha_Modificacion = DateTime.UtcNow;
                     _context.SaveChanges();
 

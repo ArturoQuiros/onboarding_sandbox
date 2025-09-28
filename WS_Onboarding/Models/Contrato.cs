@@ -13,10 +13,6 @@ namespace WS_Onboarding.Models
         [Column("Id_Cliente")]
         public int? Id_Cliente { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public required string Numero_contrato { get; set; }
-
         [MaxLength(20)]
         public required string Estado { get; set; }
         [Column("Account_manager")]
