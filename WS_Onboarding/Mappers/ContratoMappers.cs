@@ -15,7 +15,6 @@ namespace WS_Onboarding.Mappers
             {
                 Id = ContratoModel.Id,
                 Id_Cliente = ContratoModel.Id_Cliente,
-                Numero_contrato = ContratoModel.Numero_contrato,
                 Estado = ContratoModel.Estado,
                 Account_manager = ContratoModel.Account_manager,
                 Fecha_Creacion = ContratoModel.Fecha_Creacion,
@@ -28,7 +27,6 @@ namespace WS_Onboarding.Mappers
             return new Contrato
             {
                 Id_Cliente = ContratoModel.Id_Cliente,
-                Numero_contrato = ContratoModel.Numero_contrato,
                 Estado = ContratoModel.Estado,
                 Account_manager = ContratoModel.Account_manager,
             };

@@ -1044,10 +1044,10 @@
           }
         }
       },
-      "Microsoft.Identity.Client/4.76.0": {
+      "Microsoft.Identity.Client/4.77.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "6.35.0",
+          "Microsoft.IdentityModel.Abstractions": "8.14.0",
           "System.Diagnostics.DiagnosticSource": "6.0.1"
         },
         "compile": {
@@ -4262,10 +4262,10 @@
         "microsoft.identity.abstractions.nuspec"
       ]
     },
-    "Microsoft.Identity.Client/4.76.0": {
-      "sha512": "j2FtmljuCveDJ7umBVYm6Bx3iVGA71U07Dc7byGr2Hrj7XlByZSknruCBUeYN3V75nn1VEhXegxE0MerxvxrXQ==",
+    "Microsoft.Identity.Client/4.77.1": {
+      "sha512": "K1BS0wRwh48xjsU2y7bwVh8qE9eqdRkroHX0EPp9GGo3GmS+B2gaPd95jq+HRpyFj8h3nn8LubDnIti+M/9YoQ==",
       "type": "package",
-      "path": "microsoft.identity.client/4.76.0",
+      "path": "microsoft.identity.client/4.77.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -4283,7 +4283,7 @@
         "lib/net8.0/Microsoft.Identity.Client.xml",
         "lib/netstandard2.0/Microsoft.Identity.Client.dll",
         "lib/netstandard2.0/Microsoft.Identity.Client.xml",
-        "microsoft.identity.client.4.76.0.nupkg.sha512",
+        "microsoft.identity.client.4.77.1.nupkg.sha512",
         "microsoft.identity.client.nuspec"
       ]
     },
@@ -5896,6 +5896,7 @@
       "Microsoft.EntityFrameworkCore.Design >= 9.0.9",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.9",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.9",
+      "Microsoft.Identity.Client >= 4.77.1",
       "Microsoft.Identity.Web >= 3.14.1",
       "Scalar.AspNetCore >= 2.8.4",
       "Swashbuckle.AspNetCore >= 9.0.4"
@@ -5970,6 +5971,10 @@
           "Microsoft.EntityFrameworkCore.Tools": {
             "target": "Package",
             "version": "[9.0.9, )"
+          },
+          "Microsoft.Identity.Client": {
+            "target": "Package",
+            "version": "[4.77.1, )"
           },
           "Microsoft.Identity.Web": {
             "target": "Package",

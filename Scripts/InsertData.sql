@@ -39,15 +39,15 @@ VALUES
 -- (Id_Cliente y Account_Manager se refieren a los IDs de las tablas Clientes y Usuarios)
 INSERT INTO Contratos (Id_Cliente, Numero_contrato, Estado, Account_Manager, Fecha_Creacion, Fecha_Modificacion)
 VALUES
-(1, 'BDO-001-CR', 'Activo', 1, GETDATE(), GETDATE()),
-(2, 'BDO-002-MX', 'Activo', 2, GETDATE(), GETDATE()),
-(3, 'BDO-003-CO', 'Pendiente', 3, GETDATE(), GETDATE());
+(1, 'Activo', 1, GETDATE(), GETDATE()),
+(2, 'Activo', 2, GETDATE(), GETDATE()),
+(3, 'Pendiente', 3, GETDATE(), GETDATE());
 
 -- Insertar datos en la tabla Contrato_Servicios
 -- (Id_Contrato e Id_Servicio se refieren a los IDs de las tablas Contratos y Servicios)
 INSERT INTO Contrato_Servicios (Id_Contrato, Id_Servicio)
 VALUES
-(1, 1), -- El contrato 1 tiene el servicio 1
-(1, 2), -- El contrato 1 también tiene el servicio 2
-(2, 2), -- El contrato 2 tiene el servicio 2
-(3, 3); -- El contrato 3 tiene el servicio 3
+(1, 1, 0), -- El contrato 1 tiene el servicio 1
+(1, 2, 0), -- El contrato 1 también tiene el servicio 2
+(2, 2, 0), -- El contrato 2 tiene el servicio 2
+(3, 3, 0); -- El contrato 3 tiene el servicio 3

@@ -61,7 +61,6 @@ DROP TABLE IF EXISTS Contratos
 CREATE TABLE Contratos (
     Id INT PRIMARY KEY IDENTITY(1, 1),
     Id_Cliente INT,
-    Numero_contrato VARCHAR(50) UNIQUE NOT NULL,
     Estado VARCHAR(20),
     Account_manager INT,
     Fecha_Creacion DATETIME,
@@ -76,6 +75,9 @@ CREATE TABLE Contrato_Servicios (
     Id INT PRIMARY KEY IDENTITY(1, 1),
     Id_Contrato INT,
     Id_Servicio INT,
+    Estado BIT,
+    Fecha_Creacion DATETIME,
+    Fecha_Modificacion DATETIME
     CONSTRAINT FK_Contrato_Servicios_Clientes FOREIGN KEY (Id_Contrato) REFERENCES Contratos(Id),
     CONSTRAINT FK_Contrato_Servicios_Servicios FOREIGN KEY (Id_Servicio) REFERENCES Servicios(Id)
 );

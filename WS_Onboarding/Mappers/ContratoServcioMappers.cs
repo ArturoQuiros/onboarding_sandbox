@@ -15,7 +15,10 @@ namespace WS_Onboarding.Mappers
             {
                 Id = ContratoServicioModel.Id,
                 Id_Contrato = ContratoServicioModel.Id_Contrato,
-                Id_Servicio = ContratoServicioModel.Id_Servicio
+                Id_Servicio = ContratoServicioModel.Id_Servicio,
+                Estado = ContratoServicioModel.Estado,
+                Fecha_Creacion = ContratoServicioModel.Fecha_Creacion,
+                Fecha_Modificacion = ContratoServicioModel.Fecha_Modificacion,
             };
         }
 
@@ -24,7 +27,8 @@ namespace WS_Onboarding.Mappers
             return new ContratoServicio
             {
                 Id_Contrato = ContratoServicioModel.Id_Contrato,
-                Id_Servicio = ContratoServicioModel.Id_Servicio
+                Id_Servicio = ContratoServicioModel.Id_Servicio,
+                Estado = ContratoServicioModel.Estado
             };
         }
     }

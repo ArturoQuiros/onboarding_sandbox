@@ -70,6 +70,10 @@
               "target": "Package",
               "version": "[9.0.9, )"
             },
+            "Microsoft.Identity.Client": {
+              "target": "Package",
+              "version": "[4.77.1, )"
+            },
             "Microsoft.Identity.Web": {
               "target": "Package",
               "version": "[3.14.1, )"

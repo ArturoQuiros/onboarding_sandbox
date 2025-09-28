@@ -3,6 +3,7 @@ using Scalar.AspNetCore;
 using WS_Onboarding.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
+using WS_Onboarding.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 

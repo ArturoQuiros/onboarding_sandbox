@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Vmu67wLi4bU=",
+  "dgSpecHash": "O/1C3z9c7Us=",
   "success": true,
   "projectFilePath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
   "expectedPackageFiles": [
@@ -50,7 +50,7 @@
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\9.0.0\\microsoft.extensions.options.configurationextensions.9.0.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.extensions.primitives\\9.0.9\\microsoft.extensions.primitives.9.0.9.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.identity.abstractions\\9.3.0\\microsoft.identity.abstractions.9.3.0.nupkg.sha512",
-    "C:\\Users\\USER\\.nuget\\packages\\microsoft.identity.client\\4.76.0\\microsoft.identity.client.4.76.0.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\microsoft.identity.client\\4.77.1\\microsoft.identity.client.4.77.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.identity.client.extensions.msal\\4.61.3\\microsoft.identity.client.extensions.msal.4.61.3.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.identity.web\\3.14.1\\microsoft.identity.web.3.14.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.identity.web.certificate\\3.14.1\\microsoft.identity.web.certificate.3.14.1.nupkg.sha512",
