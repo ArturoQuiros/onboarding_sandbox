@@ -105,15 +105,21 @@ export const CrudDashboard = ({
 
   const handleConfirmDelete = async () => {
     setIsConfirmModalOpen(false);
+    const id = itemIdToDelete;
+
     try {
-      await toast.promise(deleteItem(itemIdToDelete), {
+      // Optimistic update: quitar del estado local antes de esperar respuesta
+      setItems((prev) => prev.filter((i) => i.id !== id));
+
+      await toast.promise(deleteItem(id), {
         loading: t(`${entityName}.deleting`),
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
-      await reloadItems();
     } catch (error) {
       console.error(error);
+      // Si falla, recargamos para volver al estado real
+      reloadItems();
     } finally {
       setItemIdToDelete(null);
     }
@@ -121,22 +127,40 @@ export const CrudDashboard = ({
 
   const handleSave = async (item) => {
     const isEditing = Boolean(selectedItem);
-    const action = isEditing ? updateItem(item) : createItem(item);
 
     try {
-      await toast.promise(action, {
-        loading: isEditing ? t("common.updating") : t("common.creating"),
-        success: isEditing
-          ? t("common.updateSuccess")
-          : t("common.createSuccess"),
-        error: t("common.genericError"),
-      });
+      if (isEditing) {
+        // Optimistic update: actualizamos localmente
+        setItems((prev) =>
+          prev.map((i) => (i.id === item.id ? { ...i, ...item } : i))
+        );
+
+        await toast.promise(updateItem(item), {
+          loading: t("common.updating"),
+          success: t("common.updateSuccess"),
+          error: t("common.genericError"),
+        });
+      } else {
+        // Optimistic update: agregamos temporalmente
+        const tempId = Date.now(); // ID temporal
+        const newItem = { ...item, id: tempId };
+        setItems((prev) => [...prev, newItem]);
+
+        const created = await toast.promise(createItem(item), {
+          loading: t("common.creating"),
+          success: t("common.createSuccess"),
+          error: t("common.genericError"),
+        });
+
+        // Reemplazamos el temporal con el real devuelto por la API
+        setItems((prev) => prev.map((i) => (i.id === tempId ? created : i)));
+      }
 
       setIsFormOpen(false);
       setSelectedItem(null);
-      await reloadItems();
     } catch (error) {
       console.error(error);
+      reloadItems(); // fallback si algo falla
     }
   };
 
