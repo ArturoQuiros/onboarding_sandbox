@@ -1,14 +1,20 @@
+// src/Modules/Admin/pages/Admin.jsx
 import React from "react";
-// No es necesario importar Navbar, Sidebar, o UIContext
 
-export const Admin = () => {
+/**
+ * Página principal del panel de administración.
+ * Muestra información resumida sobre clientes, contratos y servicios.
+ */
+const Admin = () => {
   return (
     <div>
-      <h1>ADM Dashboard</h1>
+      <h1>Panel de Administración</h1>
       <p>
-        Aquí iran los clientes actuales, el estado de su contrato y el estado de
-        cada servicio contratado
+        Vista general de clientes actuales, estado de contratos y servicios
+        contratados.
       </p>
     </div>
   );
 };
+
+export default Admin;

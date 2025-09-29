@@ -11,17 +11,21 @@ import { UIContext } from "../../../Global/Context";
 import { BsTools } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 
-export const Services = () => {
-  const { setEntityIcon, entityIcon } = useContext(UIContext);
+/**
+ * Página de gestión de servicios.
+ * Usa CrudDashboard con operaciones CRUD y validaciones.
+ */
+const Services = () => {
+  const { setEntityIcon } = useContext(UIContext);
 
   const [countriesList, setCountriesList] = useState([]);
   const [countryMap, setCountryMap] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
+  // Cargar países y mapear id → nombre
   const fetchCountries = async () => {
     try {
       const { data: countries } = await axiosClient.get("/Pais");
-
       const map = countries.reduce((acc, country) => {
         acc[country.id] = country.nombre;
         return acc;
@@ -40,12 +44,13 @@ export const Services = () => {
     }
   };
 
+  // Establece el ícono de la entidad
   useEffect(() => {
     setEntityIcon(<BsTools />);
     fetchCountries();
   }, [setEntityIcon]);
 
-  // --- Definición de Campos ---
+  // --- Campos para CrudForm ---
   const serviceFields = useMemo(
     () => [
       {
@@ -79,10 +84,10 @@ export const Services = () => {
     },
   };
 
+  // --- Funciones CRUD ---
   const getServices = useCallback(async () => {
     try {
       const { data: services } = await axiosClient.get("/Servicio");
-
       return services.map((service) => ({
         id: service.id,
         name: service.nombre,
@@ -146,8 +151,6 @@ export const Services = () => {
     }
   }, []);
 
-  const initialFormValues = { name: "", country: "" };
-
   if (isLoading) return <div>Cargando configuración de servicios...</div>;
 
   return (
@@ -158,8 +161,10 @@ export const Services = () => {
       createItem={createService}
       updateItem={updateService}
       deleteItem={deleteService}
-      initialFormValues={initialFormValues}
-      validations={serviceValidations} // ✅ validaciones activas
+      validations={serviceValidations}
+      initialFormValues={{ name: "", country: "" }}
     />
   );
 };
+
+export default Services;

@@ -25,7 +25,7 @@ export const CrudDashboard = ({
   validations,
 }) => {
   const { t } = useTranslation("global");
-  const { entityIcon } = useContext(UIContext); // 👈 ahora el icono viene del contexto
+  const { entityIcon } = useContext(UIContext);
 
   const [items, setItems] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -114,19 +114,15 @@ export const CrudDashboard = ({
 
   const handleConfirmDelete = async () => {
     setIsConfirmModalOpen(false);
-    const id = itemIdToDelete;
-
     try {
-      setItems((prev) => prev.filter((i) => i.id !== id));
-
-      await toast.promise(deleteItem(id), {
+      await toast.promise(deleteItem(itemIdToDelete), {
         loading: t(`${entityName}.deleting`),
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
+      await reloadItems();
     } catch (error) {
       console.error(error);
-      reloadItems();
     } finally {
       setItemIdToDelete(null);
     }
@@ -134,37 +130,22 @@ export const CrudDashboard = ({
 
   const handleSave = async (item) => {
     const isEditing = Boolean(selectedItem);
+    const action = isEditing ? updateItem(item) : createItem(item);
 
     try {
-      if (isEditing) {
-        setItems((prev) =>
-          prev.map((i) => (i.id === item.id ? { ...i, ...item } : i))
-        );
-
-        await toast.promise(updateItem(item), {
-          loading: t("common.updating"),
-          success: t("common.updateSuccess"),
-          error: t("common.genericError"),
-        });
-      } else {
-        const tempId = Date.now();
-        const newItem = { ...item, id: tempId };
-        setItems((prev) => [...prev, newItem]);
-
-        const created = await toast.promise(createItem(item), {
-          loading: t("common.creating"),
-          success: t("common.createSuccess"),
-          error: t("common.genericError"),
-        });
-
-        setItems((prev) => prev.map((i) => (i.id === tempId ? created : i)));
-      }
+      await toast.promise(action, {
+        loading: isEditing ? t("common.updating") : t("common.creating"),
+        success: isEditing
+          ? t("common.updateSuccess")
+          : t("common.createSuccess"),
+        error: t("common.genericError"),
+      });
 
       setIsFormOpen(false);
       setSelectedItem(null);
+      await reloadItems();
     } catch (error) {
       console.error(error);
-      reloadItems();
     }
   };
 
