@@ -21,5 +21,20 @@ services:
       - "1433:1433"
     networks:
       - onboarding_net
+    volumes:
+      - db_onboarding_data:/var/opt/mssql
+  container_fe_onboarding:
+    build:
+      context: ./FE_Onboarding
+      dockerfile: Dockerfile
+    container_name: docker_fe_onboarding
+    ports:
+      - "8080:80"  # Nginx sirve en el puerto 80, lo mapeamos al 8080 del host
+    networks:
+      - onboarding_net
+    depends_on:
+      - container_ws_onboarding
 networks:
   onboarding_net:
+volumes:
+  db_onboarding_data:
