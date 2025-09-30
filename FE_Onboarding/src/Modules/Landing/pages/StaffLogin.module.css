@@ -1,3 +1,5 @@
+/* src/Modules/Landing/pages/StaffLogin.module.css */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -30,7 +32,6 @@
   align-items: center;
   width: 90%;
   max-width: 400px;
-  animation: slideInUp 0.8s ease-out forwards;
   text-align: center;
 }
 
@@ -48,45 +49,18 @@
   font-weight: 600;
 }
 
-.form {
-  width: 100%;
-}
-
-.inputGroup {
-  margin-bottom: 20px;
-  text-align: left;
-}
-
-.inputGroup label {
-  display: block;
-  font-weight: 500;
-  color: var(--bdo-charcoal);
-  margin-bottom: 5px;
-}
-
-.inputGroup input {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid var(--bdo-pale-charcoal);
-  border-radius: 8px;
-  box-sizing: border-box;
-  transition: border-color 0.25s, box-shadow 0.25s;
-}
-
-.inputGroup input:focus {
-  outline: none;
-  border-color: var(--bdo-ocean);
-  box-shadow: 0 0 0 2px rgba(0, 143, 210, 0.2);
-}
-
-/* Botón principal */
-.submitButton {
+/* Botón estilo Microsoft */
+.msButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
   padding: 12px;
   font-size: 1.1em;
   font-weight: 600;
-  margin-top: 10px;
-  background-color: var(--bdo-red);
+  margin-top: 20px;
+  background-color: #2f2f2f; /* Gris oscuro similar a Microsoft */
   color: white;
   border: none;
   border-radius: 6px;
@@ -94,32 +68,30 @@
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
-.submitButton:hover {
-  background-color: var(--bdo-burgundy);
+.msButton:hover {
+  background-color: #444;
   transform: translateY(-2px);
 }
 
-.submitButton:disabled {
-  background-color: var(--bdo-pale-charcoal);
+.msButton:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
 }
 
-/* Variante secundaria (Volver al login) */
-.secondaryButton {
-  background-color: var(--bdo-pale-charcoal);
-  color: var(--bdo-charcoal);
-  border: 1px solid var(--bdo-pale-charcoal);
-  transition: background 0.3s ease, color 0.3s ease;
+.msLogo {
+  width: 20px;
+  height: 20px;
 }
 
-.secondaryButton:hover {
-  background-color: var(--bdo-charcoal);
-  color: white;
-  border: 1px solid var(--bdo-charcoal);
+/* Mensaje de error */
+.errorMessage {
+  color: var(--bdo-red);
+  font-size: 0.9em;
+  margin-top: 15px;
 }
 
-/* Enlaces */
+/* Enlace de volver */
 .backLink {
   margin-top: 20px;
   color: var(--bdo-slate);
@@ -129,63 +101,4 @@
 
 .backLink:hover {
   color: var(--bdo-charcoal);
-}
-
-/* Mensajes de error y éxito */
-.errorMessage {
-  color: var(--bdo-red);
-  font-size: 0.9em;
-  margin-top: 4px;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.successMessage {
-  color: var(--bdo-jade);
-  font-size: 0.9em;
-  margin-top: 4px;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-/* Botón olvidaste contraseña */
-.forgotPassword {
-  margin-top: 15px;
-  background: none;
-  border: none;
-  color: var(--bdo-ocean);
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.25s;
-}
-
-.forgotPassword:hover {
-  background: none !important;
-  color: var(--bdo-charcoal);
-}
-
-/* Clases genéricas para errores y éxito */
-.error {
-  color: var(--bdo-red);
-  font-size: 0.9rem;
-  margin-top: 4px;
-}
-
-.success {
-  color: var(--bdo-jade);
-  font-size: 0.95rem;
-  margin-top: 8px;
-}
-
-/* Placeholder para StaffLogin (cuadro blanco / futuro AD) */
-.placeholderBox {
-  width: 100%;
-  height: 200px;
-  border: 2px dashed var(--bdo-pale-charcoal);
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #fafafa;
-  margin-top: 20px;
-  font-size: 0.95em;
-  color: var(--bdo-slate);
 }

@@ -1,17 +1,23 @@
+// src/Modules/Admin/pages/Customers.jsx
 import React, { useContext, useEffect } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsPerson } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 
-export const Customers = () => {
-  const { setEntityIcon, entityIcon } = useContext(UIContext);
+/**
+ * Página de clientes.
+ * Permite listar, crear, actualizar y eliminar clientes.
+ */
+const Customers = () => {
+  const { setEntityIcon } = useContext(UIContext);
 
+  // Establece el ícono de la página en el sidebar
   useEffect(() => {
     setEntityIcon(<BsPerson />);
   }, [setEntityIcon]);
 
-  // --- CONFIGURACIÓN ESPECÍFICA PARA CLIENTES ---
+  // Funciones CRUD para la entidad Cliente
   const getCustomers = async () => {
     try {
       const response = await axiosClient.get("/Cliente");
@@ -86,6 +92,7 @@ export const Customers = () => {
     }
   };
 
+  // Configuración de campos y validaciones para CrudForm
   const customerFields = [
     { key: "id", labelKey: "customers.table.id", type: "text" },
     { key: "name", labelKey: "customers.table.name", type: "text" },
@@ -110,7 +117,6 @@ export const Customers = () => {
     },
     phone: (value) => {
       if (!value) return "El teléfono es obligatorio";
-      // Asume que la API acepta 8 dígitos numéricos, si no, puedes cambiar la validación.
       if (!/^\d{8}$/.test(value))
         return "El teléfono debe tener 8 dígitos numéricos";
       return null;
@@ -122,12 +128,10 @@ export const Customers = () => {
       return null;
     },
   };
-  // ---------------------------------------------
 
   return (
     <CrudDashboard
       entityName="customers"
-      entityIcon={entityIcon}
       fields={customerFields}
       getItems={getCustomers}
       createItem={createCustomer}
@@ -137,3 +141,5 @@ export const Customers = () => {
     />
   );
 };
+
+export default Customers;

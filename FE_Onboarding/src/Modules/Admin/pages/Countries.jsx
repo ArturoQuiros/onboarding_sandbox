@@ -1,17 +1,23 @@
+// src/Modules/Admin/pages/Countries.jsx
 import React, { useContext, useEffect } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsGlobeAmericas } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 
-export const Countries = () => {
-  const { setEntityIcon, entityIcon } = useContext(UIContext);
+/**
+ * Página de países.
+ * Permite gestionar países: crear, actualizar, eliminar y listar.
+ */
+const Countries = () => {
+  const { setEntityIcon } = useContext(UIContext);
 
+  // Establece el ícono de la página en el sidebar
   useEffect(() => {
     setEntityIcon(<BsGlobeAmericas />);
   }, [setEntityIcon]);
 
-  // Trae los países y mapea solo id y nombre
+  // Funciones CRUD para la entidad País
   const getCountries = async () => {
     try {
       const response = await axiosClient.get("/Pais");
@@ -27,8 +33,9 @@ export const Countries = () => {
 
   const createCountry = async (country) => {
     try {
-      const payload = { nombre: country.name };
-      const response = await axiosClient.post("/Pais", payload);
+      const response = await axiosClient.post("/Pais", {
+        nombre: country.name,
+      });
       return { id: response.data.id, name: response.data.nombre };
     } catch (error) {
       console.error("Error al crear país:", error);
@@ -38,8 +45,10 @@ export const Countries = () => {
 
   const updateCountry = async (country) => {
     try {
-      const payload = { id: country.id, nombre: country.name };
-      const response = await axiosClient.put(`/Pais/${country.id}`, payload);
+      const response = await axiosClient.put(`/Pais/${country.id}`, {
+        id: country.id,
+        nombre: country.name,
+      });
       return { id: response.data.id, name: response.data.nombre };
     } catch (error) {
       console.error("Error al actualizar país:", error);
@@ -57,6 +66,7 @@ export const Countries = () => {
     }
   };
 
+  // Configuración de campos y validaciones para CrudForm
   const countryFields = [
     { key: "id", labelKey: "countries.table.id", type: "text" },
     { key: "name", labelKey: "countries.table.name", type: "text" },
@@ -76,7 +86,6 @@ export const Countries = () => {
   return (
     <CrudDashboard
       entityName="countries"
-      entityIcon={entityIcon}
       fields={countryFields}
       getItems={getCountries}
       createItem={createCountry}
@@ -86,3 +95,5 @@ export const Countries = () => {
     />
   );
 };
+
+export default Countries;
