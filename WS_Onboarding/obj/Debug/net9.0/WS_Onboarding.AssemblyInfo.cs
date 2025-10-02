@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WS_Onboarding")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9f8c18224eb98209da0f82405f24919339a8f1b")]
 [assembly: System.Reflection.AssemblyProductAttribute("WS_Onboarding")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WS_Onboarding")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
