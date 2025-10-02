@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 services:
   container_ws_onboarding:
     build: .
@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
     container_name: docker_fe_onboarding
     ports:
-      - "8080:80"  # Nginx sirve en el puerto 80, lo mapeamos al 8080 del host
+      - "8080:80" # Nginx sirve en el puerto 80, lo mapeamos al 8080 del host
     networks:
       - onboarding_net
     depends_on:
