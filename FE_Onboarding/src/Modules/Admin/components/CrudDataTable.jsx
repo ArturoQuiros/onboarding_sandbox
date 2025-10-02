@@ -1,6 +1,5 @@
 // src/Modules/Admin/components/Crud/CrudDataTable.jsx
-
-import React, { useMemo } from "react"; // 👈 Añadido useMemo
+import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   BsPencil,
@@ -15,6 +14,7 @@ export const CrudDataTable = ({
   fields,
   onEdit,
   onDelete,
+  extraActionRenderer, // <-- nuevo
   currentPage,
   itemsPerPage,
   filteredCount,
@@ -26,7 +26,6 @@ export const CrudDataTable = ({
 }) => {
   const { t } = useTranslation("global");
 
-  // 🛠️ MODIFICACIÓN CLAVE: Filtramos los campos que son visibles en la tabla.
   const visibleFields = useMemo(() => {
     return fields.filter(
       (field) => field.isTableVisible !== false && field.isHidden !== true
@@ -45,7 +44,6 @@ export const CrudDataTable = ({
           <table className={styles.table}>
             <thead className={styles.tableHeader}>
               <tr>
-                {/* 1. Usamos visibleFields en lugar de fields para los encabezados */}
                 {visibleFields.map((field) => (
                   <th
                     key={field.key}
@@ -72,7 +70,6 @@ export const CrudDataTable = ({
             <tbody>
               {data.map((item) => (
                 <tr key={item.id} className={styles.tableRow}>
-                  {/* 2. Usamos visibleFields en lugar de fields para las celdas */}
                   {visibleFields.map((field) => (
                     <td key={field.key} className={styles.tableCell}>
                       {item[field.key]}
@@ -91,13 +88,13 @@ export const CrudDataTable = ({
                     >
                       <BsTrash />
                     </button>
+                    {extraActionRenderer && extraActionRenderer(item)}
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {/* ... Footer y Paginación (sin cambios) ... */}
           <div className={styles.tableFooter}>
             <span className={styles.recordsInfo}>
               {t("common.showingRecords", {

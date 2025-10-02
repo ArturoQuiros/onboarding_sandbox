@@ -2,20 +2,22 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
-import { BsNewspaper } from "react-icons/bs";
+import { BsNewspaper, BsTools } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
+import { useNavigate } from "react-router-dom";
+import styles from "../components/CrudDataTable.module.css";
 
 /**
  * Página de contratos.
- * Permite crear, editar y eliminar contratos.
  */
 const Contracts = () => {
   const { setEntityIcon } = useContext(UIContext);
+  const navigate = useNavigate();
+
   const [clientes, setClientes] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Configura el icono de la página
   useEffect(() => {
     setEntityIcon(<BsNewspaper />);
   }, [setEntityIcon]);
@@ -44,10 +46,11 @@ const Contracts = () => {
     try {
       const res = await axiosClient.get("/Contrato");
       return res.data.map((c) => ({
-        ...c,
-        clienteNombre:
+        id: c.id,
+        client:
           clientes.find((cl) => cl.id === c.id_Cliente)?.nombre || c.id_Cliente,
-        accountManagerNombre:
+        status: c.estado,
+        accountManager:
           usuarios.find((u) => u.id === c.account_manager)?.nombre ||
           c.account_manager,
       }));
@@ -58,13 +61,12 @@ const Contracts = () => {
   }, [clientes, usuarios]);
 
   const createContract = useCallback(async (contract) => {
+    const payload = {
+      id_Cliente: contract.id_Cliente,
+      estado: contract.status,
+      account_manager: contract.accountManager,
+    };
     try {
-      // Mapeo correcto para la API
-      const payload = {
-        id_Cliente: contract.id_Cliente, // viene del select
-        estado: contract.estado,
-        account_manager: contract.account_manager, // viene del select
-      };
       const res = await axiosClient.post("/Contrato", payload);
       return res.data;
     } catch (error) {
@@ -74,12 +76,12 @@ const Contracts = () => {
   }, []);
 
   const updateContract = useCallback(async (contract) => {
+    const payload = {
+      id_Cliente: contract.id_Cliente,
+      estado: contract.status,
+      account_manager: contract.accountManager,
+    };
     try {
-      const payload = {
-        id_Cliente: contract.id_Cliente,
-        estado: contract.estado,
-        account_manager: contract.account_manager,
-      };
       const res = await axiosClient.put(`/Contrato/${contract.id}`, payload);
       return res.data;
     } catch (error) {
@@ -98,21 +100,25 @@ const Contracts = () => {
     }
   }, []);
 
-  if (isLoading) return <div>Cargando configuración de contratos...</div>;
-
   // --- Campos para CrudForm / DataTable ---
   const contractFields = [
-    { key: "id", labelKey: "contracts.table.id", type: "text" },
     {
-      key: "clienteNombre", // para mostrar en tabla
-      formKey: "id_Cliente", // para editar/crear
+      key: "id",
+      labelKey: "contracts.table.id",
+      type: "text",
+      isReadOnly: true,
+      isHidden: true,
+    },
+    {
+      key: "client",
+      formKey: "id_Cliente",
       labelKey: "contracts.table.client",
       type: "select",
       options: clientes.map((c) => ({ value: c.id, label: c.nombre })),
       validation: { required: true },
     },
     {
-      key: "estado",
+      key: "status",
       labelKey: "contracts.table.status",
       type: "select",
       options: [
@@ -123,14 +129,27 @@ const Contracts = () => {
       validation: { required: true },
     },
     {
-      key: "accountManagerNombre", // para mostrar en tabla
-      formKey: "account_manager", // para editar/crear
+      key: "accountManager",
+      formKey: "account_manager",
       labelKey: "contracts.table.accountManager",
       type: "select",
       options: usuarios.map((u) => ({ value: u.id, label: u.nombre })),
       validation: { required: true },
     },
   ];
+
+  // --- Acción extra: ver servicios de contrato ---
+  const extraActionRenderer = (item) => (
+    <button
+      onClick={() => navigate(`/admin/contracts/${item.id}/services`)}
+      className={styles.extraActionButton}
+      title="Ver Servicios"
+    >
+      <BsTools />
+    </button>
+  );
+
+  if (isLoading) return <div>Cargando configuración de contratos...</div>;
 
   return (
     <CrudDashboard
@@ -140,6 +159,7 @@ const Contracts = () => {
       createItem={createContract}
       updateItem={updateContract}
       deleteItem={deleteContract}
+      extraActionRenderer={extraActionRenderer}
     />
   );
 };

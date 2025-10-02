@@ -1,4 +1,3 @@
-// src/Modules/Admin/pages/Services.jsx
 import React, {
   useContext,
   useEffect,
@@ -11,18 +10,12 @@ import { UIContext } from "../../../Global/Context";
 import { BsTools } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 
-/**
- * Página de gestión de servicios.
- * Usa CrudDashboard con operaciones CRUD y validaciones.
- */
 const Services = () => {
   const { setEntityIcon } = useContext(UIContext);
-
   const [countriesList, setCountriesList] = useState([]);
   const [countryMap, setCountryMap] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // Cargar países y mapear id → nombre
   const fetchCountries = async () => {
     try {
       const { data: countries } = await axiosClient.get("/Pais");
@@ -31,20 +24,16 @@ const Services = () => {
         return acc;
       }, {});
       setCountryMap(map);
-
-      const list = countries.map((country) => ({
-        value: country.id,
-        label: country.nombre,
-      }));
-      setCountriesList(list);
+      setCountriesList(
+        countries.map((c) => ({ value: c.id, label: c.nombre }))
+      );
     } catch (error) {
-      console.error("Error al cargar la lista de países:", error);
+      console.error("Error al cargar países:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Establece el ícono de la entidad
   useEffect(() => {
     setEntityIcon(<BsTools />);
     fetchCountries();
@@ -53,46 +42,34 @@ const Services = () => {
   // --- Campos para CrudForm ---
   const serviceFields = useMemo(
     () => [
+      { key: "id", labelKey: "services.table.id", type: "text" },
       {
-        key: "id",
-        labelKey: "services.table.id",
-        type: "text",
-        isReadOnly: true,
-        isHidden: true,
-      },
-      {
-        key: "country",
+        key: "countryName", // para mostrar en tabla
+        formKey: "id_pais", // clave correcta para API
         labelKey: "services.table.country",
         type: "select",
         options: countriesList,
+        validation: { required: true },
       },
-      { key: "name", labelKey: "services.table.name", type: "text" },
+      {
+        key: "name",
+        labelKey: "services.table.name",
+        type: "text",
+        validation: { required: true },
+      },
     ],
     [countriesList]
   );
-
-  // --- Validaciones ---
-  const serviceValidations = {
-    country: (value) => {
-      if (!value) return "Debes seleccionar un país";
-      return null;
-    },
-    name: (value) => {
-      if (!value || value.trim() === "")
-        return "El nombre del servicio es obligatorio";
-      return null;
-    },
-  };
 
   // --- Funciones CRUD ---
   const getServices = useCallback(async () => {
     try {
       const { data: services } = await axiosClient.get("/Servicio");
-      return services.map((service) => ({
-        id: service.id,
-        name: service.nombre,
-        country: countryMap[service.id_pais] || "Desconocido",
-        id_pais: service.id_pais,
+      return services.map((s) => ({
+        id: s.id,
+        name: s.nombre,
+        countryName: countryMap[s.id_pais] || "Desconocido",
+        id_pais: s.id_pais,
       }));
     } catch (error) {
       console.error("Error al obtener servicios:", error);
@@ -102,53 +79,35 @@ const Services = () => {
 
   const createService = useCallback(
     async (item) => {
-      const payload = { nombre: item.name, id_pais: item.country };
-      try {
-        const { data: newService } = await axiosClient.post(
-          "/Servicio",
-          payload
-        );
-        return {
-          id: newService.id,
-          name: newService.nombre,
-          country: countryMap[newService.id_pais] || "Desconocido",
-          id_pais: newService.id_pais,
-        };
-      } catch (error) {
-        console.error("Error al crear servicio:", error);
-        throw error;
-      }
+      const payload = { nombre: item.name, id_pais: item.id_pais };
+      const { data: newService } = await axiosClient.post("/Servicio", payload);
+      return {
+        id: newService.id,
+        name: newService.nombre,
+        countryName: countryMap[newService.id_pais] || "Desconocido",
+        id_pais: newService.id_pais,
+      };
     },
     [countryMap]
   );
 
   const updateService = useCallback(
     async (item) => {
-      const payload = { id: item.id, nombre: item.name, id_pais: item.country };
-      try {
-        await axiosClient.put(`/Servicio/${item.id}`, payload);
-        return {
-          id: item.id,
-          name: item.name,
-          country: countryMap[item.country] || "Desconocido",
-          id_pais: item.country,
-        };
-      } catch (error) {
-        console.error("Error al actualizar servicio:", error);
-        throw error;
-      }
+      const payload = { id: item.id, nombre: item.name, id_pais: item.id_pais };
+      await axiosClient.put(`/Servicio/${item.id}`, payload);
+      return {
+        id: item.id,
+        name: item.name,
+        countryName: countryMap[item.id_pais] || "Desconocido",
+        id_pais: item.id_pais,
+      };
     },
     [countryMap]
   );
 
   const deleteService = useCallback(async (id) => {
-    try {
-      await axiosClient.delete(`/Servicio/${id}`);
-      return true;
-    } catch (error) {
-      console.error("Error al eliminar servicio:", error);
-      throw error;
-    }
+    await axiosClient.delete(`/Servicio/${id}`);
+    return true;
   }, []);
 
   if (isLoading) return <div>Cargando configuración de servicios...</div>;
@@ -161,8 +120,6 @@ const Services = () => {
       createItem={createService}
       updateItem={updateService}
       deleteItem={deleteService}
-      validations={serviceValidations}
-      initialFormValues={{ name: "", country: "" }}
     />
   );
 };

@@ -157,3 +157,20 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Botón de acción extra (Servicios, etc.) */
+.extraActionButton {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  padding: 6px;
+  border-radius: 50%;
+  color: var(--bdo-ocean); /* Puedes usar otro color si quieres diferenciarlo */
+}
+
+.extraActionButton:hover {
+  color: #0073b6;
+  background-color: rgba(0, 143, 210, 0.1);
+}
