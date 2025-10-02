@@ -5,22 +5,16 @@ import { UIContext } from "../../../Global/Context";
 import { BsNewspaper } from "react-icons/bs";
 import axiosClient from "../../../Api/axiosClient";
 
-/**
- * Página de contratos.
- * Permite crear, editar y eliminar contratos.
- */
 const Contracts = () => {
   const { setEntityIcon } = useContext(UIContext);
   const [clientes, setClientes] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Configura el icono de la página
   useEffect(() => {
     setEntityIcon(<BsNewspaper />);
   }, [setEntityIcon]);
 
-  // Carga clientes y usuarios
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -31,7 +25,7 @@ const Contracts = () => {
         setClientes(clientesRes.data);
         setUsuarios(usuariosRes.data);
       } catch (error) {
-        console.error("Error cargando clientes o usuarios", error);
+        console.error("Error cargando clientes o usuarios:", error);
       } finally {
         setIsLoading(false);
       }
@@ -39,80 +33,66 @@ const Contracts = () => {
     fetchData();
   }, []);
 
-  // --- CRUD Functions ---
   const getContracts = useCallback(async () => {
     try {
-      const res = await axiosClient.get("/Contrato");
-      return res.data.map((c) => ({
-        ...c,
-        clienteNombre:
+      const { data: contracts } = await axiosClient.get("/Contrato");
+
+      return contracts.map((c) => ({
+        id: c.id,
+        client:
           clientes.find((cl) => cl.id === c.id_Cliente)?.nombre || c.id_Cliente,
-        accountManagerNombre:
+        status: c.estado,
+        accountManager:
           usuarios.find((u) => u.id === c.account_manager)?.nombre ||
           c.account_manager,
+        id_Cliente: c.id_Cliente, // para el form
+        account_manager: c.account_manager, // para el form
       }));
     } catch (error) {
-      console.error(error);
+      console.error("Error al cargar contratos:", error);
       return [];
     }
   }, [clientes, usuarios]);
 
   const createContract = useCallback(async (contract) => {
-    try {
-      // Mapeo correcto para la API
-      const payload = {
-        id_Cliente: contract.id_Cliente, // viene del select
-        estado: contract.estado,
-        account_manager: contract.account_manager, // viene del select
-      };
-      const res = await axiosClient.post("/Contrato", payload);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const payload = {
+      id_Cliente: contract.id_Cliente,
+      estado: contract.status,
+      account_manager: contract.account_manager,
+    };
+    const res = await axiosClient.post("/Contrato", payload);
+    return res.data;
   }, []);
 
   const updateContract = useCallback(async (contract) => {
-    try {
-      const payload = {
-        id_Cliente: contract.id_Cliente,
-        estado: contract.estado,
-        account_manager: contract.account_manager,
-      };
-      const res = await axiosClient.put(`/Contrato/${contract.id}`, payload);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    const payload = {
+      id_Cliente: contract.id_Cliente,
+      estado: contract.status,
+      account_manager: contract.account_manager,
+    };
+    const res = await axiosClient.put(`/Contrato/${contract.id}`, payload);
+    return res.data;
   }, []);
 
   const deleteContract = useCallback(async (id) => {
-    try {
-      await axiosClient.delete(`/Contrato/${id}`);
-      return true;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    await axiosClient.delete(`/Contrato/${id}`);
+    return true;
   }, []);
 
   if (isLoading) return <div>Cargando configuración de contratos...</div>;
 
-  // --- Campos para CrudForm / DataTable ---
   const contractFields = [
     { key: "id", labelKey: "contracts.table.id", type: "text" },
     {
-      key: "clienteNombre", // para mostrar en tabla
-      formKey: "id_Cliente", // para editar/crear
+      key: "client", // Nombre mostrado en tabla
+      formKey: "id_Cliente", // Envía ID al API
       labelKey: "contracts.table.client",
       type: "select",
       options: clientes.map((c) => ({ value: c.id, label: c.nombre })),
       validation: { required: true },
     },
     {
-      key: "estado",
+      key: "status",
       labelKey: "contracts.table.status",
       type: "select",
       options: [
@@ -123,8 +103,8 @@ const Contracts = () => {
       validation: { required: true },
     },
     {
-      key: "accountManagerNombre", // para mostrar en tabla
-      formKey: "account_manager", // para editar/crear
+      key: "accountManager",
+      formKey: "account_manager",
       labelKey: "contracts.table.accountManager",
       type: "select",
       options: usuarios.map((u) => ({ value: u.id, label: u.nombre })),

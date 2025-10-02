@@ -73,7 +73,11 @@
       "createTitle": "Crear Nuevo Servicio",
       "nameLabel": "Nombre",
       "countryLabel": "País"
-    }
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este servicio?",
+    "deleting": "Eliminando servicio...",
+    "deleteSuccess": "¡Servicio eliminado con éxito!",
+    "deleteError": "¡No se pudo eliminar el servicio!"
   },
   "users": {
     "title": "Usuarios",
@@ -101,15 +105,21 @@
     "createButton": "Crear Nuevo Contrato",
     "table": {
       "id": "ID",
-      "country": "País",
-      "customer": "Cliente"
+      "client": "Cliente",
+      "status": "Estado",
+      "accountManager": "Account Manager"
     },
     "form": {
       "editTitle": "Editar Contrato",
       "createTitle": "Crear Nuevo Contrato",
-      "countryLabel": "País",
-      "customerLabel": "Cliente"
-    }
+      "clientLabel": "Cliente",
+      "statusLabel": "Estado",
+      "accountManagerLabel": "Account Manager"
+    },
+    "confirmDelete": "¿Estás seguro de que quieres eliminar este contrato?",
+    "deleting": "Eliminando contrato...",
+    "deleteSuccess": "¡Contrato eliminado con éxito!",
+    "deleteError": "¡No se pudo eliminar el contrato!"
   },
   "common": {
     "actions": "Acciones",

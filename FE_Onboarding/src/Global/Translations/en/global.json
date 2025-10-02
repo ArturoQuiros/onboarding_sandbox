@@ -73,7 +73,11 @@
       "createTitle": "Create New Service",
       "nameLabel": "Name",
       "countryLabel": "Country"
-    }
+    },
+    "confirmDelete": "Are you sure you want to delete this service?",
+    "deleting": "Deleting service...",
+    "deleteSuccess": "Service deleted successfully!",
+    "deleteError": "Could not delete service!"
   },
   "users": {
     "title": "Users",
@@ -91,7 +95,7 @@
       "emailLabel": "Email",
       "passwordLabel": "Password"
     },
-    "confirmDelete": "¿Are you sure you want to delete this user?",
+    "confirmDelete": "Are you sure you want to delete this user?",
     "deleting": "Deleting user...",
     "deleteSuccess": "User deleted successfully!",
     "deleteError": "Could not delete user!"
@@ -101,15 +105,21 @@
     "createButton": "Create New Contract",
     "table": {
       "id": "ID",
-      "country": "Country",
-      "customer": "Customer"
+      "client": "Customer",
+      "status": "Status",
+      "accountManager": "Account Manager"
     },
     "form": {
       "editTitle": "Edit Contract",
       "createTitle": "Create New Contract",
-      "countryLabel": "Country",
-      "customerLabel": "Customer"
-    }
+      "clientLabel": "Customer",
+      "statusLabel": "Status",
+      "accountManagerLabel": "Account Manager"
+    },
+    "confirmDelete": "Are you sure you want to delete this contract?",
+    "deleting": "Deleting contract...",
+    "deleteSuccess": "Contract deleted successfully!",
+    "deleteError": "Could not delete contract!"
   },
   "common": {
     "actions": "Actions",
