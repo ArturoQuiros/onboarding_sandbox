@@ -5,14 +5,17 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS dev
 WORKDIR /app
 
 # Copy only the project file(s) to leverage Docker cache
-COPY WS_Onboarding/WS_Onboarding.sln ./
-COPY WS_Onboarding/WS_Onboarding.csproj ./
+COPY WS_Onboarding/WS_Onboarding.sln ./WS_Onboarding/
+COPY WS_Onboarding/WS_Onboarding.csproj ./WS_Onboarding/
 
 # Restore dependencies (via NuGet)
-RUN dotnet restore WS_Onboarding.sln
+RUN dotnet restore ./WS_Onboarding/WS_Onboarding.sln
 
 # Copy the rest of the source code
-COPY ./WS_Onboarding/ ./
+COPY ./WS_Onboarding/ ./WS_Onboarding/
+
+# Establecer el directorio dentro del proyecto para ejecutar comandos
+WORKDIR /app/WS_Onboarding
 
 # Build the project (optional for watch mode)
 RUN dotnet build -c Debug

@@ -1,31 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj": {}
+    "/app/WS_Onboarding/WS_Onboarding.csproj": {}
   },
   "projects": {
-    "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj": {
+    "/app/WS_Onboarding/WS_Onboarding.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
+        "projectUniqueName": "/app/WS_Onboarding/WS_Onboarding.csproj",
         "projectName": "WS_Onboarding",
-        "projectPath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
-        "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\obj\\",
+        "projectPath": "/app/WS_Onboarding/WS_Onboarding.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/app/WS_Onboarding/obj/",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -106,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
