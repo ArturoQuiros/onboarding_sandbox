@@ -1,10 +1,19 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+// src/Modules/Admin/components/Crud/CrudDashboard.jsx
+
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useContext,
+} from "react";
 import { CrudDataTable, CrudForm, SearchBar, ItemsPerPageSelector } from "./";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import styles from "./CrudDashboard.module.css";
 import { ConfirmModal } from "./ConfirmModal";
 import { FaPlus } from "react-icons/fa";
+import { UIContext } from "../../../Global/Context";
 
 export const CrudDashboard = ({
   entityName,
@@ -13,10 +22,10 @@ export const CrudDashboard = ({
   createItem,
   updateItem,
   deleteItem,
-  entityIcon,
   validations,
 }) => {
   const { t } = useTranslation("global");
+  const { entityIcon } = useContext(UIContext);
 
   const [items, setItems] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -105,21 +114,15 @@ export const CrudDashboard = ({
 
   const handleConfirmDelete = async () => {
     setIsConfirmModalOpen(false);
-    const id = itemIdToDelete;
-
     try {
-      // Optimistic update: quitar del estado local antes de esperar respuesta
-      setItems((prev) => prev.filter((i) => i.id !== id));
-
-      await toast.promise(deleteItem(id), {
+      await toast.promise(deleteItem(itemIdToDelete), {
         loading: t(`${entityName}.deleting`),
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
+      await reloadItems();
     } catch (error) {
       console.error(error);
-      // Si falla, recargamos para volver al estado real
-      reloadItems();
     } finally {
       setItemIdToDelete(null);
     }
@@ -127,40 +130,22 @@ export const CrudDashboard = ({
 
   const handleSave = async (item) => {
     const isEditing = Boolean(selectedItem);
+    const action = isEditing ? updateItem(item) : createItem(item);
 
     try {
-      if (isEditing) {
-        // Optimistic update: actualizamos localmente
-        setItems((prev) =>
-          prev.map((i) => (i.id === item.id ? { ...i, ...item } : i))
-        );
-
-        await toast.promise(updateItem(item), {
-          loading: t("common.updating"),
-          success: t("common.updateSuccess"),
-          error: t("common.genericError"),
-        });
-      } else {
-        // Optimistic update: agregamos temporalmente
-        const tempId = Date.now(); // ID temporal
-        const newItem = { ...item, id: tempId };
-        setItems((prev) => [...prev, newItem]);
-
-        const created = await toast.promise(createItem(item), {
-          loading: t("common.creating"),
-          success: t("common.createSuccess"),
-          error: t("common.genericError"),
-        });
-
-        // Reemplazamos el temporal con el real devuelto por la API
-        setItems((prev) => prev.map((i) => (i.id === tempId ? created : i)));
-      }
+      await toast.promise(action, {
+        loading: isEditing ? t("common.updating") : t("common.creating"),
+        success: isEditing
+          ? t("common.updateSuccess")
+          : t("common.createSuccess"),
+        error: t("common.genericError"),
+      });
 
       setIsFormOpen(false);
       setSelectedItem(null);
+      await reloadItems();
     } catch (error) {
       console.error(error);
-      reloadItems(); // fallback si algo falla
     }
   };
 
@@ -183,7 +168,6 @@ export const CrudDashboard = ({
           onSave={handleSave}
           onCancel={handleCancel}
           validations={validations}
-          entityIcon={entityIcon}
         />
       ) : (
         <>
