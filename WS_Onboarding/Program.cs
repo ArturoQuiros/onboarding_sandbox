@@ -4,6 +4,7 @@ using WS_Onboarding.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using WS_Onboarding.Controllers;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Azure Authentication
 app.UseAuthentication();
 app.UseAuthorization();
 

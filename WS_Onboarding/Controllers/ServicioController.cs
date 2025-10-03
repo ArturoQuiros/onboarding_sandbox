@@ -75,6 +75,39 @@ namespace WS_Onboarding.Controllers
             }
         }
 
+        [HttpGet("ByIdPais")]
+        public IActionResult GetServicioByIdPais([FromQuery] int IdPais)
+        {
+            try
+            {
+                var Servicios = _context.Servicios
+                    .Where(c => c.Id_pais == IdPais).ToList()
+                    .Select(c => c.ToServicioDto());
+
+                if (Servicios == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(Servicios);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] CreateServicioDto ServicioDto)
         {
