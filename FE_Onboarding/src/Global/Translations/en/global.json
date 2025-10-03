@@ -121,6 +121,14 @@
     "deleteSuccess": "Contract deleted successfully!",
     "deleteError": "Could not delete contract!"
   },
+
+  "contractServices": {
+    "title": "Contract Services",
+    "serviceAssigned": "Service successfully assigned!",
+    "serviceUnassigned": "Service successfully unassigned!",
+    "loadSuccess": "Data loaded: {{count}} services available."
+  },
+
   "common": {
     "actions": "Actions",
     "edit": "Edit",
@@ -141,6 +149,9 @@
     "next": "Next",
     "itemsPerPage": "Records per page",
     "logout": "Logout",
-    "selectOption": "Select Option"
+    "selectOption": "Select Option",
+    "loading": "Loading...",
+    "savingChanges": "Saving changes...",
+    "errorSavingChanges": "Error saving changes."
   }
 }

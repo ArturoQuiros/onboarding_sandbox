@@ -21,7 +21,7 @@ export const CrudDashboard = ({
   updateItem,
   deleteItem,
   validations,
-  extraActionRenderer, // <-- prop nueva
+  extraActionRenderer,
 }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
@@ -32,6 +32,9 @@ export const CrudDashboard = ({
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
+  // 📌 AÑADIDO: Estado de carga para mostrar el spinner/mensaje
+  const [isLoading, setIsLoading] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -39,11 +42,15 @@ export const CrudDashboard = ({
   const [sortDirection, setSortDirection] = useState("asc");
 
   const reloadItems = useCallback(async () => {
+    setIsLoading(true); // 📌 INICIO DE CARGA
     try {
       const data = await getItems();
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
+      // ⚠️ Nota: Asegúrate de tener 'common.loadError' en tus diccionarios
       toast.error(t("common.loadError"));
+    } finally {
+      setIsLoading(false); // 📌 FIN DE CARGA
     }
   }, [getItems, t]);
 
@@ -140,13 +147,16 @@ export const CrudDashboard = ({
         error: t("common.genericError"),
       });
       setIsFormOpen(false);
-      setSelectedItem(null);
+      setSelecteditem(null);
       await reloadItems();
     } catch (error) {
       console.error(error);
     }
   };
 
+  // -------------------------
+  // RENDERIZADO AJUSTADO
+  // -------------------------
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -154,6 +164,7 @@ export const CrudDashboard = ({
           {entityIcon && <span className={styles.icon}>{entityIcon}</span>}
           {t(`${entityName}.title`)}
         </h2>
+        {/* El botón de crear se mantiene visible, incluso si está cargando */}
         <button className={styles.createButton} onClick={handleCreate}>
           <FaPlus /> {t(`${entityName}.createButton`)}
         </button>
@@ -169,29 +180,40 @@ export const CrudDashboard = ({
         />
       ) : (
         <>
-          <div className={styles.controlsBar}>
-            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-            <ItemsPerPageSelector
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={handleItemsPerPageChange}
-            />
-          </div>
+          {/* 📌 Condicional: La barra de controles NO se muestra si está cargando */}
+          {!isLoading && (
+            <div className={styles.controlsBar}>
+              <SearchBar
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+              />
+              <ItemsPerPageSelector
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
+          )}
 
-          <CrudDataTable
-            data={paginatedItems}
-            fields={fields}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            extraActionRenderer={extraActionRenderer} // <-- prop pasada
-            currentPage={currentPage}
-            totalPages={totalPages}
-            filteredCount={filteredItems.length}
-            onPageChange={setCurrentPage}
-            itemsPerPage={itemsPerPage}
-            onSort={handleSort}
-            sortKey={sortKey}
-            sortDirection={sortDirection}
-          />
+          {/* 📌 Condicional: Mostrar el mensaje de carga o la tabla */}
+          {isLoading ? (
+            <p className={styles.loadingMessage}>{t("common.loading")}</p>
+          ) : (
+            <CrudDataTable
+              data={paginatedItems}
+              fields={fields}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              extraActionRenderer={extraActionRenderer}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              filteredCount={filteredItems.length}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              onSort={handleSort}
+              sortKey={sortKey}
+              sortDirection={sortDirection}
+            />
+          )}
         </>
       )}
 

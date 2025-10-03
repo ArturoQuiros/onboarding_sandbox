@@ -32,7 +32,7 @@ import { SearchBar, ItemsPerPageSelector } from "./";
 export const ContractServiceDashboard = () => {
   const { id: contractId } = useParams();
   const { entityIcon } = useContext(UIContext);
-  const { t } = useTranslation();
+  const { t } = useTranslation("global");
 
   const [allServices, setAllServices] = useState([]);
   const [assignedServiceIds, setAssignedServiceIds] = useState(new Map());
