@@ -1,56 +1,27 @@
-// src/Modules/Contracts/TaskFlow/components/TaskFlowLayout.jsx
+// src/modules/contractFlow/layouts/TaskFlowLayout.jsx
 
 import React from "react";
-import { TaskChecklist, DynamicFormRenderer } from "../components";
+import { Outlet } from "react-router-dom";
+import { TaskChecklist, Navbar } from "../components";
 import styles from "./TaskFlowLayout.module.css";
 
-/**
- * Componente Layout principal que establece la estructura de dos paneles
- * (Formulario y Checklist) para el flujo de tareas en curso.
- * * @param {object[]} tasks - Estructura completa de las tareas.
- * @param {string} activeTaskId - ID de la tarea actualmente activa.
- * @param {string} activeComponentKey - Clave del formulario a renderizar.
- * @param {object} initialData - Datos precargados para el formulario.
- * @param {function} onNext - Manejador para guardar y avanzar (handleNext).
- * @param {function} onBack - Manejador para retroceder.
- * @param {boolean} canGoBack - Indica si se permite retroceder.
- * @param {boolean} isSaving - Indica si se está guardando.
- * @returns {JSX.Element}
- */
-export const TaskFlowLayout = ({
-  tasks,
-  activeTaskId,
-  activeComponentKey,
-  initialData,
-  onNext,
-  onBack,
-  canGoBack,
-  isSaving, // Prop para el estado de guardado
-}) => {
+const TaskFlowLayout = () => {
+  // Nota: Eliminamos la lógica isSidebarOpen ya que el checklist siempre estará visible
   return (
-    // El contenedor aplica el estilo de 2 columnas (70/30)
-    <div className={styles.container}>
-      {/* Panel de Formulario - Lado Izquierdo (~70%) */}
-      <main className={styles.formPanel}>
-        <DynamicFormRenderer
-          componentKey={activeComponentKey}
-          initialData={initialData}
-          // Pasamos las funciones de navegación al motor
-          onNext={onNext}
-          onBack={onBack}
-          canGoBack={canGoBack}
-          isSaving={isSaving} // Estado de guardado
-        />
-      </main>
+    <div className={styles.pageLayout}>
+      <Navbar />
 
-      {/* Panel de Checklist - Lado Derecho (~30%) */}
-      <aside className={styles.checklistPanel}>
-        <TaskChecklist
-          tasks={tasks}
-          activeTaskId={activeTaskId}
-          // No pasamos onTaskSelect aquí si solo queremos navegar con Back/Next
-        />
+      {/* TaskChecklist actúa como la Sidebar de tareas */}
+      <aside className={styles.checklist}>
+        <TaskChecklist />
       </aside>
+
+      {/* Aquí va la vista del formulario (ClientTaskView o StaffTaskReview) */}
+      <main className={styles.mainContent}>
+        <Outlet />
+      </main>
     </div>
   );
 };
+
+export default TaskFlowLayout;

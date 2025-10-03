@@ -19,15 +19,12 @@ import { Toaster } from "react-hot-toast";
 // 🎯 IMPORTACIONES DEL FLUJO DE TAREAS (Landing y Task Page)
 import {
   OnboardingLanding,
-  OnboardingTaskPage,
+  ClientContractPage,
+  StaffReviewPage,
 } from "./Modules/Onboarding/pages";
 
 import { TaskFlowLayout } from "./Modules/Onboarding/layouts";
 function App() {
-  // Define la base de la ruta para los servicios de un contrato
-  // NOTA: Esta ruta ya no lleva el prefijo /admin
-  const contractServiceBasePath = "contracts/:contractId/service/:serviceId";
-
   return (
     <>
       <Toaster position="bottom-center" />
@@ -39,9 +36,6 @@ function App() {
           <Route path="staff-login" element={<StaffLogin />} />
         </Route>
 
-        {/* ----------------------------------------------------------------- */}
-        {/* RUTAS ESTÁNDARES DE ADMINISTRACIÓN (Con prefijo /admin) */}
-        {/* ----------------------------------------------------------------- */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
           <Route path="countries" element={<Countries />} />
@@ -50,30 +44,22 @@ function App() {
           <Route path="staff" element={<Staff />} />
           <Route path="contracts" element={<Contracts />} />
           <Route path="users" element={<Users />} />
-          {/* Mantenemos esta ruta antigua dentro de /admin si no se usa el ID del contrato */}
-          {/* <Route path="contracts/:id/services" element={<ContractServices />} /> */}
         </Route>
 
-        {/* ----------------------------------------------------------------- */}
-        {/* RUTAS ESPECÍFICAS DE CONTRATOS/SERVICIOS (Nivel superior, pero usando AdminLayout) */}
-        {/* ----------------------------------------------------------------- */}
-        <Route element={<TaskFlowLayout />}>
-          {/* Ruta existente para ver todos los servicios de un contrato (fuera de /admin) */}
-          {/* Nueva Ruta: /contracts/:id/services */}
-          <Route path="contracts/:id/services" element={<ContractServices />} />
+        <Route path="client/contract/:contractId" element={<TaskFlowLayout />}>
+          <Route path="task/:taskId" element={<ClientContractPage />} />
+          {/* Se podría agregar la ruta índice para mostrar el resumen del contrato si no se selecciona tarea */}
+          <Route index element={<div>Resumen del Contrato para Cliente</div>} />
+        </Route>
 
-          {/* 1. Página de Aterrizaje/Resumen del Servicio */}
-          {/* Nueva Ruta: /contracts/:contractId/service/:serviceId */}
+        {/* 2. RUTA PARA EL STAFF: /staff/review/456/task/789 */}
+        {/* También usamos el TaskFlowLayout, pero inyectamos la página de revisión */}
+        <Route path="staff/review/:contractId" element={<TaskFlowLayout />}>
+          <Route path="task/:taskId" element={<StaffReviewPage />} />
+          {/* Si un staff accede a la base del contrato, podría ser una vista de gestión general */}
           <Route
-            path={contractServiceBasePath}
-            element={<OnboardingLanding />}
-          />
-
-          {/* 2. Página del Flujo de Tareas Detallado (Motor de Ejecución) */}
-          {/* Nueva Ruta: /contracts/:contractId/service/:serviceId/flow */}
-          <Route
-            path={`${contractServiceBasePath}/flow`}
-            element={<OnboardingTaskPage />}
+            index
+            element={<div>Gestión y Tareas Pendientes para Staff</div>}
           />
         </Route>
       </Routes>
