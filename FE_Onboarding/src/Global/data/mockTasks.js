@@ -1,70 +1,78 @@
-// src/Modules/Contracts/TaskFlow/data/mockTasks.js
+// src/modules/contractFlow/data/checklistMock.js
 
-/**
- * Estructura de MOCK para el flujo de tareas.
- * Usada por OnboardingTaskPage.jsx para inicializar el estado.
- */
-export const MOCK_TASKS = [
+export const MOCK_CONTRACT_DATA = [
   {
-    id: "section-legal",
-    title: "Fase 1: Constitución Legal",
+    serviceId: 1,
+    title: "Constitución de Sociedad",
+    state: "IN_PROGRESS", // IN_PROGRESS, COMPLETED, PENDING
     tasks: [
       {
-        id: "task-101",
-        title: "Formulario de Constitución",
-        status: "active", // <- La tarea que se carga inicialmente
-        component: "ConstitutionForm",
-        data: {
-          // Datos precargados o guardados previamente
-          nombreCompania: "BDO Global Services S.A.",
-        },
+        taskId: 101,
+        label: "Solicitud del servicio",
+        status: "COMPLETED",
+        active: false,
       },
       {
-        id: "task-102",
-        title: "Definición de Socios y Capital",
-        status: "pending",
-        component: "SocietyTypeSelector",
-        data: {},
+        taskId: 102,
+        label: "Selección del tipo de sociedad",
+        status: "COMPLETED",
+        active: false,
       },
       {
-        id: "task-103",
-        title: "Aprobación de Nombre y Reserva",
-        status: "pending",
-        component: "NameApprovalForm",
-        data: {},
+        taskId: 103,
+        label: "Formulario de constitución",
+        status: "ACTIVE",
+        active: true,
+      }, // Tarea Activa
+      {
+        taskId: 104,
+        label: "Pago de la factura y envío de comprobante",
+        status: "PENDING",
+        active: false,
+      },
+      {
+        taskId: 105,
+        label: "Notificación al cliente",
+        status: "PENDING",
+        active: false,
+      },
+      {
+        taskId: 106,
+        label: "Recoger firmas en libros y certificados",
+        status: "PENDING",
+        active: false,
+      },
+      {
+        taskId: 107,
+        label: "Notificación al cliente y entrega de libros",
+        status: "PENDING",
+        active: false,
       },
     ],
   },
   {
-    id: "section-finance",
-    title: "Fase 2: Trámites Financieros",
+    serviceId: 2,
+    title: "Inscripción en Hacienda",
+    state: "PENDING",
     tasks: [
       {
-        id: "task-201",
-        title: "Subida de Comprobante de Pago",
-        status: "pending",
-        component: "PaymentUploader",
-        data: {},
-      },
-      {
-        id: "task-202",
-        title: "Creación de Cuentas Bancarias",
-        status: "pending",
-        component: "BankAccountSetup",
-        data: {},
+        taskId: 201,
+        label: "Solicitud de inscripción RUC",
+        status: "PENDING",
+        active: false,
       },
     ],
   },
   {
-    id: "section-closing",
-    title: "Fase 3: Cierre y Entrega",
+    serviceId: 3,
+    title: "Inscripción en Bancos",
+    state: "PENDING",
     tasks: [
       {
-        id: "task-301",
-        title: "Firma de Documentos Finales",
-        status: "pending",
-        component: "FinalSigning",
-        data: {},
+        taskId: 301,
+        label: "Apertura de cuenta",
+        status: "PENDING",
+        active: false,
       },
     ],
   },

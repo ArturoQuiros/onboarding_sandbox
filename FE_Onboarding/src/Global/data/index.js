@@ -1,1 +1,1 @@
-export { MOCK_TASKS } from "./mockTasks";
+export { MOCK_CONTRACT_DATA } from "./mockTasks";
