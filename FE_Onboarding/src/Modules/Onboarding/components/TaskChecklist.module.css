@@ -22,19 +22,19 @@
 }
 
 .accordionHeader {
-  background-color: #5d758d; /* Gris inactivo */
+  background-color: var(--bdo-slate); /* Gris inactivo */
 }
 
 .accordionHeader:hover {
-  background-color: #4b6277;
+  background-color: #4b6277; /* Slate más oscuro */
 }
 
 .accordionHeaderActive {
-  background-color: #d71921; /* Rojo activo (como en la imagen) */
+  background-color: var(--bdo-red); /* Rojo activo */
 }
 
 .accordionHeaderActive:hover {
-  background-color: #b7151b;
+  background-color: var(--bdo-burgundy); /* Rojo vino */
 }
 
 .arrowDown,
@@ -53,7 +53,7 @@
 
 .accordionContent {
   padding: 15px 0 10px 0;
-  /* La lista de tareas va aquí */
+  /* Aquí va la lista de tareas */
 }
 
 /* --- CHECKLIST ITEM (Tarea) --- */
@@ -64,13 +64,14 @@
   padding: 8px 0;
   cursor: pointer;
   position: relative;
-  margin-left: 5px; /* Margen para alinear con el acordeón */
+  margin-left: 5px; /* Alineación con acordeón */
   font-size: 0.95rem;
+  color: var(--bdo-charcoal);
 }
 
 .checklistItemActive {
-  font-weight: 600; /* Resaltar la tarea activa */
-  color: #d71921;
+  font-weight: 600;
+  color: var(--bdo-red);
 }
 
 .statusIconWrapper {
@@ -81,7 +82,7 @@
   margin-right: 15px;
 }
 
-/* Íconos de estado (el círculo) */
+/* Íconos de estado */
 .statusCompleted,
 .statusActive,
 .statusPending {
@@ -94,41 +95,41 @@
   width: 1.2em;
   height: 1.2em;
   color: #fff;
-  z-index: 2; /* Asegura que el ícono esté sobre la línea */
+  z-index: 2;
 }
 
 .statusCompleted {
-  background-color: #28a745; /* Verde para completado */
+  background-color: var(--bdo-jade); /* Verde corporativo */
   font-size: 0.9em;
 }
 
 .statusActive {
-  background-color: #d71921; /* Rojo para activo (como en la imagen) */
+  background-color: var(--bdo-red); /* Rojo de marca */
   color: #fff;
-  font-size: 0.9em; /* Punto pequeño */
+  font-size: 0.9em;
 }
 
 .statusPending {
-  background-color: #ccc; /* Gris para pendiente */
-  color: #ccc;
-  border: 2px solid #ccc;
+  background-color: var(--bdo-pale-charcoal); /* Gris claro */
+  color: var(--bdo-pale-charcoal);
+  border: 2px solid var(--bdo-pale-charcoal);
   width: 0.8em;
   height: 0.8em;
 }
 
-/* Línea conectora vertical (el stepper visual) */
+/* Línea conectora vertical */
 .connectorLine {
   position: absolute;
   left: 50%;
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: #ccc;
+  background-color: var(--bdo-pale-charcoal);
   transform: translateX(-50%);
   z-index: 1;
 }
 
-/* Ocultar la línea en el último elemento (el que no tiene siguiente) */
+/* Ocultar en último ítem */
 .checklistItem:last-child .connectorLine,
 .checklistItemActive:last-child .connectorLine {
   display: none;
