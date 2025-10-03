@@ -5903,24 +5903,31 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\USER\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/app/WS_Onboarding/WS_Onboarding.csproj",
+      "projectUniqueName": "c:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
       "projectName": "WS_Onboarding",
-      "projectPath": "/app/WS_Onboarding/WS_Onboarding.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/app/WS_Onboarding/obj/",
+      "projectPath": "c:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Onboarding.csproj",
+      "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+      "outputPath": "c:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -6001,7 +6008,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
