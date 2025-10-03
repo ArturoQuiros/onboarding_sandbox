@@ -8,18 +8,31 @@ import React, {
   useContext,
 } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axiosClient from "../../../Api/axiosClient";
 import toast from "react-hot-toast";
-import { FaLayerGroup } from "react-icons/fa"; // Ícono de fallback para servicios
+import { FaLayerGroup } from "react-icons/fa";
 import { ContractServicesTable } from "./ContractServicesTable";
 import styles from "./ContractServicesDashboard.module.css";
 import { UIContext } from "../../../Global/Context";
-// Asume que estos componentes existen en la ruta correcta:
 import { SearchBar, ItemsPerPageSelector } from "./";
 
+/**
+ * @typedef {object} Service
+ * @property {number} id - Identificador del servicio.
+ * @property {string} nombre - Nombre del servicio.
+ */
+
+/**
+ * Componente principal para gestionar la asignación de servicios a un contrato específico.
+ * Muestra todos los servicios disponibles y permite al usuario marcarlos/desmarcarlos
+ * para asignarlos o desasignarlos del contrato.
+ * @returns {JSX.Element}
+ */
 export const ContractServiceDashboard = () => {
   const { id: contractId } = useParams();
   const { entityIcon } = useContext(UIContext);
+  const { t } = useTranslation();
 
   const [allServices, setAllServices] = useState([]);
   const [assignedServiceIds, setAssignedServiceIds] = useState(new Map());
@@ -30,29 +43,26 @@ export const ContractServiceDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
-  // AJUSTE: sortKey inicializado en null para coincidir con CrudDashboard.jsx
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
   // ============================
-  // LÓGICA DE ÍCONO UNIFICADA
+  // Lógica de Ícono Unificada
   // ============================
-  // Priorizar entityIcon (del contexto), usar FaLayerGroup como fallback.
   const displayIcon = useMemo(() => {
-    // Si el UIContext proporciona un ícono, úsalo.
+    // Prioriza el ícono del contexto, usa FaLayerGroup como fallback.
     if (entityIcon) {
       return entityIcon;
     }
-    // Si no, usa el ícono específico de servicios.
     return <FaLayerGroup />;
   }, [entityIcon]);
 
   // ============================
-  // Funciones de carga de datos
-  // (Sin cambios, omitidas por brevedad)
+  // Funciones de Carga de Datos
   // ============================
+
+  /** Obtiene todos los servicios disponibles desde la API. */
   const getAllAvailableServices = useCallback(async () => {
-    // ... lógica de API
     try {
       const response = await axiosClient.get("/Servicio");
       return response.data;
@@ -62,8 +72,8 @@ export const ContractServiceDashboard = () => {
     }
   }, []);
 
+  /** Obtiene las relaciones de servicio existentes para el contrato actual. */
   const getAssignedServiceRelationships = useCallback(async () => {
-    // ... lógica de API
     if (!contractId) return [];
     try {
       const response = await axiosClient.get(
@@ -76,6 +86,7 @@ export const ContractServiceDashboard = () => {
     }
   }, [contractId]);
 
+  /** Carga todos los servicios y las relaciones de asignación existentes, y actualiza los estados. */
   const loadData = useCallback(async () => {
     setIsLoading(true);
     const [availableServices, assignedRelations] = await Promise.all([
@@ -94,30 +105,27 @@ export const ContractServiceDashboard = () => {
     setIsLoading(false);
     setCurrentPage(1);
 
-    toast.success(
-      `Datos cargados: ${availableServices.length} servicios disponibles.`
-    );
+    // No hay toast en la carga inicial
   }, [getAllAvailableServices, getAssignedServiceRelationships]);
 
   // ============================
-  // LÓGICA DE CONTROL DE DATOS
-  // (Sin cambios, excepto el toggle de sortDirection)
+  // Lógica de Control de Datos (Ordenación/Paginación)
   // ============================
 
+  /** Maneja el cambio de clave de ordenación y dirección. */
   const handleSort = (key) => {
     setSortKey(key);
-    // Coincide con CrudDashboard: simple toggle
     setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
     setCurrentPage(1);
   };
 
+  /** Maneja el cambio en el número de elementos por página. */
   const handleItemsPerPageChange = (event) => {
     setItemsPerPage(Number(event.target.value));
     setCurrentPage(1);
   };
 
-  // (sortedItems, filteredItems, paginatedItems, totalPages useMemo sin cambios)
-
+  /** Items ordenados basados en sortKey y sortDirection. */
   const sortedItems = useMemo(() => {
     if (!sortKey) return allServices;
     return [...allServices].sort((a, b) => {
@@ -129,6 +137,7 @@ export const ContractServiceDashboard = () => {
     });
   }, [allServices, sortKey, sortDirection]);
 
+  /** Items filtrados basados en el término de búsqueda. */
   const filteredItems = useMemo(() => {
     if (!searchTerm) return sortedItems;
     return sortedItems.filter(
@@ -138,6 +147,7 @@ export const ContractServiceDashboard = () => {
     );
   }, [sortedItems, searchTerm]);
 
+  /** Items paginados para la tabla actual. */
   const paginatedItems = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredItems.slice(startIndex, startIndex + itemsPerPage);
@@ -146,41 +156,58 @@ export const ContractServiceDashboard = () => {
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   // ============================
-  // Toggle de asignación (sin cambios)
+  // Toggle de Asignación (Actualización Local)
   // ============================
+
+  /** Asigna o desasigna un servicio al contrato. */
   const handleServiceToggle = useCallback(
     async (serviceId, isChecked) => {
       if (isSaving) return;
       setIsSaving(true);
 
       try {
+        const newAssignedServiceIds = new Map(assignedServiceIds); // Copia del mapa
+
         if (isChecked) {
+          // Asignar (POST)
           const payload = {
             id_Contrato: parseInt(contractId),
             id_Servicio: serviceId,
           };
-          await axiosClient.post("/ContratoServicio", payload);
-          toast.success(`Servicio asignado.`);
+          // El API debería devolver el objeto de relación (ContratoServicio) con su ID.
+          const response = await axiosClient.post("/ContratoServicio", payload);
+
+          // Actualizar estado localmente con el ID de la nueva relación
+          newAssignedServiceIds.set(serviceId, response.data.id);
+
+          toast.success(t("contractServices.serviceAssigned"));
         } else {
+          // Desasignar (DELETE)
           const relationshipId = assignedServiceIds.get(serviceId);
           if (relationshipId) {
             await axiosClient.delete(`/ContratoServicio/${relationshipId}`);
-            toast.success(`Servicio desasignado.`);
+
+            // Eliminar la relación del mapa local
+            newAssignedServiceIds.delete(serviceId);
+
+            toast.success(t("contractServices.serviceUnassigned"));
           }
         }
-        await loadData();
+
+        // Actualiza el estado sin llamar a loadData()
+        setAssignedServiceIds(newAssignedServiceIds);
       } catch (error) {
         console.error("Error al modificar el servicio:", error);
-        toast.error("Error al guardar los cambios.");
+        toast.error(t("common.errorSavingChanges"));
       } finally {
         setIsSaving(false);
       }
     },
-    [assignedServiceIds, contractId, isSaving, loadData]
+    [assignedServiceIds, contractId, isSaving, t]
   );
 
   // ============================
-  // Efectos (sin cambios)
+  // Efectos
   // ============================
   useEffect(() => {
     loadData();
@@ -193,19 +220,12 @@ export const ContractServiceDashboard = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          {/* 📌 ÍCONO RENDERIZADO UNA SOLA VEZ */}
           <span className={styles.icon}>{displayIcon}</span>
-          Servicios del Contrato ID: {contractId}
+          {t("contractServices.title")}
         </h2>
-        {/* Aquí estaría el botón de crear del CrudDashboard */}
       </div>
 
-      <p className={styles.description}>
-        Marque la casilla para asignar un servicio o desmarque para desasignarlo
-        del contrato.
-      </p>
-
-      {/* BARRA DE CONTROLES */}
+      {/* BARRA DE CONTROLES (Solo se muestra cuando no está cargando) */}
       {!isLoading && (
         <div className={styles.controlsBar}>
           <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
@@ -217,7 +237,7 @@ export const ContractServiceDashboard = () => {
       )}
 
       {isLoading ? (
-        <p className={styles.loadingMessage}>Cargando servicios...</p>
+        <p className={styles.loadingMessage}>{t("common.loading")}</p>
       ) : (
         <ContractServicesTable
           services={paginatedItems}
@@ -235,7 +255,10 @@ export const ContractServiceDashboard = () => {
         />
       )}
 
-      {isSaving && <p className={styles.savingMessage}>Guardando cambios...</p>}
+      {/* Mensaje de guardado (Solo se muestra durante el toggle) */}
+      {isSaving && (
+        <p className={styles.savingMessage}>{t("common.savingChanges")}</p>
+      )}
     </div>
   );
 };
