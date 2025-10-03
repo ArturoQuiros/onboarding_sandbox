@@ -1,0 +1,64 @@
+/* src/Modules/Contracts/TaskFlow/components/TaskChecklist.module.css */
+
+.checklistContainer {
+  /* El contenedor ya fue definido con background-color: #f7f7f7 en TaskFlowLayout */
+  padding-bottom: 20px; /* Espacio al final de la lista */
+}
+
+.header {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--bdo-charcoal);
+  padding: 20px;
+  margin: 0;
+  border-bottom: 1px solid var(--bdo-pale-charcoal);
+}
+
+/* --------------------------------------
+ * Estilos de Sección (Acordeón)
+ * -------------------------------------- */
+
+.section {
+  border-bottom: 1px solid var(--bdo-pale-charcoal);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #fff; /* Fondo más claro para el encabezado de la sección */
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+  transition: background-color 0.2s;
+}
+
+.sectionHeader:hover {
+  background-color: var(--bdo-pale-charcoal);
+}
+
+.sectionTitle {
+  flex-grow: 1; /* Ocupa el espacio restante */
+}
+
+.progressSummary {
+  font-size: 0.85rem;
+  color: var(--bdo-slate);
+  margin-right: 15px;
+  font-weight: 500;
+}
+
+.iconToggle {
+  font-size: 0.8rem;
+  color: var(--bdo-slate);
+}
+
+/* --------------------------------------
+ * Estado Vacío
+ * -------------------------------------- */
+.empty {
+  padding: 20px;
+  color: var(--bdo-slate);
+  text-align: center;
+  font-style: italic;
+}

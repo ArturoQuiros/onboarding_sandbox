@@ -1,0 +1,19 @@
+/* src/Modules/Contracts/TaskFlow/components/DynamicFormRenderer.module.css */
+
+.messageContainer {
+  padding: 40px;
+  text-align: center;
+  background-color: var(--bdo-pale-charcoal);
+  border-radius: 8px;
+  margin: 20px;
+}
+
+.errorTitle {
+  color: var(--bdo-red);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.errorDescription {
+  color: var(--bdo-slate);
+}

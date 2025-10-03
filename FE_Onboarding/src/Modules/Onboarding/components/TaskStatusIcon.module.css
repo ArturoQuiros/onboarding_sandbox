@@ -1,0 +1,31 @@
+/* src/Modules/Contracts/TaskFlow/components/TaskStatusIcon.module.css */
+
+.iconContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+}
+
+.icon {
+  font-size: 16px;
+}
+
+/* Colores de Estado basados en las variables CSS Globales: */
+
+/* Tarea Completada: Usamos el verde/jade como color de éxito */
+.complete {
+  color: var(--bdo-jade); /* Éxito/Completado */
+}
+
+/* Tarea Activa: Usamos el color principal de la marca o un color activo */
+.active {
+  /* El rojo/burgundy de BDO se presta bien para el foco */
+  color: var(--bdo-red);
+}
+
+/* Tarea Pendiente: Usamos un gris neutro o un color suave de BDO */
+.pending {
+  color: var(--bdo-slate); /* Gris más suave o pizarra */
+}
