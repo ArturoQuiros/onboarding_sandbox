@@ -1,4 +1,3 @@
-// src/Modules/Admin/components/Crud/CrudForm.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { UIContext } from "../../../Global/Context";
@@ -8,24 +7,26 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
 
+  // Prioriza formKey si está definida, si no, usa key
+  const getFormKey = (field) => field.formKey || field.key;
+
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
 
-  // Inicializa los datos del formulario
   useEffect(() => {
     if (item) {
       setFormData(item);
     } else {
       const initialData = {};
       fields.forEach((field) => {
-        if (field.key !== "id") initialData[field.key] = "";
+        const key = getFormKey(field);
+        if (key !== "id") initialData[key] = "";
       });
       setFormData(initialData);
     }
     setFormErrors({});
   }, [item, fields]);
 
-  // Maneja cambios en los inputs y valida dinámicamente
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -36,10 +37,8 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
     }
   };
 
-  // Maneja el submit
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
@@ -47,16 +46,13 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         if (error) newErrors[key] = error;
       }
       setFormErrors(newErrors);
-
-      if (Object.keys(newErrors).length > 0) return; // bloquea envío si hay errores
+      if (Object.keys(newErrors).length > 0) return;
     }
-
     onSave(formData);
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      {/* Encabezado */}
       <div className={styles.formHeader}>
         {entityIcon && <div className={styles.entityIcon}>{entityIcon}</div>}
         <h2 className={styles.formTitle}>
@@ -64,10 +60,10 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         </h2>
       </div>
 
-      {/* Campos dinámicos */}
       {fields.map((field) => {
         if (!item && field.key === "id") return null;
         const isIdField = field.key === "id";
+        const nameKey = getFormKey(field);
 
         return (
           <div key={field.key} className={styles.formGroup}>
@@ -75,11 +71,11 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
             {field.type === "select" ? (
               <select
-                name={field.key}
-                value={formData[field.key] || ""}
+                name={nameKey}
+                value={formData[nameKey] || ""}
                 onChange={handleChange}
                 className={`${styles.input} ${
-                  formErrors[field.key] ? styles.inputError : ""
+                  formErrors[nameKey] ? styles.inputError : ""
                 }`}
               >
                 <option value="">{t("common.selectOption")}</option>
@@ -92,24 +88,23 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
             ) : (
               <input
                 type={field.type || "text"}
-                name={field.key}
-                value={formData[field.key] || ""}
+                name={nameKey}
+                value={formData[nameKey] || ""}
                 onChange={isIdField ? null : handleChange}
                 readOnly={isIdField}
                 className={`${styles.input} ${
-                  formErrors[field.key] ? styles.inputError : ""
+                  formErrors[nameKey] ? styles.inputError : ""
                 }`}
               />
             )}
 
-            {formErrors[field.key] && (
-              <div className={styles.errorMessage}>{formErrors[field.key]}</div>
+            {formErrors[nameKey] && (
+              <div className={styles.errorMessage}>{formErrors[nameKey]}</div>
             )}
           </div>
         );
       })}
 
-      {/* Botones */}
       <div className={styles.buttonGroup}>
         <button type="submit" className={styles.saveButton}>
           {t("common.save")}

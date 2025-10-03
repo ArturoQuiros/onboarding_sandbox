@@ -1,5 +1,3 @@
-// src/Modules/Admin/components/Crud/CrudDashboard.jsx
-
 import React, {
   useState,
   useEffect,
@@ -23,6 +21,7 @@ export const CrudDashboard = ({
   updateItem,
   deleteItem,
   validations,
+  extraActionRenderer, // <-- prop nueva
 }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
@@ -140,7 +139,6 @@ export const CrudDashboard = ({
           : t("common.createSuccess"),
         error: t("common.genericError"),
       });
-
       setIsFormOpen(false);
       setSelectedItem(null);
       await reloadItems();
@@ -184,6 +182,7 @@ export const CrudDashboard = ({
             fields={fields}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            extraActionRenderer={extraActionRenderer} // <-- prop pasada
             currentPage={currentPage}
             totalPages={totalPages}
             filteredCount={filteredItems.length}
