@@ -4,32 +4,90 @@ export const MOCK_CONTRACT_DATA = [
     title: "Constitución de Sociedad",
     state: "IN_PROGRESS",
     tasks: [
-      { taskId: 101, label: "Solicitud del servicio", status: "COMPLETED" },
+      {
+        taskId: 101,
+        label: "Solicitud del servicio",
+        status: "COMPLETED",
+        form: {
+          fields: [
+            {
+              name: "fechaSolicitud",
+              label: "Fecha de Solicitud",
+              type: "date",
+              value: "2024-10-01",
+            },
+            {
+              name: "servicioSeleccionado",
+              label: "Servicio",
+              type: "text",
+              value: "Constitución de Sociedad",
+              readOnly: true,
+            },
+          ],
+        },
+      },
       {
         taskId: 102,
-        label: "Selección del tipo de sociedad",
-        status: "COMPLETED",
+        label: "Formulario de constitución",
+        status: "IN_PROGRESS",
+        form: {
+          fields: [
+            {
+              name: "nombreSocio",
+              label: "Nombre del Socio Principal",
+              type: "text",
+              value: "Juan Pérez",
+            },
+            {
+              name: "tipoSociedad",
+              label: "Tipo de Sociedad",
+              type: "select",
+              options: ["SRL", "SA", "Cooperativa"],
+              value: "SRL",
+            },
+            {
+              name: "capitalSocial",
+              label: "Capital Social ($)",
+              type: "number",
+              value: 15000,
+            },
+            {
+              name: "documentoIdentidad",
+              label: "Documento de Identidad del Socio",
+              type: "file",
+              value: null,
+            },
+          ],
+        },
       },
       {
         taskId: 103,
-        label: "Formulario de constitución",
-        status: "IN_PROGRESS",
-      },
-      {
-        taskId: 104,
-        label: "Pago de la factura y envío de comprobante",
+        label: "Pago de la factura",
         status: "PENDING",
-      },
-      { taskId: 105, label: "Notificación al cliente", status: "PENDING" },
-      {
-        taskId: 106,
-        label: "Recoger firmas en libros y certificados",
-        status: "PENDING",
-      },
-      {
-        taskId: 107,
-        label: "Notificación al cliente y entrega de libros",
-        status: "PENDING",
+        form: {
+          fields: [
+            {
+              name: "montoFactura",
+              label: "Monto a Pagar ($)",
+              type: "number",
+              value: 500,
+              readOnly: true,
+            },
+            {
+              name: "metodoPago",
+              label: "Método de Pago",
+              type: "select",
+              options: ["Tarjeta", "Transferencia", "Efectivo"],
+              value: "",
+            },
+            {
+              name: "comprobantePago",
+              label: "Adjuntar Comprobante",
+              type: "file",
+              value: null,
+            },
+          ],
+        },
       },
     ],
   },
@@ -38,13 +96,63 @@ export const MOCK_CONTRACT_DATA = [
     title: "Inscripción en Hacienda",
     state: "PENDING",
     tasks: [
-      { taskId: 201, label: "Solicitud de inscripción RUC", status: "PENDING" },
+      {
+        taskId: 201,
+        label: "Solicitud de inscripción RUC",
+        status: "PENDING",
+        form: {
+          fields: [
+            {
+              name: "nombreEmpresa",
+              label: "Razón Social de la Empresa",
+              type: "text",
+              value: "",
+            },
+            {
+              name: "tipoContribuyente",
+              label: "Tipo de Contribuyente",
+              type: "radio",
+              options: ["Persona Física", "Sociedad"],
+              value: "Sociedad",
+            },
+            {
+              name: "actividadEconomica",
+              label: "Actividad Económica",
+              type: "text",
+              value: "",
+            },
+            {
+              name: "documentosAdjuntos",
+              label: "Adjuntar Documentos Legales",
+              type: "file",
+              value: null,
+            },
+          ],
+        },
+      },
       {
         taskId: 202,
-        label: "Revisión de documentos fiscales",
+        label: "Asignación de número de RUC",
         status: "PENDING",
+        form: {
+          fields: [
+            {
+              name: "rucAsignado",
+              label: "Número RUC Asignado",
+              type: "text",
+              value: "",
+              readOnly: true,
+            },
+            {
+              name: "fechaAsignacion",
+              label: "Fecha de Asignación",
+              type: "date",
+              value: "",
+              readOnly: true,
+            },
+          ],
+        },
       },
-      { taskId: 203, label: "Asignación de número de RUC", status: "PENDING" },
     ],
   },
   {
@@ -52,43 +160,61 @@ export const MOCK_CONTRACT_DATA = [
     title: "Inscripción en Bancos",
     state: "PENDING",
     tasks: [
-      { taskId: 301, label: "Apertura de cuenta", status: "PENDING" },
+      {
+        taskId: 301,
+        label: "Apertura de cuenta",
+        status: "PENDING",
+        form: {
+          fields: [
+            {
+              name: "nombreBanco",
+              label: "Banco de Preferencia",
+              type: "text",
+              value: "",
+            },
+            {
+              name: "tipoCuenta",
+              label: "Tipo de Cuenta",
+              type: "select",
+              options: ["Corriente", "Ahorros"],
+              value: "Corriente",
+            },
+            {
+              name: "moneda",
+              label: "Moneda",
+              type: "radio",
+              options: ["USD", "EUR", "Local"],
+              value: "Local",
+            },
+            {
+              name: "documentosAdjuntos",
+              label: "Adjuntar Certificación",
+              type: "file",
+              value: null,
+            },
+          ],
+        },
+      },
       {
         taskId: 302,
-        label: "Entrega de chequera y tarjetas",
+        label: "Entrega de chequera",
         status: "PENDING",
-      },
-    ],
-  },
-  {
-    serviceId: 4,
-    title: "Registro de Marca",
-    state: "PENDING",
-    tasks: [
-      {
-        taskId: 401,
-        label: "Búsqueda de disponibilidad de marca",
-        status: "PENDING",
-      },
-      {
-        taskId: 402,
-        label: "Solicitud de registro ante registro de marcas",
-        status: "PENDING",
-      },
-      { taskId: 403, label: "Pago de tasas y seguimiento", status: "PENDING" },
-    ],
-  },
-  {
-    serviceId: 5,
-    title: "Trámites Laborales",
-    state: "PENDING",
-    tasks: [
-      { taskId: 501, label: "Registro de planilla en CCSS", status: "PENDING" },
-      { taskId: 502, label: "Afiliación de empleados", status: "PENDING" },
-      {
-        taskId: 503,
-        label: "Entrega de comprobantes al cliente",
-        status: "PENDING",
+        form: {
+          fields: [
+            {
+              name: "chequeraRecibida",
+              label: "¿Chequera recibida?",
+              type: "checkbox",
+              value: false,
+            },
+            {
+              name: "fechaEntrega",
+              label: "Fecha de Entrega Estimada",
+              type: "date",
+              value: "",
+            },
+          ],
+        },
       },
     ],
   },
