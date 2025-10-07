@@ -4,23 +4,30 @@ import { MOCK_CONTRACT_DATA } from "../data/mockTasks";
 // 1️⃣ Crear el contexto
 const ContractFlowContext = createContext();
 
-// 2️⃣ Proveedor del contexto
 export const ContractFlowProvider = ({ children }) => {
   const [services, setServices] = useState(MOCK_CONTRACT_DATA);
-  const [activeService, setActiveService] = useState(services[0] || null);
-  const [activeTask, setActiveTask] = useState(
-    activeService?.tasks.find((t) => t.active) || null
-  );
 
-  // 🧭 Función para seleccionar servicio (acordeón)
+  // Definir servicio y tarea iniciales
+  const initialService = services[0];
+  const initialTask =
+    initialService.tasks.find((t) => t.status === "IN_PROGRESS") ||
+    initialService.tasks[0];
+
+  const [activeService, setActiveService] = useState(initialService);
+  const [activeTask, setActiveTask] = useState(initialTask);
+
   const handleSelectService = (serviceId) => {
     const service = services.find((s) => s.serviceId === serviceId);
     setActiveService(service);
+
+    // cuando cambiamos de servicio, seleccionar su primera tarea
+    const nextTask =
+      service.tasks.find((t) => t.status === "IN_PROGRESS") || service.tasks[0];
+    setActiveTask(nextTask);
   };
 
-  // 🧭 Función para seleccionar tarea (formularios)
   const handleSelectTask = (taskId) => {
-    const task = activeService?.tasks.find((t) => t.taskId === taskId);
+    const task = activeService.tasks.find((t) => t.taskId === taskId);
     setActiveTask(task);
   };
 
@@ -30,7 +37,6 @@ export const ContractFlowProvider = ({ children }) => {
         services,
         activeService,
         activeTask,
-        setServices,
         handleSelectService,
         handleSelectTask,
       }}
@@ -40,13 +46,4 @@ export const ContractFlowProvider = ({ children }) => {
   );
 };
 
-// 3️⃣ Hook para consumir el contexto
-export const useContractFlow = () => {
-  const context = useContext(ContractFlowContext);
-  if (!context) {
-    throw new Error(
-      "useContractFlow debe usarse dentro de un ContractFlowProvider"
-    );
-  }
-  return context;
-};
+export const useContractFlow = () => useContext(ContractFlowContext);
