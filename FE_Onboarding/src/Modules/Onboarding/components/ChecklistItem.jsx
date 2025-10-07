@@ -12,12 +12,12 @@ export const ChecklistItem = ({ task, onClick, isActive }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case "COMPLETED":
-        return <span className={styles.statusCompleted}>&#10003;</span>; // ✅ Verde
+        return <span className={styles.statusCompleted}>&#9679;</span>; // ✅ Verde
       case "IN_PROGRESS":
         return <span className={styles.statusActive}>&#9679;</span>; // 🔶 Naranja
       case "PENDING":
       default:
-        return <span className={styles.statusPending}>&#9675;</span>; // 🔴 Rojo
+        return <span className={styles.statusPending}>&#9679;</span>; // 🔴 Rojo
     }
   };
 

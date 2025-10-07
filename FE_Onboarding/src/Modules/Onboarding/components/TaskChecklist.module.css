@@ -63,15 +63,13 @@
 .checklistItem,
 .checklistItemActive {
   display: flex;
-  align-items: flex-start;
+  align-items: center; /* 🔹 centra verticalmente icono y texto */
   padding: 8px 0;
   cursor: pointer;
   position: relative;
   margin-left: 5px;
   font-size: 0.95rem;
   color: var(--bdo-charcoal);
-  transition: background-color 0.2s;
-  border-radius: 4px;
 }
 
 /* Hover para tareas */
