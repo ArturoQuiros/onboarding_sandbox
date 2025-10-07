@@ -1,0 +1,113 @@
+/* DynamicForm.module.css */
+
+/* Contenedor general */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  max-width: 700px;
+  margin: 0 auto;
+  font-family: "Trebuchet MS", sans-serif;
+  color: var(--bdo-charcoal);
+}
+
+/* Título del form */
+.formTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--bdo-red);
+  margin-bottom: 5px;
+}
+
+.formDescription {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* Grid de campos (2 columnas) */
+.formFieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Grupo de campo */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Label */
+.formLabel {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--bdo-charcoal);
+}
+
+/* Inputs, selects, date y file */
+.formInput,
+.formSelect,
+.formFile {
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border: 1px solid #c5cbd6;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formFile:focus {
+  border-color: var(--bdo-gold);
+  box-shadow: 0 0 4px rgba(214, 121, 0, 0.3);
+}
+
+/* Radio buttons y checkbox */
+.radioGroup {
+  display: flex;
+  gap: 15px;
+}
+
+.formRadio,
+.formCheckbox {
+  margin-right: 5px;
+  accent-color: var(--bdo-gold);
+}
+
+/* Botón de envío */
+.formButton {
+  align-self: flex-start;
+  background-color: var(--bdo-red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  font-family: inherit;
+}
+
+.formButton:hover {
+  background-color: var(--bdo-burgundy);
+  transform: translateY(-1px);
+}
+
+.formButton:active {
+  transform: translateY(0);
+}
+
+/* File input */
+.formFile {
+  padding: 6px 8px;
+  cursor: pointer;
+}

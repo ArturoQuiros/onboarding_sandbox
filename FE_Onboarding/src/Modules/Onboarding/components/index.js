@@ -4,3 +4,4 @@ export * from "./ChecklistItem";
 export * from "./ChecklistServiceAccordion";
 export * from "./TaskChecklist";
 export * from "./Navbar";
+export * from "./DynamicForm";
