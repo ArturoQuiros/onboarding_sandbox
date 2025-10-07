@@ -7,7 +7,7 @@ const ContractFlowContext = createContext();
 export const ContractFlowProvider = ({ children }) => {
   const [services, setServices] = useState(MOCK_CONTRACT_DATA);
 
-  // Definir servicio y tarea iniciales
+  // Servicio y tarea iniciales
   const initialService = services[0];
   const initialTask =
     initialService.tasks.find((t) => t.status === "IN_PROGRESS") ||
@@ -16,6 +16,7 @@ export const ContractFlowProvider = ({ children }) => {
   const [activeService, setActiveService] = useState(initialService);
   const [activeTask, setActiveTask] = useState(initialTask);
 
+  // Función para seleccionar un servicio
   const handleSelectService = (serviceId) => {
     const service = services.find((s) => s.serviceId === serviceId);
     setActiveService(service);
@@ -26,7 +27,9 @@ export const ContractFlowProvider = ({ children }) => {
     setActiveTask(nextTask);
   };
 
+  // Función para seleccionar una tarea dentro del servicio activo
   const handleSelectTask = (taskId) => {
+    if (!activeService) return;
     const task = activeService.tasks.find((t) => t.taskId === taskId);
     setActiveTask(task);
   };
@@ -39,6 +42,8 @@ export const ContractFlowProvider = ({ children }) => {
         activeTask,
         handleSelectService,
         handleSelectTask,
+        setActiveService, // 🔹 ahora disponible
+        setActiveTask, // 🔹 ahora disponible
       }}
     >
       {children}

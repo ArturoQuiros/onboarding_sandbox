@@ -2,14 +2,14 @@ import React from "react";
 import styles from "./TaskChecklist.module.css";
 
 /**
- * Componente individual de la lista de tareas (Stepper).
+ * Componente de Tarea individual.
  */
-export const ChecklistItem = ({ task, isActive, onClick }) => {
+export const ChecklistItem = ({ task, onClick, isActive }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case "COMPLETED":
         return <span className={styles.statusCompleted}>&#10003;</span>;
-      case "IN_PROGRESS":
+      case "ACTIVE":
         return <span className={styles.statusActive}>&#9679;</span>;
       case "PENDING":
       default:

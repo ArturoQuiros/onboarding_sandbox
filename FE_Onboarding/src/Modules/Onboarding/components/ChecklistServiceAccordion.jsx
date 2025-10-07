@@ -2,20 +2,37 @@ import React from "react";
 import { ChecklistItem } from "./ChecklistItem";
 import { useContractFlow } from "../../../Global/Context";
 import styles from "./TaskChecklist.module.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 /**
  * Componente Acordeón para un Servicio.
  */
 export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
-  const { activeTask, handleSelectTask } = useContractFlow();
+  const { activeTask, setActiveService, setActiveTask, role } =
+    useContractFlow();
+  const navigate = useNavigate();
+  const { contractId } = useParams();
 
   const headerClass = isOpen
     ? styles.accordionHeaderActive
     : styles.accordionHeader;
   const arrowClass = isOpen ? styles.arrowUp : styles.arrowDown;
 
+  const handleTaskClick = (task) => {
+    // 1️⃣ Actualizar contexto
+    setActiveService(service);
+    setActiveTask(task);
+
+    // 2️⃣ Navegar a la ruta correspondiente según el rol
+    const basePath = role === "staff" ? "/staff" : "/client";
+    navigate(
+      `${basePath}/contract/${contractId}/service/${service.serviceId}/task/${task.taskId}`
+    );
+  };
+
   return (
     <div className={styles.accordion}>
+      {/* Header */}
       <button
         className={headerClass}
         onClick={() => onToggle(service.serviceId)}
@@ -24,6 +41,7 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
         <span className={arrowClass}>&#9650;</span>
       </button>
 
+      {/* Contenido */}
       {isOpen && (
         <div className={styles.accordionContent}>
           {service.tasks.map((task) => (
@@ -31,7 +49,7 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
               key={task.taskId}
               task={task}
               isActive={activeTask?.taskId === task.taskId}
-              onClick={() => handleSelectTask(task.taskId)}
+              onClick={() => handleTaskClick(task)}
             />
           ))}
         </div>

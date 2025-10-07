@@ -9,16 +9,14 @@ import styles from "./TaskChecklist.module.css";
 export const TaskChecklist = () => {
   const { services, activeService, handleSelectService } = useContractFlow();
 
-  if (!services || services.length === 0 || !activeService) return null;
-
   return (
     <div className={styles.checklistContainer}>
       {services.map((service) => (
         <ChecklistServiceAccordion
           key={service.serviceId}
           service={service}
-          isOpen={activeService.serviceId === service.serviceId}
-          onToggle={handleSelectService}
+          isOpen={activeService?.serviceId === service.serviceId}
+          onToggle={handleSelectService} // esto solo abre/cierra el acordeón
         />
       ))}
     </div>

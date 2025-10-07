@@ -24,18 +24,20 @@ import {
 } from "./Modules/Onboarding/pages";
 
 import { TaskFlowLayout } from "./Modules/Onboarding/layouts";
+
 function App() {
   return (
     <>
       <Toaster position="bottom-center" />
       <Routes>
-        {/* Usamos el LandingLayout para envolver las rutas públicas */}
+        {/* RUTAS PÚBLICAS */}
         <Route path="/" element={<LandingLayout />}>
           <Route index element={<Landing />} />
           <Route path="client-login" element={<CustomerLogin />} />
           <Route path="staff-login" element={<StaffLogin />} />
         </Route>
 
+        {/* RUTAS ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
           <Route path="countries" element={<Countries />} />
@@ -46,21 +48,22 @@ function App() {
           <Route path="users" element={<Users />} />
         </Route>
 
+        {/* 🎯 RUTAS CLIENTE */}
         <Route path="client/contract/:contractId" element={<TaskFlowLayout />}>
-          <Route path="task/:taskId" element={<ClientContractPage />} />
-          {/* Se podría agregar la ruta índice para mostrar el resumen del contrato si no se selecciona tarea */}
-          <Route index element={<div>Resumen del Contrato para Cliente</div>} />
+          <Route
+            path="service/:serviceId/task/:taskId"
+            element={<ClientContractPage />}
+          />
+          <Route index element={<div>Resumen del Contrato</div>} />
         </Route>
 
-        {/* 2. RUTA PARA EL STAFF: /staff/review/456/task/789 */}
-        {/* También usamos el TaskFlowLayout, pero inyectamos la página de revisión */}
-        <Route path="staff/review/:contractId" element={<TaskFlowLayout />}>
-          <Route path="task/:taskId" element={<StaffReviewPage />} />
-          {/* Si un staff accede a la base del contrato, podría ser una vista de gestión general */}
+        {/* 🎯 RUTAS STAFF */}
+        <Route path="staff/contract/:contractId" element={<TaskFlowLayout />}>
           <Route
-            index
-            element={<div>Gestión y Tareas Pendientes para Staff</div>}
+            path="service/:serviceId/task/:taskId"
+            element={<StaffReviewPage />}
           />
+          <Route index element={<div>Gestión del Contrato</div>} />
         </Route>
       </Routes>
     </>
