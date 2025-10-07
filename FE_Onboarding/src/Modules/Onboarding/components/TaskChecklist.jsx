@@ -1,32 +1,22 @@
-// src/modules/contractFlow/components/contractFlow/TaskChecklist.jsx
-
-import React, { useState } from "react";
-// Importamos los datos mock
-import { MOCK_CONTRACT_DATA } from "../../../Global/data";
-// 🎯 AJUSTE: Importación nombrada
+import React from "react";
+import { useContractFlow } from "../../../Global/Context";
 import { ChecklistServiceAccordion } from "./ChecklistServiceAccordion";
-import styles from "./TaskChecklist.module.css"; // Usaremos un CSS Module
+import styles from "./TaskChecklist.module.css";
 
 /**
- * Contenedor principal del sidebar de la lista de tareas.
+ * Sidebar de lista de tareas por servicio
  */
-// 🎯 EXPORTACIÓN AJUSTADA: export const
 export const TaskChecklist = () => {
-  // Estado para controlar qué servicio está abierto (solo uno a la vez)
-  const [openServiceId, setOpenServiceId] = useState(1); // Inicialmente abrimos el primer servicio (ID 1)
-
-  const handleToggle = (serviceId) => {
-    setOpenServiceId(openServiceId === serviceId ? null : serviceId);
-  };
+  const { services, activeService, handleSelectService } = useContractFlow();
 
   return (
     <div className={styles.checklistContainer}>
-      {MOCK_CONTRACT_DATA.map((service) => (
+      {services.map((service) => (
         <ChecklistServiceAccordion
           key={service.serviceId}
           service={service}
-          isOpen={service.serviceId === openServiceId}
-          onToggle={handleToggle}
+          isOpen={activeService?.serviceId === service.serviceId}
+          onToggle={handleSelectService}
         />
       ))}
     </div>

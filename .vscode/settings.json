@@ -4,7 +4,9 @@
     "**/.svn": true,
     "**/.hg": true,
     "**/.DS_Store": true,
-    "**/Thumbs.db": true
+    "**/Thumbs.db": true,
+    "WS_Onboarding": true,
+    "Scripts": true
   },
-  "hide-files.files": []
+  "hide-files.files": ["WS_Onboarding", "Scripts"]
 }

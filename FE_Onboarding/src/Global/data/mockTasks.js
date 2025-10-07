@@ -16,7 +16,7 @@ export const MOCK_CONTRACT_DATA = [
         taskId: 102,
         label: "Selección del tipo de sociedad",
         status: "COMPLETED",
-        active: false,
+        active: true,
       },
       {
         taskId: 103,
