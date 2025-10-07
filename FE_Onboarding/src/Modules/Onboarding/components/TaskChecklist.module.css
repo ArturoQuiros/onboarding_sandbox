@@ -1,8 +1,8 @@
-/* src/modules/contractFlow/components/contractFlow/TaskChecklist.module.css */
-
 /* --- ACORDEÓN (Servicio) --- */
 .accordion {
   margin-bottom: 15px;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
 .accordionHeader,
@@ -22,19 +22,19 @@
 }
 
 .accordionHeader {
-  background-color: var(--bdo-slate); /* Gris inactivo */
+  background-color: var(--bdo-slate);
 }
 
 .accordionHeader:hover {
-  background-color: #4b6277; /* Slate más oscuro */
+  background-color: #4b6277;
 }
 
 .accordionHeaderActive {
-  background-color: var(--bdo-red); /* Rojo activo */
+  background-color: var(--bdo-red);
 }
 
 .accordionHeaderActive:hover {
-  background-color: var(--bdo-burgundy); /* Rojo vino */
+  background-color: var(--bdo-burgundy);
 }
 
 .arrowDown,
@@ -51,9 +51,12 @@
   transform: rotate(180deg);
 }
 
+/* Contenido con animación */
 .accordionContent {
-  padding: 15px 0 10px 0;
-  /* Aquí va la lista de tareas */
+  padding: 0 0 10px 0;
+  overflow: hidden;
+  max-height: 1000px; /* Temporal, será controlado por JS */
+  transition: max-height 0.3s ease;
 }
 
 /* --- CHECKLIST ITEM (Tarea) --- */
@@ -64,16 +67,25 @@
   padding: 8px 0;
   cursor: pointer;
   position: relative;
-  margin-left: 5px; /* Alineación con acordeón */
+  margin-left: 5px;
   font-size: 0.95rem;
   color: var(--bdo-charcoal);
+  transition: background-color 0.2s;
+  border-radius: 4px;
+}
+
+/* Hover para tareas */
+.checklistItem:hover,
+.checklistItemActive:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .checklistItemActive {
   font-weight: 600;
-  color: var(--bdo-red);
+  color: var(--bdo-charcoal);
 }
 
+/* Wrapper para icono de estado */
 .statusIconWrapper {
   position: relative;
   min-width: 25px;
@@ -98,23 +110,22 @@
   z-index: 2;
 }
 
+/* ✅ Completado → Verde */
 .statusCompleted {
-  background-color: var(--bdo-jade); /* Verde corporativo */
+  background-color: var(--bdo-jade);
   font-size: 0.9em;
 }
 
+/* 🔶 En progreso → Naranja */
 .statusActive {
-  background-color: var(--bdo-red); /* Rojo de marca */
-  color: #fff;
+  background-color: #ff9500;
   font-size: 0.9em;
 }
 
+/* 🔴 Pendiente → Rojo */
 .statusPending {
-  background-color: var(--bdo-pale-charcoal); /* Gris claro */
-  color: var(--bdo-pale-charcoal);
-  border: 2px solid var(--bdo-pale-charcoal);
-  width: 0.8em;
-  height: 0.8em;
+  background-color: var(--bdo-red);
+  font-size: 0.9em;
 }
 
 /* Línea conectora vertical */
@@ -133,4 +144,10 @@
 .checklistItem:last-child .connectorLine,
 .checklistItemActive:last-child .connectorLine {
   display: none;
+}
+
+/* Texto de la tarea */
+.taskLabel {
+  flex: 1;
+  word-break: break-word;
 }
