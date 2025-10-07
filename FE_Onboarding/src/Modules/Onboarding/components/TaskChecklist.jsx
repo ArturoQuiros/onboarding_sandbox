@@ -14,18 +14,22 @@ export const TaskChecklist = () => {
     activeService?.serviceId || null
   );
 
-  // Si cambia activeService desde el contexto, sincronizamos el acordeón abierto
+  // Sincronizamos el acordeón abierto si cambia activeService desde el contexto
   useEffect(() => {
     if (activeService) {
       setOpenServiceId(activeService.serviceId);
     }
   }, [activeService]);
 
-  // Función para abrir/cerrar acordeón
+  // Función para abrir/cerrar acordeón sin actualizar estado durante render
   const handleToggle = (serviceId) => {
-    setOpenServiceId((prevId) => (prevId === serviceId ? null : serviceId));
-    // Actualizamos el servicio activo en el contexto si se abre
-    if (openServiceId !== serviceId) {
+    if (openServiceId === serviceId) {
+      // Cierra el acordeón
+      setOpenServiceId(null);
+    } else {
+      // Abre el acordeón
+      setOpenServiceId(serviceId);
+      // Actualizamos el servicio activo en el contexto
       handleSelectService(serviceId);
     }
   };
