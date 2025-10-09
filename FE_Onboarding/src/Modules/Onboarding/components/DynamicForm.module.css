@@ -1,47 +1,64 @@
-/* DynamicForm.module.css */
-
 /* Contenedor general */
 .formContainer {
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  background-color: red;
+  gap: 30px;
+  background-color: white;
   width: 100%;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  max-width: 700px;
-  margin: 0 auto;
-  font-family: "Trebuchet MS", sans-serif;
+  max-width: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
   color: var(--bdo-charcoal);
+  min-height: auto;
 }
 
 /* Título del form */
 .formTitle {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--bdo-red);
-  margin-bottom: 5px;
+  margin: 0 0 10px 0;
+  text-align: left;
 }
 
+/* Descripción */
 .formDescription {
-  font-size: 0.95rem;
-  color: #555;
-  margin-bottom: 20px;
+  font-size: 1rem;
+  color: var(--bdo-slate);
+  margin: 0 0 20px 0;
+  text-align: left;
+  max-width: none;
 }
 
-/* Grid de campos (2 columnas) */
+/* Grid de campos - DOS COLUMNAS */
 .formFieldsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px 40px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+/* Una columna en móviles */
+@media (max-width: 768px) {
+  .formFieldsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .formContainer {
+    padding: 20px;
+  }
 }
 
 /* Grupo de campo */
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  width: 100%;
 }
 
 /* Label */
@@ -51,36 +68,199 @@
   color: var(--bdo-charcoal);
 }
 
-/* Inputs, selects, date y file */
+/* Inputs, selects, date y file - Base */
 .formInput,
 .formSelect,
 .formFile {
-  padding: 10px 12px;
-  font-size: 0.95rem;
-  border: 1px solid #c5cbd6;
-  border-radius: 6px;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid var(--bdo-pale-charcoal);
+  border-radius: 4px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: inherit;
+  background-color: #fff;
+  box-sizing: border-box;
+  color: var(--bdo-charcoal);
 }
 
 .formInput:focus,
 .formSelect:focus,
 .formFile:focus {
-  border-color: var(--bdo-gold);
-  box-shadow: 0 0 4px rgba(214, 121, 0, 0.3);
+  border-color: var(--bdo-ocean);
+  box-shadow: 0 0 4px rgba(0, 143, 210, 0.3);
 }
 
-/* Radio buttons y checkbox */
+.formInput::placeholder,
+.formSelect::placeholder {
+  color: var(--bdo-slate);
+  opacity: 0.6;
+}
+
+/* Select - Estilos específicos */
+.formSelect {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.formSelect:hover {
+  border-color: var(--bdo-slate);
+}
+
+/* Opciones del select (dropdown) - Limitado por navegador */
+.formSelect option {
+  padding: 10px 14px;
+  font-size: 1rem;
+  color: var(--bdo-charcoal);
+  background-color: white;
+}
+
+.formSelect option:checked {
+  background-color: var(--bdo-ocean);
+  color: white;
+  font-weight: 600;
+}
+
+.formSelect option:disabled {
+  color: var(--bdo-slate);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Input de fecha - Estilos específicos */
+.formInput[type="date"] {
+  position: relative;
+  cursor: pointer;
+  padding-right: 40px;
+}
+
+.formInput[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 6px;
+  margin-right: -6px;
+  background-color: transparent;
+  color: var(--bdo-ocean);
+  transition: background-color 0.2s;
+  opacity: 0.7;
+}
+
+.formInput[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: #f0f8ff;
+  opacity: 1;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit {
+  padding: 0;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-text {
+  color: var(--bdo-slate);
+  padding: 0 3px;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-month-field,
+.formInput[type="date"]::-webkit-datetime-edit-day-field,
+.formInput[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--bdo-charcoal);
+  padding: 2px;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-month-field:focus,
+.formInput[type="date"]::-webkit-datetime-edit-day-field:focus,
+.formInput[type="date"]::-webkit-datetime-edit-year-field:focus {
+  background-color: var(--bdo-ocean);
+  color: white;
+  border-radius: 2px;
+  outline: none;
+}
+
+.formInput[type="date"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+.formInput[type="date"]:invalid::-webkit-datetime-edit {
+  color: var(--bdo-slate);
+  opacity: 0.6;
+}
+
+/* Radio y checkbox */
 .radioGroup {
   display: flex;
+  flex-wrap: wrap;
   gap: 15px;
+}
+
+.radioGroup label {
+  color: var(--bdo-charcoal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 }
 
 .formRadio,
 .formCheckbox {
   margin-right: 5px;
-  accent-color: var(--bdo-gold);
+  accent-color: var(--bdo-ocean);
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+/* File input - Estilo personalizado */
+.formFile {
+  padding: 0;
+  border: 2px dashed var(--bdo-pale-charcoal);
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+  position: relative;
+  height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.formFile:hover {
+  border-color: var(--bdo-ocean);
+  background-color: #f0f8ff;
+}
+
+.formFile:focus {
+  border-color: var(--bdo-ocean);
+  box-shadow: 0 0 0 3px rgba(0, 143, 210, 0.1);
+  background-color: #f0f8ff;
+}
+
+.formFile::file-selector-button {
+  background-color: var(--bdo-ocean);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 2px;
+  margin-top: 2px;
+  margin-right: 10px;
+  padding: 8px 16px;
+  transition: background-color 0.2s;
+  height: 36px;
+}
+
+.formFile::file-selector-button:hover {
+  background-color: #0077b3;
 }
 
 /* Botón de envío */
@@ -90,12 +270,12 @@
   color: white;
   border: none;
   border-radius: 6px;
-  padding: 10px 18px;
-  font-size: 0.95rem;
+  padding: 14px 40px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
-  font-family: inherit;
+  margin-top: 10px;
 }
 
 .formButton:hover {
@@ -105,10 +285,35 @@
 
 .formButton:active {
   transform: translateY(0);
+  background-color: var(--bdo-burgundy);
 }
 
-/* File input */
-.formFile {
-  padding: 6px 8px;
-  cursor: pointer;
+/* Estilos para inputs deshabilitados o readonly */
+.formInput:disabled,
+.formInput:read-only,
+.formSelect:disabled {
+  background-color: var(--bdo-pale-charcoal);
+  color: var(--bdo-slate);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 480px) {
+  .formContainer {
+    padding: 15px;
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+  }
+
+  .formFieldsGrid {
+    gap: 18px;
+  }
+
+  .formButton {
+    width: 100%;
+    text-align: center;
+  }
 }
