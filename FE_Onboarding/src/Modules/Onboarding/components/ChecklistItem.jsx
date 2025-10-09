@@ -1,23 +1,38 @@
 import React from "react";
 import styles from "./TaskChecklist.module.css";
+// 💡 Importa el ícono de check de la librería que estés usando (ejemplo con Font Awesome)
+import { FaCheck, FaCircle } from "react-icons/fa6";
+// Si quieres que el círculo rojo tenga un punto dentro, podrías importar MdCircle, etc.
 
 /**
  * Componente de Tarea individual.
- * @param {object} task - La tarea con { taskId, label, status }.
- * @param {function} onClick - Manejador al hacer clic en la tarea.
- * @param {boolean} isActive - Indica si es la tarea actualmente activa.
  */
 export const ChecklistItem = ({ task, onClick, isActive }) => {
   // Función para obtener el ícono de estado según el status
   const getStatusIcon = (status) => {
     switch (status) {
       case "COMPLETED":
-        return <span className={styles.statusCompleted}>&#9679;</span>; // ✅ Verde
+        // 💡 Usamos el componente <FaCheck /> para el checkmark
+        return (
+          <span className={styles.statusCompleted}>
+            <FaCheck size={12} /> {/* Ajusta el 'size' si es necesario */}
+          </span>
+        );
       case "IN_PROGRESS":
-        return <span className={styles.statusActive}>&#9679;</span>; // 🔶 Naranja
+        // 💡 Usamos un <span> vacío. El CSS crea el anillo de color.
+        return (
+          <span className={styles.statusActive}>
+            <FaCircle size={8} />
+          </span>
+        );
       case "PENDING":
       default:
-        return <span className={styles.statusPending}>&#9679;</span>; // 🔴 Rojo
+        // 💡 Usamos un <span> vacío. El CSS crea el anillo de color.
+        return (
+          <span className={styles.statusPending}>
+            <FaCircle size={8} />
+          </span>
+        );
     }
   };
 
@@ -28,9 +43,9 @@ export const ChecklistItem = ({ task, onClick, isActive }) => {
 
   return (
     <div className={itemClass} onClick={onClick}>
+      <span className={styles.connectorLine}></span>
       <div className={styles.statusIconWrapper}>
         {getStatusIcon(task.status)}
-        <span className={styles.connectorLine}></span>
       </div>
       <span className={styles.taskLabel}>{task.label}</span>
     </div>
