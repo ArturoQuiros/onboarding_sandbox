@@ -185,6 +185,8 @@ namespace WS_Onboarding.Controllers
                     Email = "juan.perez@example.com",
                     Id_Pais = 1,
                     Role_Id = 1,
+                    Contrasena = "juanperez123",
+                    Estado = true,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
@@ -196,6 +198,8 @@ namespace WS_Onboarding.Controllers
                     Email = "lucia.gomez@example.com",
                     Id_Pais = 2,
                     Role_Id = 2,
+                    Contrasena = "luciagomez123",
+                    Estado = true,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
@@ -207,6 +211,8 @@ namespace WS_Onboarding.Controllers
                     Email = "carlos.ruiz@example.com",
                     Id_Pais = 3,
                     Role_Id = 3,
+                    Contrasena = "carlosruiz123",
+                    Estado = true,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };

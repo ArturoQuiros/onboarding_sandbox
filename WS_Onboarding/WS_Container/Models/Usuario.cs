@@ -26,6 +26,9 @@ namespace WS_Onboarding.Models
         public int? Id_Pais { get; set; }
         [Column("Role_Id")]
         public int? Role_Id { get; set; }
+        [MaxLength(255)]
+        public string? Contrasena { get; set; }
+        public bool? Estado { get; set; }
 
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }

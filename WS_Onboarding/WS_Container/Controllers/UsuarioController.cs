@@ -9,7 +9,7 @@ using WS_Onboarding.Mappers;
 using Microsoft.Identity.Web;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
-using WS_Onboarding.Classes;
+using WS_Onboarding.Functions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Kiota.Abstractions.Authentication;
 
@@ -22,8 +22,10 @@ namespace WS_Onboarding.Controllers
         private readonly ApplicatonDBContext _context;
         private readonly ITokenAcquisition _tokenAcquisition;
         private readonly GraphServiceClient _graphClient;
-        public UsuarioController(ApplicatonDBContext context, ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient)
+        private readonly AuthService _authService;
+        public UsuarioController(AuthService authService, ApplicatonDBContext context, ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient)
         {
+            _authService = authService;
             _context = context;
             _tokenAcquisition = tokenAcquisition;
             _graphClient = graphClient;
@@ -60,6 +62,39 @@ namespace WS_Onboarding.Controllers
             try
             {
                 var UsuarioModel = _context.Usuarios.Find(id);
+
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpGet("ByEmail")]
+        public IActionResult GetUsuarioByEmail([FromRoute] string Email)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios
+                .Where(c => c.Email == Email).ToList()
+                .FirstOrDefault();
 
                 if (UsuarioModel == null)
                 {
@@ -132,6 +167,8 @@ namespace WS_Onboarding.Controllers
                     UsuarioModel.Azure_AD_User_Id = UsuarioDto.Azure_AD_User_Id;
                     UsuarioModel.Email = UsuarioDto.Email;
                     UsuarioModel.Fecha_Modificacion = DateTime.UtcNow;
+                    UsuarioModel.Estado = (UsuarioDto.Estado == null) ? UsuarioModel.Estado : UsuarioDto.Estado;
+                    UsuarioModel.Contrasena = (UsuarioDto.Contrasena == null) ? UsuarioModel.Contrasena : UsuarioDto.Contrasena;
                     _context.SaveChanges();
 
                     return Ok(UsuarioModel.ToUsuarioDto());
@@ -184,6 +221,59 @@ namespace WS_Onboarding.Controllers
                 };
 
                 return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPost("RegisterUser")]
+        public IActionResult RegisterUser([FromBody] RegisterUsuarioDto UsuarioDto)
+        {
+            try
+            {
+                var UsuarioModel = UsuarioDto.ToUsuarioFromRegisterDTO();
+                UsuarioModel.Contrasena = _authService.HashPassword(UsuarioDto.Contrasena);
+
+                _context.Usuarios.Add(UsuarioModel);
+                _context.SaveChanges();
+
+                return CreatedAtAction(nameof(GetUsuarioById), new { id = UsuarioModel.Id }, UsuarioModel.ToUsuarioDto());
+                
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginUsuarioDto LoginDto)
+        {
+            var UsuarioModel = _context.Usuarios
+                .Where(c => c.Email == LoginDto.Email).ToList()
+                .FirstOrDefault();
+
+            if (UsuarioModel == null)
+            {
+                return StatusCode(500, $"No se ha encontrado usuario con email: {LoginDto.Email}\n");
+            }
+            else if(UsuarioModel.Contrasena == null)
+            {
+                return StatusCode(500, $"La contraseña guardad: {UsuarioModel.Contrasena} no pueden ser nulo\n");
+            }
+            else
+            {
+                if (!_authService.VerifyPassword(LoginDto.Contrasena, UsuarioModel.Contrasena))
+                    return Unauthorized("Credenciales inválidas");
+
+                return Ok(new { message = "Autenticado" });
             }
         }
 

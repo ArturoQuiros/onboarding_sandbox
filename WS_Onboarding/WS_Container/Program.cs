@@ -4,7 +4,7 @@ using WS_Onboarding.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.Kiota.Abstractions.Authentication;
-using WS_Onboarding.Classes;
+using WS_Onboarding.Functions;
 using Microsoft.Graph;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +39,7 @@ builder.Services.AddMicrosoftIdentityWebApiAuthentication(builder.Configuration,
     .AddInMemoryTokenCaches();
 
 builder.Services.AddScoped<IAuthenticationProvider, UserAccessTokenProvider>();
+builder.Services.AddScoped<AuthService>();
 
 // 🧾 Autorización (opcional, pero recomendable)
 builder.Services.AddAuthorization();

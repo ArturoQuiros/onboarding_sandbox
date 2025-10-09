@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Identity.Web;
 using Microsoft.Kiota.Abstractions.Authentication;
 
-namespace WS_Onboarding.Classes
+namespace WS_Onboarding.Functions
 { 
     public class UserAccessTokenProvider : IAuthenticationProvider
     {

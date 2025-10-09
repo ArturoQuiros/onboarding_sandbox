@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "L6PhZAgPTwk=",
+  "dgSpecHash": "EDGjfBapGPs=",
   "success": true,
   "projectFilePath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Container\\WS_Onboarding.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\USER\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\azure.security.keyvault.certificates\\4.6.0\\azure.security.keyvault.certificates.4.6.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\azure.security.keyvault.secrets\\4.6.0\\azure.security.keyvault.secrets.4.6.0.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.9\\microsoft.aspnetcore.authentication.jwtbearer.9.0.9.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\9.0.0\\microsoft.aspnetcore.authentication.openidconnect.9.0.0.nupkg.sha512",
