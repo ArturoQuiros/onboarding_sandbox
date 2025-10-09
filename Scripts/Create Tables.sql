@@ -25,6 +25,8 @@ CREATE TABLE Usuarios (
     Nombre VARCHAR(100) NOT NULL,
     Azure_AD_User_Id VARCHAR(100) UNIQUE NOT NULL,
     Email VARCHAR(255) UNIQUE NOT NULL,
+    Contrasena VARCHAR(255),
+    Estado BIT,
     Id_Pais INT,
     Role_Id INT,
     Fecha_Creacion DATETIME,
