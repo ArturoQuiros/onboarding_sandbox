@@ -71,13 +71,9 @@ export const StaffLogin = () => {
       {errorMsg && <p className={styles.errorMessage}>{errorMsg}</p>}
 
       <p className={styles.backLink}>
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          className={styles.backButton}
-        >
+        <a onClick={() => navigate("/")} className={styles.backButton}>
           Volver a la página principal
-        </button>
+        </a>
       </p>
     </div>
   );
