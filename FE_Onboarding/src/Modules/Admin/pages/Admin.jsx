@@ -2,7 +2,7 @@
 
 import React from "react";
 // 💡 Asumo que useAuth se importa desde tu archivo de barril o AuthContext.jsx
-import { useAuth } from "../../../Global/Context";
+import { useAuth } from "../../../Global/hooks";
 
 /**
  * Página principal del panel de administración.
@@ -73,21 +73,6 @@ const Admin = () => {
           </div>
         )}
       </div>
-
-      {/* Botón de Logout para probar la función */}
-      <button
-        onClick={logout}
-        style={{
-          padding: "10px 15px",
-          backgroundColor: "#dc3545",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: "pointer",
-        }}
-      >
-        Cerrar Sesión
-      </button>
     </div>
   );
 };

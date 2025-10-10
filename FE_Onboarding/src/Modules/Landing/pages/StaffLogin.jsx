@@ -4,7 +4,7 @@ import { loginRequest } from "../../../Global/auth";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../../Api/axiosClient";
 // 💡 Importar useAuth desde tu barril
-import { useAuth } from "../../../Global/Context";
+import { useAuth } from "../../../Global/hooks";
 import styles from "./StaffLogin.module.css";
 import logo from "../../../Global/assets/onboarding_logo.png";
 
