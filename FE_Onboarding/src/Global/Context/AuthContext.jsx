@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const clientLogout = useCallback(() => {
     sessionStorage.removeItem("accessToken");
     setUser(null);
-    navigate("/staff-login");
+    navigate("/");
   }, [navigate]);
 
   const logout = useCallback(async () => {
