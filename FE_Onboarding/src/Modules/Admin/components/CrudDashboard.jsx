@@ -31,26 +31,23 @@ export const CrudDashboard = ({
   const [selectedItem, setSelectedItem] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
-
-  // 📌 AÑADIDO: Estado de carga para mostrar el spinner/mensaje
   const [isLoading, setIsLoading] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
+  // 🔹 Carga inicial de items
   const reloadItems = useCallback(async () => {
-    setIsLoading(true); // 📌 INICIO DE CARGA
+    setIsLoading(true);
     try {
       const data = await getItems();
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
-      // ⚠️ Nota: Asegúrate de tener 'common.loadError' en tus diccionarios
       toast.error(t("common.loadError"));
     } finally {
-      setIsLoading(false); // 📌 FIN DE CARGA
+      setIsLoading(false);
     }
   }, [getItems, t]);
 
@@ -126,7 +123,8 @@ export const CrudDashboard = ({
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
-      await reloadItems();
+      // Actualizar tabla eliminando el item directamente
+      setItems((prev) => prev.filter((i) => i.id !== itemIdToDelete));
     } catch (error) {
       console.error(error);
     } finally {
@@ -136,27 +134,34 @@ export const CrudDashboard = ({
 
   const handleSave = async (item) => {
     const isEditing = Boolean(selectedItem);
-    const action = isEditing ? updateItem(item) : createItem(item);
-
     try {
-      await toast.promise(action, {
-        loading: isEditing ? t("common.updating") : t("common.creating"),
-        success: isEditing
-          ? t("common.updateSuccess")
-          : t("common.createSuccess"),
-        error: t("common.genericError"),
+      const savedItem = await toast.promise(
+        isEditing ? updateItem(item) : createItem(item),
+        {
+          loading: isEditing ? t("common.updating") : t("common.creating"),
+          success: isEditing
+            ? t("common.updateSuccess")
+            : t("common.createSuccess"),
+          error: t("common.genericError"),
+        }
+      );
+
+      // Actualizar tabla localmente
+      setItems((prev) => {
+        if (isEditing) {
+          return prev.map((i) => (i.id === savedItem.id ? savedItem : i));
+        } else {
+          return [savedItem, ...prev]; // agregar al inicio
+        }
       });
+
       setIsFormOpen(false);
-      setSelecteditem(null);
-      await reloadItems();
+      setSelectedItem(null);
     } catch (error) {
       console.error(error);
     }
   };
 
-  // -------------------------
-  // RENDERIZADO AJUSTADO
-  // -------------------------
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -164,7 +169,6 @@ export const CrudDashboard = ({
           {entityIcon && <span className={styles.icon}>{entityIcon}</span>}
           {t(`${entityName}.title`)}
         </h2>
-        {/* El botón de crear se mantiene visible, incluso si está cargando */}
         <button className={styles.createButton} onClick={handleCreate}>
           <FaPlus /> {t(`${entityName}.createButton`)}
         </button>
@@ -180,7 +184,6 @@ export const CrudDashboard = ({
         />
       ) : (
         <>
-          {/* 📌 Condicional: La barra de controles NO se muestra si está cargando */}
           {!isLoading && (
             <div className={styles.controlsBar}>
               <SearchBar
@@ -194,7 +197,6 @@ export const CrudDashboard = ({
             </div>
           )}
 
-          {/* 📌 Condicional: Mostrar el mensaje de carga o la tabla */}
           {isLoading ? (
             <p className={styles.loadingMessage}>{t("common.loading")}</p>
           ) : (
