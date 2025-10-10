@@ -1,4 +1,3 @@
-// src/main.jsx
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
@@ -8,14 +7,14 @@ import App from "./App.jsx";
 import i18next from "i18next";
 import { I18nextProvider } from "react-i18next";
 
-// Importa ambos proveedores de contexto
-import { LanguageProvider, UIProvider } from "./Global/Context";
+// 💡 IMPORTAR EL AUTHPROVIDER DESDE TU BARRIL
+import { LanguageProvider, UIProvider, AuthProvider } from "./Global/Context";
 import { enTranslation, esTranslation } from "./Global/Translations";
 
 // MSAL
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
-import { msalConfig } from "./Global/auth"; // desde tu barril
+import { msalConfig } from "./Global/auth";
 
 i18next.init({
   interpolation: { escapeValue: false },
@@ -32,11 +31,13 @@ createRoot(document.getElementById("root")).render(
     <I18nextProvider i18n={i18next}>
       <MsalProvider instance={msalInstance}>
         <BrowserRouter>
-          <LanguageProvider>
-            <UIProvider>
-              <App />
-            </UIProvider>
-          </LanguageProvider>
+          <AuthProvider>
+            <LanguageProvider>
+              <UIProvider>
+                <App />
+              </UIProvider>
+            </LanguageProvider>
+          </AuthProvider>
         </BrowserRouter>
       </MsalProvider>
     </I18nextProvider>
