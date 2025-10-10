@@ -1,4 +1,3 @@
-// src/Modules/Admin/pages/Contracts.jsx
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
@@ -7,33 +6,49 @@ import axiosClient from "../../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import styles from "../components/CrudDataTable.module.css";
 
-/**
- * Página de contratos.
- */
 const Contracts = () => {
   const { setEntityIcon } = useContext(UIContext);
   const navigate = useNavigate();
 
   const [clientes, setClientes] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [contracts, setContracts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // --- Set icon al montar
   useEffect(() => {
     setEntityIcon(<BsNewspaper />);
   }, [setEntityIcon]);
 
-  // Carga clientes y usuarios
+  // --- Carga inicial de clientes, usuarios y contratos
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [clientesRes, usuariosRes] = await Promise.all([
+        const [clientesRes, usuariosRes, contratosRes] = await Promise.all([
           axiosClient.get("/cliente"),
           axiosClient.get("/usuario"),
+          axiosClient.get("/Contrato"),
         ]);
+
         setClientes(clientesRes.data);
         setUsuarios(usuariosRes.data);
+
+        const mappedContracts = contratosRes.data.map((c) => ({
+          id: c.id,
+          client:
+            clientesRes.data.find((cl) => cl.id === c.id_Cliente)?.nombre ||
+            c.id_Cliente,
+          accountManager:
+            usuariosRes.data.find((u) => u.id === c.account_manager)?.nombre ||
+            c.account_manager,
+          status: c.estado,
+          id_Cliente: c.id_Cliente,
+          account_manager: c.account_manager,
+        }));
+
+        setContracts(mappedContracts);
       } catch (error) {
-        console.error("Error cargando clientes o usuarios", error);
+        console.error("Error cargando datos iniciales", error);
       } finally {
         setIsLoading(false);
       }
@@ -41,64 +56,78 @@ const Contracts = () => {
     fetchData();
   }, []);
 
-  // --- CRUD Functions ---
-  const getContracts = useCallback(async () => {
-    try {
-      const res = await axiosClient.get("/Contrato");
-      return res.data.map((c) => ({
-        id: c.id,
-        client:
-          clientes.find((cl) => cl.id === c.id_Cliente)?.nombre || c.id_Cliente,
-        status: c.estado,
-        accountManager:
-          usuarios.find((u) => u.id === c.account_manager)?.nombre ||
-          c.account_manager,
-      }));
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  }, [clientes, usuarios]);
-
-  const createContract = useCallback(async (contract) => {
-    const payload = {
-      id_Cliente: contract.id_Cliente,
-      estado: contract.status,
-      account_manager: contract.accountManager,
-    };
-    try {
+  // --- CRUD Functions dinámicas ---
+  const createContract = useCallback(
+    async (contract) => {
+      const payload = {
+        id_Cliente: contract.id_Cliente,
+        estado: contract.status,
+        account_manager: contract.account_manager,
+      };
       const res = await axiosClient.post("/Contrato", payload);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }, []);
 
-  const updateContract = useCallback(async (contract) => {
-    const payload = {
-      id_Cliente: contract.id_Cliente,
-      estado: contract.status,
-      account_manager: contract.accountManager,
-    };
-    try {
+      const newContract = {
+        id: res.data.id,
+        client:
+          clientes.find((cl) => cl.id === res.data.id_Cliente)?.nombre ||
+          res.data.id_Cliente,
+        accountManager:
+          usuarios.find((u) => u.id === res.data.account_manager)?.nombre ||
+          res.data.account_manager,
+        status: res.data.estado,
+        id_Cliente: res.data.id_Cliente,
+        account_manager: res.data.account_manager,
+      };
+
+      // Agregar al estado local inmediatamente
+      setContracts((prev) => [newContract, ...prev]);
+      return newContract;
+    },
+    [clientes, usuarios]
+  );
+
+  const updateContract = useCallback(
+    async (contract) => {
+      const payload = {
+        id_Cliente: contract.id_Cliente,
+        estado: contract.status,
+        account_manager: contract.account_manager,
+      };
       const res = await axiosClient.put(`/Contrato/${contract.id}`, payload);
-      return res.data;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  }, []);
+
+      const updatedContract = {
+        id: res.data.id,
+        client:
+          clientes.find((cl) => cl.id === res.data.id_Cliente)?.nombre ||
+          res.data.id_Cliente,
+        accountManager:
+          usuarios.find((u) => u.id === res.data.account_manager)?.nombre ||
+          res.data.account_manager,
+        status: res.data.estado,
+        id_Cliente: res.data.id_Cliente,
+        account_manager: res.data.account_manager,
+      };
+
+      // Actualizar en estado local
+      setContracts((prev) =>
+        prev.map((c) => (c.id === updatedContract.id ? updatedContract : c))
+      );
+
+      return updatedContract;
+    },
+    [clientes, usuarios]
+  );
 
   const deleteContract = useCallback(async (id) => {
-    try {
-      await axiosClient.delete(`/Contrato/${id}`);
-      return true;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
+    await axiosClient.delete(`/Contrato/${id}`);
+    // Eliminar del estado local
+    setContracts((prev) => prev.filter((c) => c.id !== id));
+    return true;
   }, []);
+
+  const getContracts = useCallback(async () => {
+    return contracts;
+  }, [contracts]);
 
   // --- Campos para CrudForm / DataTable ---
   const contractFields = [
@@ -116,6 +145,7 @@ const Contracts = () => {
       type: "select",
       options: clientes.map((c) => ({ value: c.id, label: c.nombre })),
       validation: { required: true },
+      isReadOnly: (item) => !!item, // Bloquea el select solo al editar
     },
     {
       key: "status",

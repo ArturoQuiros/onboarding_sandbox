@@ -65,6 +65,13 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
 
+        // Determinar si está bloqueado (readOnly / disabled)
+        const isFieldReadOnly =
+          isIdField ||
+          (typeof field.isReadOnly === "function"
+            ? field.isReadOnly(item)
+            : field.isReadOnly);
+
         return (
           <div key={field.key} className={styles.formGroup}>
             <label className={styles.label}>{t(field.labelKey)}</label>
@@ -74,6 +81,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 name={nameKey}
                 value={formData[nameKey] || ""}
                 onChange={handleChange}
+                disabled={isFieldReadOnly}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}
@@ -90,8 +98,8 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 type={field.type || "text"}
                 name={nameKey}
                 value={formData[nameKey] || ""}
-                onChange={isIdField ? null : handleChange}
-                readOnly={isIdField}
+                onChange={handleChange}
+                readOnly={isFieldReadOnly}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}
