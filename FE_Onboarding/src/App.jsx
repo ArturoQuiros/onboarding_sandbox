@@ -45,6 +45,11 @@ function App() {
           <Route path="services" element={<Services />} />
           <Route path="staff" element={<Staff />} />
           <Route path="contracts" element={<Contracts />} />
+          <Route
+            path="contracts/:contractId/services"
+            element={<ContractServices />}
+          />
+
           <Route path="users" element={<Users />} />
         </Route>
 
