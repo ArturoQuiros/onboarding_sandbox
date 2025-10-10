@@ -1,6 +1,0 @@
-@WS_Onboarding_HostAddress = http://localhost:5005
-
-GET {{WS_Onboarding_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
