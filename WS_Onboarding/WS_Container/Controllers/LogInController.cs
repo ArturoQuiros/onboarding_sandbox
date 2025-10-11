@@ -22,14 +22,14 @@ namespace WS_Onboarding.Controllers
             _context = context;
         }
 
-        [HttpGet("LogIn")]
+        [HttpPost("LogIn")]
         [Authorize] // Requiere token de Azure AD
         public IActionResult Authentication()
         {
             return Ok("Authenticado!");
         }
 
-        [HttpGet("LogOut")]
+        [HttpPost("LogOut")]
         [Authorize] // Requiere token de Azure AD
         public IActionResult LogOut()
         {

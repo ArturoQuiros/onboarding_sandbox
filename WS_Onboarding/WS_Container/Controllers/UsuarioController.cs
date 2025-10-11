@@ -88,7 +88,7 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpGet("ByEmail")]
-        public IActionResult GetUsuarioByEmail([FromRoute] string Email)
+        public IActionResult GetUsuarioByEmail([FromQuery] string Email)
         {
             try
             {
@@ -103,6 +103,39 @@ namespace WS_Onboarding.Controllers
                 else
                 {
                     return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpGet("GetUsuariosByRol")]
+        public IActionResult GetUsuariosByRol([FromQuery] int Rol)
+        {
+            try
+            {
+                var UsuariosModel = _context.Usuarios
+                .Where(c => c.Role_Id == Rol).ToList()
+                .Select(c => c.ToUsuarioDto());
+
+                if (UsuariosModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(UsuariosModel);
                 }
             }
             catch (Exception ex)
