@@ -23,7 +23,7 @@ DROP TABLE IF EXISTS Usuarios
 CREATE TABLE Usuarios (
     Id INT PRIMARY KEY IDENTITY(1, 1),
     Nombre VARCHAR(100) NOT NULL,
-    Azure_AD_User_Id VARCHAR(100) UNIQUE NOT NULL,
+    Azure_AD_User_Id VARCHAR(100),
     Email VARCHAR(255) UNIQUE NOT NULL,
     Contrasena VARCHAR(255),
     Estado BIT,
