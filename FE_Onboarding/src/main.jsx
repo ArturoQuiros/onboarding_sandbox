@@ -7,15 +7,20 @@ import App from "./App.jsx";
 import i18next from "i18next";
 import { I18nextProvider } from "react-i18next";
 
-// 💡 IMPORTAR EL AUTHPROVIDER DESDE TU BARRIL
+// 💡 Contextos globales
 import { LanguageProvider, UIProvider, AuthProvider } from "./Global/Context";
 import { enTranslation, esTranslation } from "./Global/Translations";
 
-// MSAL
+// 💡 MSAL (Azure AD)
 import { PublicClientApplication } from "@azure/msal-browser";
 import { MsalProvider } from "@azure/msal-react";
 import { msalConfig } from "./Global/auth";
 
+// 💡 React Query
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./Api"; // si usas el barrel file de api
+
+// 🌐 Inicialización de i18next
 i18next.init({
   interpolation: { escapeValue: false },
   resources: {
@@ -26,19 +31,22 @@ i18next.init({
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
+// 🚀 Render principal
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <I18nextProvider i18n={i18next}>
       <MsalProvider instance={msalInstance}>
-        <BrowserRouter>
-          <AuthProvider>
-            <LanguageProvider>
-              <UIProvider>
-                <App />
-              </UIProvider>
-            </LanguageProvider>
-          </AuthProvider>
-        </BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter>
+            <AuthProvider>
+              <LanguageProvider>
+                <UIProvider>
+                  <App />
+                </UIProvider>
+              </LanguageProvider>
+            </AuthProvider>
+          </BrowserRouter>
+        </QueryClientProvider>
       </MsalProvider>
     </I18nextProvider>
   </StrictMode>
