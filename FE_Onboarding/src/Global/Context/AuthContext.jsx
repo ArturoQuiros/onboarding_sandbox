@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
-      await axiosClient.get("/LogOut");
+      await axiosClient.post("/LogOut");
     } catch (error) {
       console.error("Error al cerrar sesión en servidor:", error);
     } finally {
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       const token = sessionStorage.getItem("accessToken");
       if (token) {
         try {
-          const response = await axiosClient.get("/LogIn");
+          const response = await axiosClient.post("/LogIn");
           setUser({
             id: response.data.id,
             nombre: response.data.nombre,

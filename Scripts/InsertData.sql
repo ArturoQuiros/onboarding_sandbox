@@ -8,8 +8,8 @@ VALUES
 -- Insertar datos en la tabla Roles
 INSERT INTO Roles (Nombre, Fecha_Creacion, Fecha_Modificacion)
 VALUES
-('Manager', GETDATE(), GETDATE()),
-('Auditor', GETDATE(), GETDATE()),
+('Administrador', GETDATE(), GETDATE()),
+('Usuario', GETDATE(), GETDATE()),
 ('Staff', GETDATE(), GETDATE());
 
 -- Insertar datos en la tabla Usuarios
@@ -18,7 +18,12 @@ INSERT INTO Usuarios (Nombre, Azure_AD_User_Id, Email, Id_Pais, Role_Id, Fecha_C
 VALUES
 ('Ana Pérez', 'ana.perez@example.com', 'ana.perez@bdo.com', 1, 1, GETDATE(), GETDATE()),
 ('Luis Gómez', 'luis.gomez@example.com', 'luis.gomez@bdo.com', 2, 2, GETDATE(), GETDATE()),
-('Sofía Vargas', 'sofia.vargas@example.com', 'sofia.vargas@bdo.com', 3, 3, GETDATE(), GETDATE());
+('Sofía Vargas', 'sofia.vargas@example.com', 'sofia.vargas@bdo.com', 3, 3, GETDATE(), GETDATE()),
+('Ana García', NULL, 'ana.garcia.admin@dominio.com', 'hash_admin_A1', 1, 1, 1, 1, GETDATE(), GETDATE()),
+('Roberto Martínez', 'azure_robert_m456', 'roberto.martinez.admin@dominio.com', 'hash_admin_B2', 1, 1, 1, 1, GETDATE(), GETDATE()),
+('Laura Pérez', NULL, 'laura.perez.admin@dominio.com', 'hash_admin_C3', 1, 1, 1, 1, GETDATE(), GETDATE()),
+('Carlos Sánchez', 'azure_carlos_s789', 'carlos.sanchez.admin@dominio.com', 'hash_admin_D4', 1, 1, 1, 1, GETDATE(), GETDATE()),
+('Sofía Torres', NULL, 'sofia.torres.admin@dominio.com', 'hash_admin_E5', 1, 1, 1, 1, GETDATE(), GETDATE());
 
 -- Insertar datos en la tabla Servicios
 -- (Id_pais se refiere al ID de la tabla Paises)

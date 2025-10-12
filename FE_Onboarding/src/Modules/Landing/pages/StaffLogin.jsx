@@ -30,7 +30,7 @@ export const StaffLogin = () => {
       const token = response.accessToken;
       sessionStorage.setItem("accessToken", token);
 
-      const loginResponse = await axiosClient.get("/LogIn");
+      const loginResponse = await axiosClient.post("/LogIn");
 
       setUser({
         id: loginResponse.data.id,
