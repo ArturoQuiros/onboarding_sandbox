@@ -10,12 +10,12 @@ namespace WS_Onboarding.Dtos
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }
-        public required string Azure_AD_User_Id { get; set; }
+        public string? Azure_AD_User_Id { get; set; }
         public required string Email { get; set; }
         public int? Id_Pais { get; set; }
         public int? Role_Id { get; set; }
-        public string? Contrasena { get; set; }
         public bool? Estado { get; set; }
+        public int? Tipo { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
     }
@@ -26,9 +26,8 @@ namespace WS_Onboarding.Dtos
         [MaxLength(100)]
         public required string Nombre { get; set; }
 
-        [Required]
         [MaxLength(100)]
-        public required string Azure_AD_User_Id { get; set; }
+        public string? Azure_AD_User_Id { get; set; }
 
         [Required]
         [EmailAddress]
@@ -38,11 +37,12 @@ namespace WS_Onboarding.Dtos
         public int? Id_Pais { get; set; }
         public int? Role_Id { get; set; }
         public bool? Estado { get; set; }
+        public int? Tipo { get; set; }
         [MaxLength(255)]
         public string? Contrasena { get; set; }
     }
 
-    public class RegisterUsuarioDto
+    public class RegisterUsuarioDefaultSDto
     {
         [Required]
         [MaxLength(100)]
@@ -55,7 +55,16 @@ namespace WS_Onboarding.Dtos
 
         public int? Id_Pais { get; set; }
         public int? Role_Id { get; set; }
-        [MaxLength(255)]
+    }
+
+    public class RegisterUsuarioAzureDto : RegisterUsuarioDefaultSDto
+    {
+        [MaxLength(100)]
+        public string? Azure_AD_User_Id { get; set; }
+    }
+
+    public class RegisterUsuarioOutsideDto : RegisterUsuarioDefaultSDto
+    {
         public required string Contrasena { get; set; }
     }
 
@@ -65,6 +74,10 @@ namespace WS_Onboarding.Dtos
         [EmailAddress]
         [MaxLength(255)]
         public required string Email { get; set; }
+    }
+
+    public class LoginUsuarioOutsideDto : LoginUsuarioDto
+    {
         [MaxLength(255)]
         public required string Contrasena { get; set; }
     }
@@ -72,5 +85,15 @@ namespace WS_Onboarding.Dtos
     public class UpdateUsuarioDto : CreateUsuarioDto
     {
         //Sin atributos extra por el momento
+    }
+
+    public class UpdateUsuarioDtoRol
+    {
+        public required int Role_Id { get; set; }
+    }
+
+    public class ResetUsuarioPasswordDto
+    {
+        public required string Contrasena { get; set; }
     }
 }

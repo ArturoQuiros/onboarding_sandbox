@@ -81,8 +81,6 @@ namespace WS_Onboarding.Controllers
             try
             {
                 Models.Contrato ContratoModel = ContratoDto.ToContratoFromCreateDTO();
-                ContratoModel.Fecha_Creacion = DateTime.UtcNow;
-                ContratoModel.Fecha_Modificacion = DateTime.UtcNow;
 
                 _context.Contratos.Add(ContratoModel);
                 _context.SaveChanges();

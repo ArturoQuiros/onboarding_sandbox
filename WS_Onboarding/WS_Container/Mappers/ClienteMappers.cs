@@ -31,6 +31,8 @@ namespace WS_Onboarding.Mappers
                 Email = clienteModel.Email,
                 Telefono = clienteModel.Telefono,
                 Direccion = clienteModel.Direccion,
+                Fecha_Creacion = DateTime.UtcNow,
+                Fecha_Modificacion = DateTime.UtcNow
             };
         }
     }

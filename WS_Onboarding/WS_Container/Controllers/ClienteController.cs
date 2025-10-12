@@ -81,9 +81,7 @@ namespace WS_Onboarding.Controllers
             try
             {
                 Models.Cliente ClienteModel = ClienteDto.ToClienteFromCreateDTO();
-                ClienteModel.Fecha_Creacion = DateTime.UtcNow;
-                ClienteModel.Fecha_Modificacion = DateTime.UtcNow;
-
+                
                 _context.Clientes.Add(ClienteModel);
                 _context.SaveChanges();
 

@@ -29,6 +29,8 @@ namespace WS_Onboarding.Mappers
                 Id_Cliente = ContratoModel.Id_Cliente,
                 Estado = ContratoModel.Estado,
                 Account_manager = ContratoModel.Account_manager,
+                Fecha_Creacion = DateTime.UtcNow,
+                Fecha_Modificacion = DateTime.UtcNow
             };
         }
     }

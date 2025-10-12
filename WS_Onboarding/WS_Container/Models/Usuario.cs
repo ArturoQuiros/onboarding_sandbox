@@ -15,9 +15,8 @@ namespace WS_Onboarding.Models
         [MaxLength(100)]
         public required string Nombre { get; set; }
 
-        [Required]
         [MaxLength(100)]
-        public required string Azure_AD_User_Id { get; set; }
+        public string? Azure_AD_User_Id { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -29,6 +28,7 @@ namespace WS_Onboarding.Models
         [MaxLength(255)]
         public string? Contrasena { get; set; }
         public bool? Estado { get; set; }
+        public int? Tipo { get; set; }
 
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
