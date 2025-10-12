@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -7,14 +8,15 @@ using WS_Onboarding.Data;
 using WS_Onboarding.Dtos;
 using WS_Onboarding.Mappers;
 
+
 namespace WS_Onboarding.Controllers
 {
-    [Route("WS_Onboarding/Servicio")]
+    [Route("WS_Onboarding/Rol")]
     [ApiController]
-    public class ServicioController : ControllerBase
+    public class RolController : ControllerBase
     {
         private readonly ApplicatonDBContext _context;
-        public ServicioController(ApplicatonDBContext context)
+        public RolController(ApplicatonDBContext context)
         {
             _context = context;
         }
@@ -24,10 +26,10 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var Servicios = _context.Servicios.ToList()
-                    .Select(c => c.ToServicioDto());
+                var Roles = _context.Roles.ToList()
+                    .Select(c => c.ToRolDto());
 
-                return Ok(Servicios);
+                return Ok(Roles);
             }
             catch (Exception ex)
             {
@@ -45,52 +47,19 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetServicioById([FromRoute] int id)
+        public IActionResult GetRolById([FromRoute] int id)
         {
             try
             {
-                var ServicioModel = _context.Servicios.Find(id);
+                var RolModel = _context.Roles.Find(id);
 
-                if (ServicioModel == null)
+                if (RolModel == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    return Ok(ServicioModel.ToServicioDto());
-                }
-            }
-            catch (Exception ex)
-            {
-                var errorDetails = new
-                {
-                    Message = ex.Message,             // Main error message
-                    Type = ex.GetType().Name,         // Type of the exception
-                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
-                    Inner = ex.InnerException?.Message, // Deeper cause if any
-                    Source = ex.Source                // Where the error came from
-                };
-
-                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
-            }
-        }
-
-        [HttpGet("ByIdPais")]
-        public IActionResult GetServicioByIdPais([FromQuery] int IdPais)
-        {
-            try
-            {
-                var Servicios = _context.Servicios
-                    .Where(c => c.Id_pais == IdPais).ToList()
-                    .Select(c => c.ToServicioDto());
-
-                if (Servicios == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(Servicios);
+                    return Ok(RolModel.ToRolDto());
                 }
             }
             catch (Exception ex)
@@ -109,16 +78,16 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateServicioDto ServicioDto)
+        public IActionResult Create([FromBody] CreateRolDto RolDto)
         {
             try
             {
-                Models.Servicio ServicioModel = ServicioDto.ToServicioFromCreateDTO();
+                Models.Rol RolModel = RolDto.ToRolFromCreateDTO();
 
-                _context.Servicios.Add(ServicioModel);
+                _context.Roles.Add(RolModel);
                 _context.SaveChanges();
 
-                return CreatedAtAction(nameof(GetServicioById), new { id = ServicioModel.Id }, ServicioModel.ToServicioDto());
+                return CreatedAtAction(nameof(GetRolById), new { id = RolModel.Id }, RolModel.ToRolDto());
             }
             catch (Exception ex)
             {
@@ -137,24 +106,23 @@ namespace WS_Onboarding.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateServicioDto ServicioDto)
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateRolDto RolDto)
         {
             try
             {
-                var ServicioModel = _context.Servicios.FirstOrDefault(c => c.Id == id);
+                var RolModel = _context.Roles.FirstOrDefault(c => c.Id == id);
 
-                if (ServicioModel == null)
+                if (RolModel == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    ServicioModel.Nombre = ServicioDto.Nombre;
-                    ServicioModel.Id_pais = (ServicioDto.Id_pais == null || ServicioDto.Id_pais.Equals("")) ? ServicioModel.Id_pais : ServicioDto.Id_pais;
-                    ServicioModel.Fecha_Modificacion = DateTime.UtcNow;
+                    RolModel.Nombre = RolDto.Nombre;
+                    RolModel.Fecha_Modificacion = DateTime.UtcNow;
                     _context.SaveChanges();
 
-                    return Ok(ServicioModel.ToServicioDto());
+                    return Ok(RolModel.ToRolDto());
                 }
             }
             catch (Exception ex)
@@ -178,15 +146,15 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var ServicioModel = _context.Servicios.FirstOrDefault(c => c.Id == id);
+                var RolModel = _context.Roles.FirstOrDefault(c => c.Id == id);
 
-                if (ServicioModel == null)
+                if (RolModel == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    _context.Servicios.Remove(ServicioModel);
+                    _context.Roles.Remove(RolModel);
                     _context.SaveChanges();
 
                     return NoContent();

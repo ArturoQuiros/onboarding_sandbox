@@ -187,6 +187,7 @@ namespace WS_Onboarding.Controllers
                     Role_Id = 1,
                     Contrasena = "juanperez123",
                     Estado = true,
+                    Tipo = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
@@ -200,6 +201,7 @@ namespace WS_Onboarding.Controllers
                     Role_Id = 2,
                     Contrasena = "luciagomez123",
                     Estado = true,
+                    Tipo = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
@@ -213,6 +215,7 @@ namespace WS_Onboarding.Controllers
                     Role_Id = 3,
                     Contrasena = "carlosruiz123",
                     Estado = true,
+                    Tipo = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };

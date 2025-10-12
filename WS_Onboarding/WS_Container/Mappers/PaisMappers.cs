@@ -24,7 +24,9 @@ namespace WS_Onboarding.Mappers
         {
             return new Pais
             {
-                Nombre = PaisModel.Nombre
+                Nombre = PaisModel.Nombre,
+                Fecha_Creacion = DateTime.UtcNow,
+                Fecha_Modificacion = DateTime.UtcNow
             };
         }
     }
