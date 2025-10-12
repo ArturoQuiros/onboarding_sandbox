@@ -5,32 +5,26 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import { CrudDataTable, CrudForm, SearchBar, ItemsPerPageSelector } from "./";
+import { CrudDataTable, SearchBar, ItemsPerPageSelector } from "./";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import styles from "./TasksDashboard.module.css";
-import { ConfirmModal } from "./ConfirmModal";
 import { FaPlus } from "react-icons/fa";
 import { UIContext } from "../../../Global/Context";
+import { useNavigate } from "react-router-dom";
 
 export const TasksDashboard = ({
   entityName,
   fields,
   getItems,
-  createItem,
-  updateItem,
-  deleteItem,
-  validations,
   extraActionRenderer,
+  serviceId,
 }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
+  const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [itemIdToDelete, setItemIdToDelete] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,71 +89,14 @@ export const TasksDashboard = ({
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
+  // 🔹 Redirigir a crear tarea
   const handleCreate = () => {
-    setSelectedItem(null);
-    setIsFormOpen(true);
+    navigate(`/admin/services/${serviceId}/tasks/new`);
   };
 
+  // 🔹 Redirigir a editar tarea
   const handleEdit = (item) => {
-    setSelectedItem(item);
-    setIsFormOpen(true);
-  };
-
-  const handleCancel = () => {
-    setIsFormOpen(false);
-    setSelectedItem(null);
-  };
-
-  const handleDelete = (id) => {
-    setItemIdToDelete(id);
-    setIsConfirmModalOpen(true);
-  };
-
-  const handleConfirmDelete = async () => {
-    setIsConfirmModalOpen(false);
-    try {
-      await toast.promise(deleteItem(itemIdToDelete), {
-        loading: t(`${entityName}.deleting`),
-        success: t(`${entityName}.deleteSuccess`),
-        error: t(`${entityName}.deleteError`),
-      });
-      // Actualizar tabla eliminando el item directamente
-      setItems((prev) => prev.filter((i) => i.id !== itemIdToDelete));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setItemIdToDelete(null);
-    }
-  };
-
-  const handleSave = async (item) => {
-    const isEditing = Boolean(selectedItem);
-    try {
-      const savedItem = await toast.promise(
-        isEditing ? updateItem(item) : createItem(item),
-        {
-          loading: isEditing ? t("common.updating") : t("common.creating"),
-          success: isEditing
-            ? t("common.updateSuccess")
-            : t("common.createSuccess"),
-          error: t("common.genericError"),
-        }
-      );
-
-      // Actualizar tabla localmente
-      setItems((prev) => {
-        if (isEditing) {
-          return prev.map((i) => (i.id === savedItem.id ? savedItem : i));
-        } else {
-          return [savedItem, ...prev]; // agregar al inicio
-        }
-      });
-
-      setIsFormOpen(false);
-      setSelectedItem(null);
-    } catch (error) {
-      console.error(error);
-    }
+    navigate(`/admin/services/${serviceId}/tasks/${item.id}`);
   };
 
   return (
@@ -174,58 +111,34 @@ export const TasksDashboard = ({
         </button>
       </div>
 
-      {isFormOpen ? (
-        <CrudForm
-          fields={fields}
-          item={selectedItem}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          validations={validations}
-        />
-      ) : (
-        <>
-          {!isLoading && (
-            <div className={styles.controlsBar}>
-              <SearchBar
-                searchTerm={searchTerm}
-                onSearchChange={setSearchTerm}
-              />
-              <ItemsPerPageSelector
-                itemsPerPage={itemsPerPage}
-                onItemsPerPageChange={handleItemsPerPageChange}
-              />
-            </div>
-          )}
-
-          {isLoading ? (
-            <p className={styles.loadingMessage}>{t("common.loading")}</p>
-          ) : (
-            <CrudDataTable
-              data={paginatedItems}
-              fields={fields}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              extraActionRenderer={extraActionRenderer}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              filteredCount={filteredItems.length}
-              onPageChange={setCurrentPage}
-              itemsPerPage={itemsPerPage}
-              onSort={handleSort}
-              sortKey={sortKey}
-              sortDirection={sortDirection}
-            />
-          )}
-        </>
+      {!isLoading && (
+        <div className={styles.controlsBar}>
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          <ItemsPerPageSelector
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </div>
       )}
 
-      <ConfirmModal
-        isOpen={isConfirmModalOpen}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setIsConfirmModalOpen(false)}
-        messageKey={`${entityName}.confirmDelete`}
-        type="delete"
-      />
+      {isLoading ? (
+        <p className={styles.loadingMessage}>{t("common.loading")}</p>
+      ) : (
+        <CrudDataTable
+          data={paginatedItems}
+          fields={fields}
+          onEdit={handleEdit} // 🔹 ahora redirige
+          extraActionRenderer={extraActionRenderer}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          filteredCount={filteredItems.length}
+          onPageChange={setCurrentPage}
+          itemsPerPage={itemsPerPage}
+          onSort={handleSort}
+          sortKey={sortKey}
+          sortDirection={sortDirection}
+        />
+      )}
     </div>
   );
 };
