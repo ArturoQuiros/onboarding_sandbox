@@ -1,16 +1,11 @@
-// src/Modules/Admin/components/TaskDetailDashboard.jsx
 import React, { useState } from "react";
 import styles from "./TaskDetailDashboard.module.css";
-import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { FaSave, FaArrowLeft } from "react-icons/fa";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const TaskDetailDashboard = ({ task, onSave, isNew }) => {
-  const { t } = useTranslation("global");
   const navigate = useNavigate();
-  const { serviceId } = useParams();
-
   const [name, setName] = useState(task?.name || "");
   const [form, setForm] = useState(task?.form || "{}");
 
@@ -22,10 +17,10 @@ export const TaskDetailDashboard = ({ task, onSave, isNew }) => {
       return;
     }
 
-    // Validar JSON antes de guardar
+    // Validar JSON
     try {
       JSON.parse(form);
-    } catch (error) {
+    } catch {
       toast.error("El contenido del formulario no es un JSON válido");
       return;
     }
@@ -34,19 +29,20 @@ export const TaskDetailDashboard = ({ task, onSave, isNew }) => {
       ...task,
       name,
       form,
-      serviceId: Number(serviceId),
     };
 
     await onSave(updatedTask);
   };
 
   const handleCancel = () => {
-    navigate(`/admin/services/${serviceId}/tasks`);
+    navigate(`/admin/services/${task.serviceId}/tasks`);
   };
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>{isNew ? "Nueva tarea" : "Editar tarea"}</h2>
+      <h2 className={styles.title}>
+        {isNew ? "Nueva tarea" : `Editar tarea #${task?.id ?? ""}`}
+      </h2>
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
@@ -74,19 +70,19 @@ export const TaskDetailDashboard = ({ task, onSave, isNew }) => {
             value={form}
             onChange={(e) => setForm(e.target.value)}
             placeholder='{ "field1": "valor1", "field2": "valor2" }'
-          ></textarea>
+          />
         </div>
 
         <div className={styles.buttons}>
           <button type="submit" className={styles.saveButton}>
-            <FaSave /> Guardar
+            <FaSave /> {isNew ? "Crear" : "Guardar Cambios"}
           </button>
           <button
             type="button"
             onClick={handleCancel}
             className={styles.cancelButton}
           >
-            <FaArrowLeft /> Cancelar
+            <FaArrowLeft /> Volver
           </button>
         </div>
       </form>
