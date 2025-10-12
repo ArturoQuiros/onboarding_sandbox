@@ -24,10 +24,10 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var Paiss = _context.Paises.ToList()
+                var Paises = _context.Paises.ToList()
                     .Select(c => c.ToPaisDto());
 
-                return Ok(Paiss);
+                return Ok(Paises);
             }
             catch (Exception ex)
             {
@@ -81,8 +81,6 @@ namespace WS_Onboarding.Controllers
             try
             {
                 Models.Pais PaisModel = PaisDto.ToPaisFromCreateDTO();
-                PaisModel.Fecha_Creacion = DateTime.UtcNow;
-                PaisModel.Fecha_Modificacion = DateTime.UtcNow;
 
                 _context.Paises.Add(PaisModel);
                 _context.SaveChanges();

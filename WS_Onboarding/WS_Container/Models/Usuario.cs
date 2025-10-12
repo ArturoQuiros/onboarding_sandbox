@@ -28,6 +28,7 @@ namespace WS_Onboarding.Models
         [MaxLength(255)]
         public string? Contrasena { get; set; }
         public bool? Estado { get; set; }
+        public int? Tipo { get; set; }
 
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }

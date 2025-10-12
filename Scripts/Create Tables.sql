@@ -29,6 +29,7 @@ CREATE TABLE Usuarios (
     Estado BIT,
     Id_Pais INT,
     Role_Id INT,
+    Tipo int,
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME,
     CONSTRAINT FK_Usuarios_Paises FOREIGN KEY (Id_Pais) REFERENCES Paises(Id),

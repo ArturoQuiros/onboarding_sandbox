@@ -24,7 +24,9 @@ namespace WS_Onboarding.Mappers
         {
             return new Rol
             {
-                Nombre = RolModel.Nombre
+                Nombre = RolModel.Nombre,
+                Fecha_Creacion = DateTime.UtcNow,
+                Fecha_Modificacion = DateTime.UtcNow
             };
         }
     }

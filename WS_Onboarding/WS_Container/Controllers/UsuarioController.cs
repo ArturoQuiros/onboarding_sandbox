@@ -120,7 +120,7 @@ namespace WS_Onboarding.Controllers
             }
         }
 
-        [HttpGet("GetUsuariosByRol")]
+        [HttpGet("GetUsersByRol")]
         public IActionResult GetUsuariosByRol([FromQuery] int Rol)
         {
             try
@@ -153,14 +153,45 @@ namespace WS_Onboarding.Controllers
             }
         }
 
+        [HttpGet("GetUsersByType")]
+        public IActionResult GetUsersByType([FromQuery] int Tipo)
+        {
+            try
+            {
+                var UsuariosModel = _context.Usuarios
+                .Where(c => c.Tipo == Tipo).ToList()
+                .Select(c => c.ToUsuarioDto());
+
+                if (UsuariosModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(UsuariosModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] CreateUsuarioDto UsuarioDto)
         {
             try
             {
                 var UsuarioModel = UsuarioDto.ToUsuarioFromCreateDTO();
-                UsuarioModel.Fecha_Creacion = DateTime.UtcNow;
-                UsuarioModel.Fecha_Modificacion = DateTime.UtcNow;
 
                 _context.Usuarios.Add(UsuarioModel);
                 _context.SaveChanges();
@@ -202,6 +233,44 @@ namespace WS_Onboarding.Controllers
                     UsuarioModel.Fecha_Modificacion = DateTime.UtcNow;
                     UsuarioModel.Estado = (UsuarioDto.Estado == null) ? UsuarioModel.Estado : UsuarioDto.Estado;
                     UsuarioModel.Contrasena = (UsuarioDto.Contrasena == null) ? UsuarioModel.Contrasena : UsuarioDto.Contrasena;
+                    UsuarioModel.Tipo = UsuarioDto.Tipo;
+                    _context.SaveChanges();
+
+                    return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        
+
+        [HttpPut("UpdateRol/{id:int}")]
+        public IActionResult UpdateRol([FromRoute] int id, [FromBody] UpdateUsuarioDtoRol UsuarioDto)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios.ToList()
+                    .FirstOrDefault(c => c.Id == id);
+
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    UsuarioModel.Role_Id = UsuarioDto.Role_Id;
                     _context.SaveChanges();
 
                     return Ok(UsuarioModel.ToUsuarioDto());
@@ -257,19 +326,18 @@ namespace WS_Onboarding.Controllers
             }
         }
 
-        [HttpPost("RegisterUser")]
-        public IActionResult RegisterUser([FromBody] RegisterUsuarioDto UsuarioDto)
+        /*-------------------------------Usuarios Externos-------------------------------*/
+
+        [HttpGet("Outside")]
+        public IActionResult GetAllOutside()
         {
             try
             {
-                var UsuarioModel = UsuarioDto.ToUsuarioFromRegisterDTO();
-                UsuarioModel.Contrasena = _authService.HashPassword(UsuarioDto.Contrasena);
+                var Usuarios = _context.Usuarios.ToList()
+                    .Where(c => c.Tipo == 2).ToList()
+                    .Select(c => c.ToUsuarioDto());
 
-                _context.Usuarios.Add(UsuarioModel);
-                _context.SaveChanges();
-
-                return CreatedAtAction(nameof(GetUsuarioById), new { id = UsuarioModel.Id }, UsuarioModel.ToUsuarioDto());
-                
+                return Ok(Usuarios);
             }
             catch (Exception ex)
             {
@@ -286,18 +354,148 @@ namespace WS_Onboarding.Controllers
             }
         }
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginUsuarioDto LoginDto)
+        [HttpPut("Outside/Activate/{id:int}")]
+        public IActionResult ActivateOutside([FromRoute] int id)
         {
-            var UsuarioModel = _context.Usuarios
-                .Where(c => c.Email == LoginDto.Email).ToList()
-                .FirstOrDefault();
+            try
+            {
+                var UsuarioModel = _context.Usuarios.ToList()
+                    .FirstOrDefault(c => c.Id == id && c.Tipo == 2);
+                
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    UsuarioModel.Estado = true;
+                    _context.SaveChanges();
+
+                    return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPut("Outside/Desactivate/{id:int}")]
+        public IActionResult DesactivateOutside([FromRoute] int id)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios.ToList()
+                    .FirstOrDefault(c => c.Id == id && c.Tipo == 2);
+
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    UsuarioModel.Estado = false;
+                    _context.SaveChanges();
+
+                    return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPost("Outside")]
+        public IActionResult RegisterUserOutside([FromBody] RegisterUsuarioOutsideDto UsuarioDto)
+        {
+            try
+            {
+                var UsuarioModel = UsuarioDto.ToUsuarioFromRegisterOutsideDTO();
+                UsuarioModel.Contrasena = _authService.HashPassword(UsuarioDto.Contrasena);
+
+                _context.Usuarios.Add(UsuarioModel);
+                _context.SaveChanges();
+
+                return CreatedAtAction(nameof(GetUsuarioById), new { id = UsuarioModel.Id }, UsuarioModel.ToUsuarioDto());
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPost("Outside/RestPassword/{email}")]//Falta implementar Email
+        public IActionResult RestPassword([FromRoute] string email,[FromBody] ResetUsuarioPasswordDto UsuarioDto)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios.FirstOrDefault(c => c.Email == email);
+
+                if (UsuarioModel == null)
+                {
+                    return StatusCode(500, $"No existe un usuario con el email: {email}\n");
+                }
+                else
+                {
+                    UsuarioModel.Contrasena = _authService.HashPassword(UsuarioDto.Contrasena);
+                    _context.SaveChanges();
+
+                    return CreatedAtAction(nameof(GetUsuarioById), new { id = UsuarioModel.Id }, UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPost("Outside/Login")]
+        public IActionResult LoginOutside([FromBody] LoginUsuarioOutsideDto LoginDto)
+        {
+            var UsuarioModel = _context.Usuarios.FirstOrDefault(c => c.Email == LoginDto.Email && c.Tipo == 2);
 
             if (UsuarioModel == null)
             {
                 return StatusCode(500, $"No se ha encontrado usuario con email: {LoginDto.Email}\n");
             }
-            else if(UsuarioModel.Contrasena == null)
+            else if (UsuarioModel.Contrasena == null)
             {
                 return StatusCode(500, $"La contraseña guardad: {UsuarioModel.Contrasena} no pueden ser nulo\n");
             }
@@ -310,7 +508,74 @@ namespace WS_Onboarding.Controllers
             }
         }
 
-        [HttpGet("GetAzureUsers")]
+        /*-------------------------------Usuarios Internos-------------------------------*/
+
+        [HttpGet("Inside")]//Aun falta sincronizar con Azure
+        [Authorize]
+        public IActionResult GetAllInside()
+        {
+            try
+            {
+                var Usuarios = _context.Usuarios.ToList()
+                    .Where(c => c.Tipo == 1).ToList()
+                    .Select(c => c.ToUsuarioDto());
+
+                return Ok(Usuarios);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPost("Inside")]
+        [Authorize]
+        public IActionResult RegisterUserAzure([FromBody] RegisterUsuarioAzureDto UsuarioDto)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios
+                .Where(c => c.Email == UsuarioDto.Email).ToList()
+                .FirstOrDefault();//Esta busqueda tambien debe hacerse en azure
+
+                if (UsuarioModel == null)
+                {
+                    var UsuarioModelFinal = UsuarioDto.ToUsuarioFromRegisterAzureDTO();
+                    _context.Usuarios.Add(UsuarioModelFinal);
+                    _context.SaveChanges();
+
+                    return CreatedAtAction(nameof(GetUsuarioById), new { id = UsuarioModelFinal.Id }, UsuarioModelFinal.ToUsuarioDto());
+                }
+                else
+                {
+                    return StatusCode(500, $"Ya existe un usuario con el email: {UsuarioDto.Email}\n Usuario:\n{UsuarioModel.ToUsuarioDto()}");
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpGet("Inside/GetAzureUsers")]
         [Authorize] // Requiere token de Azure AD
         public async Task<IActionResult> GetAzureUsers()
         {
@@ -339,6 +604,94 @@ namespace WS_Onboarding.Controllers
                 };
 
                 return StatusCode(500, errorDetails);
+            }
+        }
+
+        [HttpPost("Inside/Login")]
+        [Authorize] 
+        public IActionResult OutsideLogin([FromBody] LoginUsuarioDto LoginDto)
+        {
+            var UsuarioModel = _context.Usuarios.FirstOrDefault(c => c.Email == LoginDto.Email && c.Tipo == 1);
+
+            if (UsuarioModel == null)
+            {
+                return StatusCode(500, $"No se ha encontrado usuario con email: {LoginDto.Email}\n");
+            }
+            else
+            {
+                return Ok(new { message = "Autenticado" });
+            }
+        }
+
+        [HttpPut("Inside/Activate/{id:int}")]
+        [Authorize] 
+        public IActionResult ActivateInside([FromRoute] int id)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios.ToList()
+                    .FirstOrDefault(c => c.Id == id && c.Tipo == 1);
+                
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    UsuarioModel.Estado = true;
+                    _context.SaveChanges();
+
+                    return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpPut("Inside/Desactivate/{id:int}")]
+        [Authorize] 
+        public IActionResult DesactivateInside([FromRoute] int id)
+        {
+            try
+            {
+                var UsuarioModel = _context.Usuarios.ToList()
+                    .FirstOrDefault(c => c.Id == id && c.Tipo == 1);
+
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    UsuarioModel.Estado = false;
+                    _context.SaveChanges();
+
+                    return Ok(UsuarioModel.ToUsuarioDto());
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
     }

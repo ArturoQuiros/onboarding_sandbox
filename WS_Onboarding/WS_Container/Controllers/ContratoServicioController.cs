@@ -163,8 +163,6 @@ namespace WS_Onboarding.Controllers
         public IActionResult Create([FromBody] CreateContratoServicioDto ContratoServicioDto)
         {
             var ContratoServicioModel = ContratoServicioDto.ToContratoServicioFromCreateDTO();
-            ContratoServicioModel.Fecha_Creacion = DateTime.UtcNow;
-            ContratoServicioModel.Fecha_Modificacion = DateTime.UtcNow;
 
             _context.Contrato_Servicios.Add(ContratoServicioModel);
             _context.SaveChanges();
