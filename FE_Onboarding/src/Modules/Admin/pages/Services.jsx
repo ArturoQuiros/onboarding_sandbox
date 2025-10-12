@@ -1,12 +1,14 @@
-// src/Modules/Admin/pages/Services.jsx
 import React, { useContext, useEffect, useMemo } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
-import { BsTools } from "react-icons/bs";
+import { BsList, BsTools } from "react-icons/bs";
+import { useNavigate } from "react-router-dom"; // Importación de navegación
 import { useServicesQuery } from "../hooks";
+import styles from "../components/CrudDataTable.module.css";
 
 const Services = () => {
   const { setEntityIcon } = useContext(UIContext);
+  const navigate = useNavigate(); // Inicialización de navegación
 
   const {
     servicesQuery,
@@ -16,12 +18,12 @@ const Services = () => {
     countriesQuery,
   } = useServicesQuery();
 
-  // Establece el ícono en el sidebar
+  // Establece el ícono en el sidebar al montar
   useEffect(() => {
     setEntityIcon(<BsTools />);
   }, [setEntityIcon]);
 
-  // ✅ Mapear campos SIEMPRE (antes de cualquier return condicional)
+  // Campos del formulario/tabla (memoizados)
   const serviceFields = useMemo(() => {
     const countries = countriesQuery.data ?? [];
     return [
@@ -47,7 +49,7 @@ const Services = () => {
     ];
   }, [countriesQuery.data]);
 
-  // ✅ Ahora sí, retornos condicionales DESPUÉS de todos los hooks
+  // Retornos condicionales por estado de carga/error
   if (servicesQuery.isLoading || countriesQuery.isLoading) {
     return <div>Cargando servicios...</div>;
   }
@@ -62,6 +64,17 @@ const Services = () => {
     );
   }
 
+  // Renderizador para la acción extra (Ver Tareas)
+  const extraActionRenderer = (item) => (
+    <button
+      onClick={() => navigate(`/admin/services/${item.id}/tasks`)}
+      className={styles.extraActionButton}
+      title="Ver Tareas"
+    >
+      <BsList />
+    </button>
+  );
+
   return (
     <CrudDashboard
       entityName="services"
@@ -70,6 +83,7 @@ const Services = () => {
       createItem={createService.mutateAsync}
       updateItem={updateService.mutateAsync}
       deleteItem={deleteService.mutateAsync}
+      extraActionRenderer={extraActionRenderer}
     />
   );
 };

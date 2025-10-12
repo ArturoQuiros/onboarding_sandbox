@@ -12,6 +12,7 @@ import {
   Contracts,
   Users,
   ContractServices,
+  Tasks,
 } from "./Modules/Admin/pages";
 import { Landing, CustomerLogin, StaffLogin } from "./Modules/Landing/pages";
 import { Toaster } from "react-hot-toast";
@@ -43,13 +44,13 @@ function App() {
           <Route path="countries" element={<Countries />} />
           <Route path="customers" element={<Customers />} />
           <Route path="services" element={<Services />} />
+          <Route path="services/:serviceId/tasks" element={<Tasks />} />
           <Route path="staff" element={<Staff />} />
           <Route path="contracts" element={<Contracts />} />
           <Route
             path="contracts/:contractId/services"
             element={<ContractServices />}
           />
-
           <Route path="users" element={<Users />} />
         </Route>
 
