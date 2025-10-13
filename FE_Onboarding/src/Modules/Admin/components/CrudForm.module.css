@@ -124,26 +124,38 @@ select:focus {
   align-items: center;
 }
 
-.showPasswordButton {
+.showPasswordButton,
+.generatePasswordButton {
+  all: unset;
+  outline: none;
   position: absolute;
-  right: 0.75rem;
-  background: transparent;
+  background: none;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
-  color: #718096;
+  color: var(--bdo-charcoal);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+  background-color: none !important;
 }
 
-.showPasswordButton:hover {
+.showPasswordButton {
+  right: 0.75rem;
+}
+
+.showPasswordButton:hover,
+.generatePasswordButton:hover {
   color: #3182ce;
-  background-color: #ffffff !important;
+  background: none;
 }
 
-/* Deja espacio en el input para el icono */
+.generatePasswordButton {
+  right: 2.75rem;
+}
+
+/* Espacio extra para input password para que no se solape */
 .passwordWrapper .input {
-  padding-right: 2.5rem;
+  padding-right: 4.5rem;
 }

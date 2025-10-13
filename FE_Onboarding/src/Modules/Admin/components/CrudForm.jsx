@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { UIContext } from "../../../Global/Context";
 import styles from "./CrudForm.module.css";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import { FiEye, FiEyeOff, FiRefreshCcw } from "react-icons/fi";
 
 export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const { t } = useTranslation("global");
@@ -49,6 +49,16 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const togglePasswordVisibility = (key) => {
     setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const generatePassword = (length = 12) => {
+    const chars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
   };
 
   const handleSubmit = (e) => {
@@ -139,6 +149,8 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                     formErrors[nameKey] ? styles.inputError : ""
                   }`}
                 />
+
+                {/* Botón mostrar/ocultar */}
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility(nameKey)}
@@ -146,6 +158,19 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                   tabIndex={-1}
                 >
                   {showPassword[nameKey] ? <FiEyeOff /> : <FiEye />}
+                </button>
+
+                {/* Botón generar contraseña */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const generated = generatePassword();
+                    setFormData((prev) => ({ ...prev, [nameKey]: generated }));
+                  }}
+                  className={styles.generatePasswordButton}
+                  tabIndex={-1}
+                >
+                  <FiRefreshCcw />
                 </button>
               </div>
             ) : (
