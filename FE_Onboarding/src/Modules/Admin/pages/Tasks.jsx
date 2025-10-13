@@ -118,11 +118,14 @@ const Tasks = () => {
         key: "form",
         labelKey: "tasks.table.form_json",
         type: "textarea",
-        // Aquí se hace el stringify para que el formulario de edición reciba texto
+        // 🔧 Convierte objeto a string formateado para edición
+        // Debe retornar un objeto con TODAS las propiedades
         transformForEdit: (item) => ({
-          ...item,
+          id: item.id,
+          name: item.name,
           form: JSON.stringify(item.form, null, 2),
         }),
+        // ✅ Oculta esta columna en la tabla (no se muestra)
         isHidden: true,
       },
     ],
@@ -159,14 +162,8 @@ const Tasks = () => {
     <CrudDashboard
       entityName="tasks"
       fields={taskFields}
-      // APLICACIÓN DE JSON.stringify() AQUÍ PARA ELIMINAR EL ERROR EN LA TABLA
-      getItems={() =>
-        tasksQuery.data.map((item) => ({
-          ...item,
-          // JSON.stringify() convierte el objeto 'form' en un string, y lo truncamos
-          form: JSON.stringify(item.form, null, 2).substring(0, 50) + "...",
-        })) ?? []
-      }
+      // ✅ Pasa los datos originales sin modificar
+      getItems={() => tasksQuery.data ?? []}
       createItem={createTask.mutateAsync}
       updateItem={updateTask.mutateAsync}
       deleteItem={deleteTask.mutateAsync}
