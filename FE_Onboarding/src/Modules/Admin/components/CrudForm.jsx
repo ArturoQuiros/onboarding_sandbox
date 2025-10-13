@@ -7,7 +7,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
 
-  // Prioriza formKey si está definida, si no, usa key
   const getFormKey = (field) => field.formKey || field.key;
 
   const [formData, setFormData] = useState({});
@@ -15,7 +14,17 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   useEffect(() => {
     if (item) {
-      setFormData(item);
+      // Si el item existe, aplicamos la transformación de edición
+      const initialData = {};
+      fields.forEach((field) => {
+        const key = getFormKey(field);
+        if (field.transformForEdit) {
+          Object.assign(initialData, field.transformForEdit(item));
+        } else {
+          initialData[key] = item[key];
+        }
+      });
+      setFormData(initialData);
     } else {
       const initialData = {};
       fields.forEach((field) => {
@@ -39,16 +48,28 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let dataToSave = formData;
+
+    // 1. Aplicar validaciones
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
-        const error = validations[key](formData[key], formData);
+        const error = validations[key](dataToSave[key], dataToSave);
         if (error) newErrors[key] = error;
       }
       setFormErrors(newErrors);
       if (Object.keys(newErrors).length > 0) return;
     }
-    onSave(formData);
+
+    // 2. Aplicar transformaciones al guardar (transformForSave)
+    fields.forEach((field) => {
+      if (field.transformForSave) {
+        dataToSave = field.transformForSave(dataToSave);
+      }
+    });
+
+    onSave(dataToSave);
   };
 
   return (
@@ -65,7 +86,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
 
-        // Determinar si está bloqueado (readOnly / disabled)
         const isFieldReadOnly =
           isIdField ||
           (typeof field.isReadOnly === "function"
@@ -93,6 +113,17 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                   </option>
                 ))}
               </select>
+            ) : field.type === "textarea" ? (
+              <textarea
+                name={nameKey}
+                value={formData[nameKey] || ""}
+                onChange={handleChange}
+                readOnly={isFieldReadOnly}
+                rows={20} // 🛑 AUMENTADO A 20 FILAS
+                className={`${styles.input} ${
+                  formErrors[nameKey] ? styles.inputError : ""
+                }`}
+              />
             ) : (
               <input
                 type={field.type || "text"}

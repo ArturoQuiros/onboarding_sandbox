@@ -12,5 +12,3 @@ export * from "./EnableToggle";
 export * from "./RoleSelector";
 export * from "./ContractServicesTable";
 export * from "./ContractServicesDashboard";
-export * from "./TasksDashboard";
-export * from "./TaskDetailDashboard";

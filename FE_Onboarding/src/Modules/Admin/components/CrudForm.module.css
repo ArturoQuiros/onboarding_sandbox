@@ -4,9 +4,9 @@
   padding: 2.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  max-width: 600px;
+  max-width: 800px; /* 🛑 AUMENTADO EL ANCHO MÁXIMO */
   margin: 2rem auto;
-  box-sizing: border-box; /* asegura que padding no rompa el ancho */
+  box-sizing: border-box;
 }
 
 /* Encabezado con ícono + título */
@@ -55,7 +55,7 @@ select {
   border-radius: 8px;
   color: var(--bdo-charcoal);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-sizing: border-box; /* clave para evitar alargado */
+  box-sizing: border-box;
   background-color: white;
   -webkit-appearance: none;
   -moz-appearance: none;

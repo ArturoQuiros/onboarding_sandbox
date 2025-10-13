@@ -1,110 +1,178 @@
-// src/Modules/Admin/pages/TasksPage.jsx
-import React, { useState, useEffect, useContext } from "react";
-import { TasksDashboard } from "../components";
+// src/Modules/Admin/pages/Tasks.jsx
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
-import { FaTasks } from "react-icons/fa";
-import { useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import { FaTasks } from "react-icons/fa"; // Ícono para Tareas
 
-// Datos de prueba
+// ----------------------------------------------------------------------
+// 1. DATOS DE PRUEBA (MOCK DATA)
+// ----------------------------------------------------------------------
 const MOCK_TASKS = [
   {
     id: 1,
-    serviceId: 1,
-    name: "Solicitud del servicio",
-    form: JSON.stringify({ field1: "valor1" }),
+    name: "Registro de Usuario",
+    form: {
+      type: "user_signup",
+      fields: [
+        { key: "username", label: "Nombre de Usuario", type: "text" },
+        { key: "email", label: "Correo Electrónico", type: "email" },
+        { key: "password", label: "Contraseña", type: "password" },
+      ],
+    },
   },
   {
     id: 2,
-    serviceId: 1,
-    name: "Formulario de constitución",
-    form: JSON.stringify({ fieldA: "datoA" }),
+    name: "Solicitud de Vacaciones",
+    form: {
+      type: "vacation_request",
+      fields: [
+        { key: "start_date", label: "Fecha de Inicio", type: "date" },
+        { key: "end_date", label: "Fecha de Fin", type: "date" },
+        { key: "reason", label: "Motivo", type: "textarea" },
+      ],
+    },
   },
 ];
 
-const TasksPage = () => {
+// ----------------------------------------------------------------------
+// 2. CUSTOM HOOK SIMULADO (SIMULA REACT QUERY PARA CRUD)
+// ----------------------------------------------------------------------
+const useTasksQueryMock = (mockData) => {
+  const [data, setData] = useState(mockData);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const getTasks = () => ({
+    isLoading,
+    isError,
+    data,
+  });
+
+  const createItem = {
+    mutateAsync: async (newItem) => {
+      const newId = Math.max(...data.map((t) => t.id), 0) + 1;
+      // Parsea el JSON string del formulario antes de guardar en el estado
+      const taskWithId = {
+        ...newItem,
+        id: newId,
+        form: JSON.parse(newItem.form),
+      };
+      setData((prev) => [...prev, taskWithId]);
+      return taskWithId;
+    },
+  };
+
+  const updateItem = {
+    mutateAsync: async (updatedItem) => {
+      // Parsea el JSON string del formulario antes de actualizar en el estado
+      const parsedItem = { ...updatedItem, form: JSON.parse(updatedItem.form) };
+      setData((prev) =>
+        prev.map((t) => (t.id === updatedItem.id ? parsedItem : t))
+      );
+      return parsedItem;
+    },
+  };
+
+  const deleteItem = {
+    mutateAsync: async (itemId) => {
+      setData((prev) => prev.filter((t) => t.id !== itemId));
+      return itemId;
+    },
+  };
+
+  return {
+    tasksQuery: getTasks(),
+    createTask: createItem,
+    updateTask: updateItem,
+    deleteTask: deleteItem,
+  };
+};
+
+// ----------------------------------------------------------------------
+// 3. COMPONENTE PRINCIPAL
+// ----------------------------------------------------------------------
+const Tasks = () => {
   const { setEntityIcon } = useContext(UIContext);
-  const { serviceId } = useParams(); // <-- obtener el serviceId de la ruta
 
-  // Estado de tareas y siguiente ID
-  const [tasks, setTasks] = useState(MOCK_TASKS);
-  const [nextId, setNextId] = useState(3);
+  const { tasksQuery, createTask, updateTask, deleteTask } =
+    useTasksQueryMock(MOCK_TASKS);
 
-  // Establece el ícono para la página
   useEffect(() => {
     setEntityIcon(<FaTasks />);
   }, [setEntityIcon]);
 
-  // --- Operaciones CRUD simuladas ---
-  const getTasks = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    // Filtrar tareas por serviceId
-    return tasks.filter((t) => t.serviceId === Number(serviceId));
-  };
+  // ✅ Definición de campos con useMemo
+  const taskFields = useMemo(
+    () => [
+      { key: "id", labelKey: "tasks.table.id", type: "text", editable: false },
+      { key: "name", labelKey: "tasks.table.name", type: "text" },
+      {
+        key: "form",
+        labelKey: "tasks.table.form_json",
+        type: "textarea",
+        // Aquí se hace el stringify para que el formulario de edición reciba texto
+        transformForEdit: (item) => ({
+          ...item,
+          form: JSON.stringify(item.form, null, 2),
+        }),
+        isHidden: true,
+      },
+    ],
+    []
+  );
 
-  const createTask = async (task) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    const newTask = { ...task, id: nextId, serviceId: Number(serviceId) };
-    setTasks((prev) => [...prev, newTask]);
-    setNextId((prev) => prev + 1);
-    toast.success("Tarea creada");
-    return newTask;
-  };
+  // ✅ Reglas de validación con useMemo
+  const taskValidations = useMemo(
+    () => ({
+      name: (value) => {
+        if (!value) return "El nombre de la tarea es obligatorio";
+        if (value.length < 5) return "Debe tener al menos 5 caracteres";
+        return null;
+      },
+      form: (value) => {
+        if (!value) return "El JSON del formulario es obligatorio";
+        try {
+          JSON.parse(value); // Valida el formato JSON
+        } catch (e) {
+          return "Debe ser un formato JSON válido";
+        }
+        return null;
+      },
+    }),
+    []
+  );
 
-  const updateTask = async (updatedTask) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    let updated = {};
-    setTasks((prev) => {
-      const index = prev.findIndex(
-        (t) => t.id === updatedTask.id && t.serviceId === Number(serviceId)
-      );
-      if (index === -1) throw new Error("Tarea no encontrada");
-      const newTasks = [...prev];
-      updated = { ...newTasks[index], ...updatedTask };
-      newTasks[index] = updated;
-      return newTasks;
-    });
-    toast.success("Tarea actualizada");
-    return updated;
-  };
+  // ✅ Returns condicionales
+  if (tasksQuery.isLoading) return <p>Cargando tareas...</p>;
+  if (tasksQuery.isError) return <p>Error cargando tareas</p>;
 
-  const deleteTask = async (id) => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    setTasks((prev) =>
-      prev.filter((t) => t.id !== id || t.serviceId !== Number(serviceId))
-    );
-    toast.success("Tarea eliminada");
-    return true;
-  };
-
-  // --- Campos para el Dashboard ---
-  const taskFields = [
-    {
-      key: "id",
-      labelKey: "tasks.id",
-      isTableVisible: false,
-      isReadOnly: true,
-    },
-    { key: "name", labelKey: "tasks.name", type: "text" },
-    {
-      key: "form",
-      labelKey: "tasks.form",
-      type: "textarea",
-      isTableVisible: false,
-    },
-  ];
-
+  // ✅ Renderizado del CrudDashboard
   return (
-    <TasksDashboard
+    <CrudDashboard
       entityName="tasks"
       fields={taskFields}
-      getItems={getTasks}
-      createItem={createTask}
-      updateItem={updateTask}
-      deleteItem={deleteTask}
-      serviceId={serviceId} // <-- pasar prop al Dashboard
+      // APLICACIÓN DE JSON.stringify() AQUÍ PARA ELIMINAR EL ERROR EN LA TABLA
+      getItems={() =>
+        tasksQuery.data.map((item) => ({
+          ...item,
+          // JSON.stringify() convierte el objeto 'form' en un string, y lo truncamos
+          form: JSON.stringify(item.form, null, 2).substring(0, 50) + "...",
+        })) ?? []
+      }
+      createItem={createTask.mutateAsync}
+      updateItem={updateTask.mutateAsync}
+      deleteItem={deleteTask.mutateAsync}
+      validations={taskValidations}
     />
   );
 };
 
-export default TasksPage;
+export default Tasks;
