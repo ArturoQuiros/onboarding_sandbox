@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { UIContext } from "../../../Global/Context";
 import styles from "./CrudForm.module.css";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const { t } = useTranslation("global");
@@ -11,10 +12,10 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
+  const [showPassword, setShowPassword] = useState({});
 
   useEffect(() => {
     if (item) {
-      // Si el item existe, aplicamos la transformación de edición
       const initialData = {};
       fields.forEach((field) => {
         const key = getFormKey(field);
@@ -46,12 +47,15 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
     }
   };
 
+  const togglePasswordVisibility = (key) => {
+    setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     let dataToSave = formData;
 
-    // 1. Aplicar validaciones
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
@@ -62,7 +66,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
       if (Object.keys(newErrors).length > 0) return;
     }
 
-    // 2. Aplicar transformaciones al guardar (transformForSave)
     fields.forEach((field) => {
       if (field.transformForSave) {
         dataToSave = field.transformForSave(dataToSave);
@@ -119,11 +122,32 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 value={formData[nameKey] || ""}
                 onChange={handleChange}
                 readOnly={isFieldReadOnly}
-                rows={20} // 🛑 AUMENTADO A 20 FILAS
+                rows={20}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}
               />
+            ) : field.type === "password" ? (
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPassword[nameKey] ? "text" : "password"}
+                  name={nameKey}
+                  value={formData[nameKey] || ""}
+                  onChange={handleChange}
+                  readOnly={isFieldReadOnly}
+                  className={`${styles.input} ${
+                    formErrors[nameKey] ? styles.inputError : ""
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility(nameKey)}
+                  className={styles.showPasswordButton}
+                  tabIndex={-1}
+                >
+                  {showPassword[nameKey] ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
             ) : (
               <input
                 type={field.type || "text"}
