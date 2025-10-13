@@ -1,39 +1,81 @@
-import React, { useState, useEffect } from "react";
+// src/Modules/Admin/components/ContractServiceDashboard.jsx
+
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useContext,
+} from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import axiosClient from "../../../Api/axiosClient";
 import toast from "react-hot-toast";
 import { FaLayerGroup } from "react-icons/fa";
 import { ContractServicesTable } from "./ContractServicesTable";
 import styles from "./ContractServicesDashboard.module.css";
+import { UIContext } from "../../../Global/Context";
+import { SearchBar, ItemsPerPageSelector } from "./";
 
+/**
+ * @typedef {object} Service
+ * @property {number} id - Identificador del servicio.
+ * @property {string} nombre - Nombre del servicio.
+ */
+
+/**
+ * Componente principal para gestionar la asignación de servicios a un contrato específico.
+ * Muestra todos los servicios disponibles y permite al usuario marcarlos/desmarcarlos
+ * para asignarlos o desasignarlos del contrato.
+ * @returns {JSX.Element}
+ */
 export const ContractServiceDashboard = () => {
-  // 1. Obtenemos el ID del contrato de la URL
   const { id: contractId } = useParams();
+  const { entityIcon } = useContext(UIContext);
+  const { t } = useTranslation("global");
 
-  // Estados de datos y control
-  const [allServices, setAllServices] = useState([]); // Lista completa de servicios
-  // Map: serviceId -> relationshipId (Necesario para el DELETE)
+  const [allServices, setAllServices] = useState([]);
   const [assignedServiceIds, setAssignedServiceIds] = useState(new Map());
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  // --- FUNCIÓN DE CARGA DE DATOS ---
+  // ESTADOS DE CONTROL DE DATOS (CrudDashboard pattern)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [sortKey, setSortKey] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc");
 
-  const getAllAvailableServices = async () => {
+  // ============================
+  // Lógica de Ícono Unificada
+  // ============================
+  const displayIcon = useMemo(() => {
+    // Prioriza el ícono del contexto, usa FaLayerGroup como fallback.
+    if (entityIcon) {
+      return entityIcon;
+    }
+    return <FaLayerGroup />;
+  }, [entityIcon]);
+
+  // ============================
+  // Funciones de Carga de Datos
+  // ============================
+
+  /** Obtiene todos los servicios disponibles desde la API. */
+  const getAllAvailableServices = useCallback(async () => {
     try {
-      // RUTA quemada: /Servicio
       const response = await axiosClient.get("/Servicio");
       return response.data;
     } catch (error) {
       console.error("Error al obtener todos los servicios disponibles:", error);
       return [];
     }
-  };
+  }, []);
 
-  const getAssignedServiceRelationships = async () => {
+  /** Obtiene las relaciones de servicio existentes para el contrato actual. */
+  const getAssignedServiceRelationships = useCallback(async () => {
     if (!contractId) return [];
     try {
-      // RUTA quemada: /ContratoServicio/ByContrato
       const response = await axiosClient.get(
         `/ContratoServicio/ByContrato?idContrato=${contractId}`
       );
@@ -42,9 +84,10 @@ export const ContractServiceDashboard = () => {
       console.error("Error al obtener relaciones de servicio:", error);
       return [];
     }
-  };
+  }, [contractId]);
 
-  const loadData = async () => {
+  /** Carga todos los servicios y las relaciones de asignación existentes, y actualiza los estados. */
+  const loadData = useCallback(async () => {
     setIsLoading(true);
     const [availableServices, assignedRelations] = await Promise.all([
       getAllAvailableServices(),
@@ -53,7 +96,6 @@ export const ContractServiceDashboard = () => {
 
     setAllServices(availableServices);
 
-    // Mapeamos [ID_Servicio] -> [ID_Relación] para permitir el borrado eficiente
     const assignedMap = new Map();
     assignedRelations.forEach((rel) => {
       assignedMap.set(rel.id_Servicio, rel.id);
@@ -61,83 +103,162 @@ export const ContractServiceDashboard = () => {
 
     setAssignedServiceIds(assignedMap);
     setIsLoading(false);
-    toast.success(
-      `Datos cargados: ${availableServices.length} servicios disponibles.`
+    setCurrentPage(1);
+
+    // No hay toast en la carga inicial
+  }, [getAllAvailableServices, getAssignedServiceRelationships]);
+
+  // ============================
+  // Lógica de Control de Datos (Ordenación/Paginación)
+  // ============================
+
+  /** Maneja el cambio de clave de ordenación y dirección. */
+  const handleSort = (key) => {
+    setSortKey(key);
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    setCurrentPage(1);
+  };
+
+  /** Maneja el cambio en el número de elementos por página. */
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
+  };
+
+  /** Items ordenados basados en sortKey y sortDirection. */
+  const sortedItems = useMemo(() => {
+    if (!sortKey) return allServices;
+    return [...allServices].sort((a, b) => {
+      const aValue = String(a[sortKey] ?? "").toLowerCase();
+      const bValue = String(b[sortKey] ?? "").toLowerCase();
+      return sortDirection === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
+  }, [allServices, sortKey, sortDirection]);
+
+  /** Items filtrados basados en el término de búsqueda. */
+  const filteredItems = useMemo(() => {
+    if (!searchTerm) return sortedItems;
+    return sortedItems.filter(
+      (item) =>
+        String(item.id).includes(searchTerm) ||
+        String(item.nombre).toLowerCase().includes(searchTerm.toLowerCase())
     );
-  };
+  }, [sortedItems, searchTerm]);
 
-  // --- FUNCIÓN DE TOGGLE ---
+  /** Items paginados para la tabla actual. */
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
 
-  /**
-   * Alterna (asigna/desasigna) un servicio del contrato.
-   */
-  const handleServiceToggle = async (serviceId, isChecked) => {
-    if (isSaving) return;
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-    setIsSaving(true);
-    try {
-      if (isChecked) {
-        // ASIGNAR (POST)
-        const payload = {
-          id_Contrato: parseInt(contractId),
-          id_Servicio: serviceId,
-        };
-        // RUTA quemada: POST /ContratoServicio
-        await axiosClient.post("/ContratoServicio", payload);
-        toast.success(`Servicio asignado.`);
-      } else {
-        // DESASIGNAR (DELETE)
-        const relationshipId = assignedServiceIds.get(serviceId);
-        if (relationshipId) {
-          // RUTA quemada: DELETE /ContratoServicio/{id} (Usando el ID de la relación)
-          await axiosClient.delete(`/ContratoServicio/${relationshipId}`);
-          toast.success(`Servicio desasignado.`);
+  // ============================
+  // Toggle de Asignación (Actualización Local)
+  // ============================
+
+  /** Asigna o desasigna un servicio al contrato. */
+  const handleServiceToggle = useCallback(
+    async (serviceId, isChecked) => {
+      if (isSaving) return;
+      setIsSaving(true);
+
+      try {
+        const newAssignedServiceIds = new Map(assignedServiceIds); // Copia del mapa
+
+        if (isChecked) {
+          // Asignar (POST)
+          const payload = {
+            id_Contrato: parseInt(contractId),
+            id_Servicio: serviceId,
+          };
+          // El API debería devolver el objeto de relación (ContratoServicio) con su ID.
+          const response = await axiosClient.post("/ContratoServicio", payload);
+
+          // Actualizar estado localmente con el ID de la nueva relación
+          newAssignedServiceIds.set(serviceId, response.data.id);
+
+          toast.success(t("contractServices.serviceAssigned"));
+        } else {
+          // Desasignar (DELETE)
+          const relationshipId = assignedServiceIds.get(serviceId);
+          if (relationshipId) {
+            await axiosClient.delete(`/ContratoServicio/${relationshipId}`);
+
+            // Eliminar la relación del mapa local
+            newAssignedServiceIds.delete(serviceId);
+
+            toast.success(t("contractServices.serviceUnassigned"));
+          }
         }
+
+        // Actualiza el estado sin llamar a loadData()
+        setAssignedServiceIds(newAssignedServiceIds);
+      } catch (error) {
+        console.error("Error al modificar el servicio:", error);
+        toast.error(t("common.errorSavingChanges"));
+      } finally {
+        setIsSaving(false);
       }
+    },
+    [assignedServiceIds, contractId, isSaving, t]
+  );
 
-      // Recargamos los datos para actualizar el estado de la tabla y obtener el nuevo ID de relación
-      await loadData();
-    } catch (error) {
-      console.error("Error al modificar el servicio:", error);
-      toast.error("Error al guardar los cambios.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Carga inicial al montar el componente o cambiar el ID del contrato
+  // ============================
+  // Efectos
+  // ============================
   useEffect(() => {
     loadData();
-  }, [contractId]);
+  }, [loadData]);
 
-  // --- RENDERIZADO ---
+  // ============================
+  // Render
+  // ============================
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          <FaLayerGroup className={styles.icon} />
-          Servicios del Contrato ID: {contractId}
+          <span className={styles.icon}>{displayIcon}</span>
+          {t("contractServices.title")}
         </h2>
       </div>
 
-      <p className={styles.description}>
-        Marque la casilla para asignar un servicio o desmarque para desasignarlo
-        del contrato.
-      </p>
+      {/* BARRA DE CONTROLES (Solo se muestra cuando no está cargando) */}
+      {!isLoading && (
+        <div className={styles.controlsBar}>
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          <ItemsPerPageSelector
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </div>
+      )}
 
       {isLoading ? (
-        <p className={styles.loadingMessage}>Cargando servicios...</p>
+        <p className={styles.loadingMessage}>{t("common.loading")}</p>
       ) : (
-        // Pasa los datos y el handler a la tabla de presentación
         <ContractServicesTable
-          services={allServices}
+          services={paginatedItems}
           assignedServiceIds={assignedServiceIds}
           isSaving={isSaving}
           onToggle={handleServiceToggle}
+          onSort={handleSort}
+          sortKey={sortKey}
+          sortDirection={sortDirection}
+          // PROPS DE PAGINACIÓN DELEGADAS A LA TABLA
+          currentPage={currentPage}
+          totalPages={totalPages}
+          filteredCount={filteredItems.length}
+          onPageChange={setCurrentPage}
         />
       )}
 
-      {isSaving && <p className={styles.savingMessage}>Guardando cambios...</p>}
+      {/* Mensaje de guardado (Solo se muestra durante el toggle) */}
+      {isSaving && (
+        <p className={styles.savingMessage}>{t("common.savingChanges")}</p>
+      )}
     </div>
   );
 };

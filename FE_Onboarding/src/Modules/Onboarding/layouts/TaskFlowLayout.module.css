@@ -1,0 +1,56 @@
+/* src/modules/contractFlow/layouts/TaskFlowLayout.module.css */
+
+/* Variables sugeridas: Ajusta estas según las variables que uses en tu proyecto */
+:root {
+  --navbar-height: 60px;
+  --checklist-width: 380px; /* Ancho fijo para el checklist de tareas */
+  --bdo-gray-light: #e9ecef;
+  --bdo-charcoal: #2a3d4f;
+  --bdo-white: #ffffff;
+}
+
+/* Layout general usando Grid */
+.pageLayout {
+  display: grid;
+  grid-template-areas:
+    "navbar navbar"
+    "checklist content"; /* El checklist reemplaza el sidebar */
+
+  /* Filas: La cabecera tiene altura fija, el contenido ocupa el resto */
+  grid-template-rows: var(--navbar-height) 1fr;
+
+  /* Columnas: El checklist tiene ancho fijo, el contenido ocupa el resto */
+  grid-template-columns: var(--checklist-width) 1fr;
+
+  height: 100vh;
+  width: 100%;
+}
+
+/* --- Asignación de áreas a los elementos --- */
+
+.navbar {
+  grid-area: navbar;
+  /* El resto de estilos de Navbar (color, z-index) deberían ir en Navbar.module.css, 
+     pero la asignación de grid area va aquí. */
+}
+
+.checklist {
+  grid-area: checklist;
+  background-color: var(
+    --bdo-gray-light
+  ); /* Fondo del checklist (columna derecha de la imagen) */
+  padding: 30px 25px;
+  overflow-y: auto; /* Permite desplazamiento si la lista de tareas es larga */
+
+  /* Estilos adicionales para que se parezca al diseño: */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.mainContent {
+  grid-area: content;
+  overflow-y: auto; /* Permite desplazamiento para el contenido del formulario */
+  padding: 30px 40px;
+  background-color: var(
+    --bdo-white
+  ); /* Fondo blanco para el área del formulario */
+}

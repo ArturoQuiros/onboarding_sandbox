@@ -1,0 +1,293 @@
+/* Contenedor general */
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: white;
+  width: 100%;
+  max-width: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0;
+  font-family: "Trebuchet MS", sans-serif;
+  color: var(--bdo-charcoal);
+  min-height: auto;
+}
+
+/* Título del form */
+.formTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--bdo-red);
+  margin: 0 0 10px 0;
+  text-align: left;
+}
+
+/* Descripción */
+.formDescription {
+  font-size: 1rem;
+  color: var(--bdo-slate);
+  margin: 0 0 20px 0;
+  text-align: left;
+}
+
+/* Grid de campos - DOS COLUMNAS */
+.formFieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px 40px;
+  width: 100%;
+  margin: 0;
+}
+
+/* Grupo de campo */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+/* Label */
+.formLabel {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--bdo-charcoal);
+}
+
+/* Base común para todos los inputs */
+.formInput,
+.formSelect,
+.formFile {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid var(--bdo-pale-charcoal);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  background-color: #fff;
+  box-sizing: border-box;
+  color: var(--bdo-charcoal);
+}
+
+/* Estados de focus compartidos */
+.formInput:focus,
+.formSelect:focus,
+.formFile:focus {
+  border-color: var(--bdo-ocean);
+  box-shadow: 0 0 4px rgba(0, 143, 210, 0.3);
+}
+
+/* Placeholders compartidos */
+.formInput::placeholder,
+.formSelect::placeholder {
+  color: var(--bdo-slate);
+  opacity: 0.6;
+}
+
+/* Estados disabled/readonly compartidos */
+.formInput:disabled,
+.formInput:read-only,
+.formSelect:disabled {
+  background-color: var(--bdo-pale-charcoal);
+  color: var(--bdo-slate);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Select - Personalización */
+.formSelect {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.formSelect:hover {
+  border-color: var(--bdo-slate);
+}
+
+.formSelect option {
+  padding: 10px 14px;
+  color: var(--bdo-charcoal);
+  background-color: white;
+}
+
+.formSelect option:checked {
+  background-color: var(--bdo-ocean);
+  color: white;
+  font-weight: 600;
+}
+
+.formSelect option:disabled {
+  color: var(--bdo-slate);
+  opacity: 0.5;
+}
+
+/* Input de fecha - Personalización */
+.formInput[type="date"] {
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.formInput[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 6px;
+  margin-right: -6px;
+  background-color: transparent;
+  color: var(--bdo-ocean);
+  transition: background-color 0.2s;
+  opacity: 0.7;
+}
+
+.formInput[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: #f0f8ff;
+  opacity: 1;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-text {
+  color: var(--bdo-slate);
+  padding: 0 3px;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-month-field,
+.formInput[type="date"]::-webkit-datetime-edit-day-field,
+.formInput[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--bdo-charcoal);
+  padding: 2px;
+}
+
+.formInput[type="date"]::-webkit-datetime-edit-month-field:focus,
+.formInput[type="date"]::-webkit-datetime-edit-day-field:focus,
+.formInput[type="date"]::-webkit-datetime-edit-year-field:focus {
+  background-color: var(--bdo-ocean);
+  color: white;
+  border-radius: 2px;
+  outline: none;
+}
+
+.formInput[type="date"]:invalid::-webkit-datetime-edit {
+  color: var(--bdo-slate);
+  opacity: 0.6;
+}
+
+/* File input - Personalización completa */
+.formFile {
+  padding: 0;
+  border: 2px dashed var(--bdo-pale-charcoal);
+  background-color: #fafafa;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.formFile:hover {
+  border-color: var(--bdo-ocean);
+  background-color: #f0f8ff;
+}
+
+.formFile::file-selector-button {
+  background-color: var(--bdo-ocean);
+  color: white;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 2px 10px 2px 2px;
+  padding: 8px 16px;
+  height: 36px;
+  transition: background-color 0.2s;
+}
+
+.formFile::file-selector-button:hover {
+  background-color: #0077b3;
+}
+
+/* Radio y checkbox */
+.radioGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.radioGroup label {
+  color: var(--bdo-charcoal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.formRadio,
+.formCheckbox {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  accent-color: var(--bdo-ocean);
+  cursor: pointer;
+}
+
+/* Botón de envío */
+.formButton {
+  align-self: flex-start;
+  background-color: var(--bdo-red);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 14px 40px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.formButton:hover {
+  background-color: var(--bdo-burgundy);
+  transform: translateY(-1px);
+}
+
+.formButton:active {
+  transform: translateY(0);
+  background-color: var(--bdo-burgundy);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .formFieldsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .formContainer {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .formContainer {
+    padding: 15px;
+  }
+
+  .formTitle {
+    font-size: 1.5rem;
+  }
+
+  .formFieldsGrid {
+    gap: 18px;
+  }
+
+  .formButton {
+    width: 100%;
+    text-align: center;
+  }
+}

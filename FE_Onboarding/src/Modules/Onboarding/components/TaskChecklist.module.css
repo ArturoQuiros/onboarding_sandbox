@@ -1,0 +1,154 @@
+/* --- ACORDEÓN (Servicio) --- */
+.accordion {
+  margin-bottom: 15px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.accordionHeader,
+.accordionHeaderActive {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  transition: background-color 0.2s;
+}
+
+.accordionHeader {
+  background-color: var(--bdo-slate);
+}
+
+.accordionHeader:hover {
+  background-color: #4b6277;
+}
+
+.accordionHeaderActive {
+  background-color: var(--bdo-red);
+}
+
+.accordionHeaderActive:hover {
+  background-color: var(--bdo-burgundy);
+}
+
+.arrowDown,
+.arrowUp {
+  font-size: 0.7em;
+  transition: transform 0.3s ease;
+}
+
+.arrowDown {
+  transform: rotate(0deg);
+}
+
+.arrowUp {
+  transform: rotate(180deg);
+}
+
+/* Contenido con animación */
+.accordionContent {
+  padding: 0 0 10px 0;
+  overflow: hidden;
+  max-height: 1000px; /* Temporal, será controlado por JS */
+  transition: max-height 0.3s ease;
+}
+
+/* --- CHECKLIST ITEM (Tarea) --- */
+.checklistItem,
+.checklistItemActive {
+  display: flex;
+  align-items: center; /* 🔹 centra verticalmente icono y texto */
+  padding: 8px 0;
+  cursor: pointer;
+  position: relative; /* necesario para la línea vertical */
+  margin-left: 5px;
+  font-size: 0.95rem;
+  color: var(--bdo-charcoal);
+}
+
+/* Hover para tareas */
+.checklistItem:hover,
+.checklistItemActive:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.checklistItemActive {
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+}
+
+/* Wrapper para icono de estado */
+.statusIconWrapper {
+  position: relative;
+  z-index: 1; /* asegura que el ícono quede sobre la línea */
+  min-width: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 15px;
+}
+
+/* Íconos de estado */
+.statusCompleted,
+.statusActive,
+.statusPending {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2em;
+  height: 1.2em;
+  color: #fff;
+  z-index: 2; /* sobre la línea */
+}
+
+/* ✅ Completado → Verde */
+.statusCompleted {
+  background-color: var(--bdo-jade);
+}
+
+/* 🔶 En progreso → Naranja */
+.statusActive {
+  background-color: #ff9500;
+}
+
+/* 🔴 Pendiente → Rojo */
+.statusPending {
+  background-color: var(--bdo-red);
+}
+
+/* Línea conectora vertical */
+.connectorLine {
+  position: absolute;
+  left: 13px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--bdo-slate),
+    var(--bdo-slate) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+/* Ocultar en último ítem */
+.checklistItem:last-child .connectorLine,
+.checklistItemActive:last-child .connectorLine {
+  bottom: 50%;
+}
+
+/* Texto de la tarea */
+.taskLabel {
+  flex: 1;
+  word-break: break-word;
+}

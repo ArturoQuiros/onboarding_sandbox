@@ -2,20 +2,30 @@ import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { UIContext } from "../../../Global/Context";
 import styles from "./CrudForm.module.css";
+import { FiEye, FiEyeOff, FiRefreshCcw } from "react-icons/fi";
 
 export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
 
-  // Prioriza formKey si está definida, si no, usa key
   const getFormKey = (field) => field.formKey || field.key;
 
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
+  const [showPassword, setShowPassword] = useState({});
 
   useEffect(() => {
     if (item) {
-      setFormData(item);
+      const initialData = {};
+      fields.forEach((field) => {
+        const key = getFormKey(field);
+        if (field.transformForEdit) {
+          Object.assign(initialData, field.transformForEdit(item));
+        } else {
+          initialData[key] = item[key];
+        }
+      });
+      setFormData(initialData);
     } else {
       const initialData = {};
       fields.forEach((field) => {
@@ -37,18 +47,42 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
     }
   };
 
+  const togglePasswordVisibility = (key) => {
+    setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const generatePassword = (length = 12) => {
+    const chars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let dataToSave = formData;
+
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
-        const error = validations[key](formData[key], formData);
+        const error = validations[key](dataToSave[key], dataToSave);
         if (error) newErrors[key] = error;
       }
       setFormErrors(newErrors);
       if (Object.keys(newErrors).length > 0) return;
     }
-    onSave(formData);
+
+    fields.forEach((field) => {
+      if (field.transformForSave) {
+        dataToSave = field.transformForSave(dataToSave);
+      }
+    });
+
+    onSave(dataToSave);
   };
 
   return (
@@ -65,6 +99,12 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
 
+        const isFieldReadOnly =
+          isIdField ||
+          (typeof field.isReadOnly === "function"
+            ? field.isReadOnly(item)
+            : field.isReadOnly);
+
         return (
           <div key={field.key} className={styles.formGroup}>
             <label className={styles.label}>{t(field.labelKey)}</label>
@@ -74,6 +114,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 name={nameKey}
                 value={formData[nameKey] || ""}
                 onChange={handleChange}
+                disabled={isFieldReadOnly}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}
@@ -85,13 +126,60 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                   </option>
                 ))}
               </select>
+            ) : field.type === "textarea" ? (
+              <textarea
+                name={nameKey}
+                value={formData[nameKey] || ""}
+                onChange={handleChange}
+                readOnly={isFieldReadOnly}
+                rows={20}
+                className={`${styles.input} ${
+                  formErrors[nameKey] ? styles.inputError : ""
+                }`}
+              />
+            ) : field.type === "password" ? (
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPassword[nameKey] ? "text" : "password"}
+                  name={nameKey}
+                  value={formData[nameKey] || ""}
+                  onChange={handleChange}
+                  readOnly={isFieldReadOnly}
+                  className={`${styles.input} ${
+                    formErrors[nameKey] ? styles.inputError : ""
+                  }`}
+                />
+
+                {/* Botón mostrar/ocultar */}
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility(nameKey)}
+                  className={styles.showPasswordButton}
+                  tabIndex={-1}
+                >
+                  {showPassword[nameKey] ? <FiEyeOff /> : <FiEye />}
+                </button>
+
+                {/* Botón generar contraseña */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const generated = generatePassword();
+                    setFormData((prev) => ({ ...prev, [nameKey]: generated }));
+                  }}
+                  className={styles.generatePasswordButton}
+                  tabIndex={-1}
+                >
+                  <FiRefreshCcw />
+                </button>
+              </div>
             ) : (
               <input
                 type={field.type || "text"}
                 name={nameKey}
                 value={formData[nameKey] || ""}
-                onChange={isIdField ? null : handleChange}
-                readOnly={isIdField}
+                onChange={handleChange}
+                readOnly={isFieldReadOnly}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}

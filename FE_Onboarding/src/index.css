@@ -87,7 +87,3 @@ button:hover {
   border-color: var(--bdo-burgundy); /* Borde al pasar el ratón */
   background-color: var(--bdo-burgundy); /* Fondo al pasar el ratón */
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto var(--bdo-gold); /* Un color secundario para el enfoque */
-}

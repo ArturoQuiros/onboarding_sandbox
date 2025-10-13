@@ -4,9 +4,9 @@
   padding: 2.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  max-width: 600px;
+  max-width: 800px; /* 🛑 AUMENTADO EL ANCHO MÁXIMO */
   margin: 2rem auto;
-  box-sizing: border-box; /* asegura que padding no rompa el ancho */
+  box-sizing: border-box;
 }
 
 /* Encabezado con ícono + título */
@@ -55,7 +55,7 @@ select {
   border-radius: 8px;
   color: var(--bdo-charcoal);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  box-sizing: border-box; /* clave para evitar alargado */
+  box-sizing: border-box;
   background-color: white;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -116,4 +116,46 @@ select:focus {
 
 .cancelButton:hover {
   background-color: #cbd5e0;
+}
+
+.passwordWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.showPasswordButton,
+.generatePasswordButton {
+  all: unset;
+  outline: none;
+  position: absolute;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--bdo-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: none !important;
+}
+
+.showPasswordButton {
+  right: 0.75rem;
+}
+
+.showPasswordButton:hover,
+.generatePasswordButton:hover {
+  color: #3182ce;
+  background: none;
+}
+
+.generatePasswordButton {
+  right: 2.75rem;
+}
+
+/* Espacio extra para input password para que no se solape */
+.passwordWrapper .input {
+  padding-right: 4.5rem;
 }

@@ -21,7 +21,7 @@ export const CrudDashboard = ({
   updateItem,
   deleteItem,
   validations,
-  extraActionRenderer, // <-- prop nueva
+  extraActionRenderer,
 }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
@@ -31,19 +31,23 @@ export const CrudDashboard = ({
   const [selectedItem, setSelectedItem] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
+  // 🔹 Carga inicial de items
   const reloadItems = useCallback(async () => {
+    setIsLoading(true);
     try {
       const data = await getItems();
       setItems(Array.isArray(data) ? data : []);
     } catch (error) {
       toast.error(t("common.loadError"));
+    } finally {
+      setIsLoading(false);
     }
   }, [getItems, t]);
 
@@ -119,7 +123,8 @@ export const CrudDashboard = ({
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
-      await reloadItems();
+      // Actualizar tabla eliminando el item directamente
+      setItems((prev) => prev.filter((i) => i.id !== itemIdToDelete));
     } catch (error) {
       console.error(error);
     } finally {
@@ -129,19 +134,29 @@ export const CrudDashboard = ({
 
   const handleSave = async (item) => {
     const isEditing = Boolean(selectedItem);
-    const action = isEditing ? updateItem(item) : createItem(item);
-
     try {
-      await toast.promise(action, {
-        loading: isEditing ? t("common.updating") : t("common.creating"),
-        success: isEditing
-          ? t("common.updateSuccess")
-          : t("common.createSuccess"),
-        error: t("common.genericError"),
+      const savedItem = await toast.promise(
+        isEditing ? updateItem(item) : createItem(item),
+        {
+          loading: isEditing ? t("common.updating") : t("common.creating"),
+          success: isEditing
+            ? t("common.updateSuccess")
+            : t("common.createSuccess"),
+          error: t("common.genericError"),
+        }
+      );
+
+      // Actualizar tabla localmente
+      setItems((prev) => {
+        if (isEditing) {
+          return prev.map((i) => (i.id === savedItem.id ? savedItem : i));
+        } else {
+          return [savedItem, ...prev]; // agregar al inicio
+        }
       });
+
       setIsFormOpen(false);
       setSelectedItem(null);
-      await reloadItems();
     } catch (error) {
       console.error(error);
     }
@@ -169,29 +184,38 @@ export const CrudDashboard = ({
         />
       ) : (
         <>
-          <div className={styles.controlsBar}>
-            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-            <ItemsPerPageSelector
-              itemsPerPage={itemsPerPage}
-              onItemsPerPageChange={handleItemsPerPageChange}
-            />
-          </div>
+          {!isLoading && (
+            <div className={styles.controlsBar}>
+              <SearchBar
+                searchTerm={searchTerm}
+                onSearchChange={setSearchTerm}
+              />
+              <ItemsPerPageSelector
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={handleItemsPerPageChange}
+              />
+            </div>
+          )}
 
-          <CrudDataTable
-            data={paginatedItems}
-            fields={fields}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            extraActionRenderer={extraActionRenderer} // <-- prop pasada
-            currentPage={currentPage}
-            totalPages={totalPages}
-            filteredCount={filteredItems.length}
-            onPageChange={setCurrentPage}
-            itemsPerPage={itemsPerPage}
-            onSort={handleSort}
-            sortKey={sortKey}
-            sortDirection={sortDirection}
-          />
+          {isLoading ? (
+            <p className={styles.loadingMessage}>{t("common.loading")}</p>
+          ) : (
+            <CrudDataTable
+              data={paginatedItems}
+              fields={fields}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              extraActionRenderer={extraActionRenderer}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              filteredCount={filteredItems.length}
+              onPageChange={setCurrentPage}
+              itemsPerPage={itemsPerPage}
+              onSort={handleSort}
+              sortKey={sortKey}
+              sortDirection={sortDirection}
+            />
+          )}
         </>
       )}
 
