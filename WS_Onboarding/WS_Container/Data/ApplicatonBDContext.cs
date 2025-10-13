@@ -10,10 +10,10 @@ public class ApplicatonDBContext : DbContext
     {
 
     }
-    public DbSet<Comment> Comment { get; set; }
     public DbSet<Pais> Paises { get; set; }
     public DbSet<Rol> Roles { get; set; }
-    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<UsuarioInterno> UsuariosInternos { get; set; }
+    public DbSet<UsuarioExterno> UsuariosExternos { get; set; }
     public DbSet<Servicio> Servicios { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Contrato> Contratos { get; set; }

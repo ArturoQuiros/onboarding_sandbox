@@ -8,6 +8,7 @@ using WS_Onboarding.Dtos;
 using WS_Onboarding.Mappers;
 using WS_Onboarding.Controllers;
 using Microsoft.EntityFrameworkCore;
+using WS_Onboarding.Functions;
 
 namespace WS_Onboarding.Controllers
 {
@@ -16,8 +17,10 @@ namespace WS_Onboarding.Controllers
     public class DefaultController : ControllerBase
     {
         private readonly ApplicatonDBContext _context;
-        public DefaultController(ApplicatonDBContext context)
+        private readonly AuthService _authService;
+        public DefaultController(AuthService authService,ApplicatonDBContext context)
         {
+            _authService = authService;
             _context = context;
         }
 
@@ -32,8 +35,11 @@ namespace WS_Onboarding.Controllers
                 var Roles = _context.Roles.ToList()
                     .Select(c => c.ToRolDto());
 
-                var Usuarios = _context.Usuarios.ToList()
-                    .Select(c => c.ToUsuarioDto());
+                var UsuariosExternos = _context.UsuariosExternos.ToList()
+                    .Select(c => c.ToUsuarioExternoDto());
+
+                var UsuariosInternos = _context.UsuariosInternos.ToList()
+                    .Select(c => c.ToUsuarioInteriorDto());
 
                 var Servicios = _context.Servicios.ToList()
                     .Select(c => c.ToServicioDto());
@@ -51,7 +57,8 @@ namespace WS_Onboarding.Controllers
                 {
                     Paises = Paises,
                     Roles = Roles,
-                    Usuarios = Usuarios,
+                    UsuariosExternos = UsuariosExternos,
+                    UsuariosInternos = UsuariosInternos,
                     Servicios = Servicios,
                     Clientes = Clientes,
                     Contratos = Contratos,
@@ -178,49 +185,84 @@ namespace WS_Onboarding.Controllers
                 _context.Servicios.AddRange(servicio1, servicio2, servicio3);
                 _context.SaveChanges();
 
-                var usuario1 = new Models.Usuario
+                var usuarioExterno1 = new Models.UsuarioExterno
                 {
                     Nombre = "Juan Pérez",
-                    Azure_AD_User_Id = "aad-juanp",
+                    Contrasena = _authService.HashPassword("juan123"),
                     Email = "juan.perez@example.com",
-                    Id_Pais = 1,
-                    Role_Id = 1,
-                    Contrasena = "juanperez123",
+                    Id_Cliente = 1,
+                    Id_Rol = 1,
                     Estado = true,
-                    Tipo = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
 
-                var usuario2 = new Models.Usuario
+                var usuarioExterno2 = new Models.UsuarioExterno
                 {
                     Nombre = "Lucía Gómez",
-                    Azure_AD_User_Id = "aad-luciag",
+                    Contrasena = _authService.HashPassword("lucia123"),
                     Email = "lucia.gomez@example.com",
-                    Id_Pais = 2,
-                    Role_Id = 2,
-                    Contrasena = "luciagomez123",
+                    Id_Cliente = 2,
+                    Id_Rol = 2,
                     Estado = true,
-                    Tipo = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
 
-                var usuario3 = new Models.Usuario
+                var usuarioExterno3 = new Models.UsuarioExterno
                 {
                     Nombre = "Carlos Ruiz",
-                    Azure_AD_User_Id = "aad-carlosr",
+                    Contrasena = _authService.HashPassword("carlos123"),
                     Email = "carlos.ruiz@example.com",
-                    Id_Pais = 3,
-                    Role_Id = 3,
-                    Contrasena = "carlosruiz123",
+                    Id_Cliente = 2,
+                    Id_Rol = 3,
                     Estado = true,
-                    Tipo = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
 
-                _context.Usuarios.AddRange(usuario1, usuario2, usuario3);
+                _context.UsuariosExternos.AddRange(usuarioExterno1, usuarioExterno2, usuarioExterno3);
+
+                var UsuarioInterno1 = new Models.UsuarioInterno
+                {
+                    Nombre = "Luis Pérez",
+                    Azure_AD_User_Id = "aad-luisp",
+                    Email = "luis.perez@example.com",
+                    Id_Pais = 1,
+                    Id_Rol = 1,
+                    Puesto = "Admin",
+                    Estado = true,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow
+                };
+
+                var UsuarioInterno2 = new Models.UsuarioInterno
+                {
+                    Nombre = "Sara Gómez",
+                    Azure_AD_User_Id = "aad-sarag",
+                    Email = "sara.gomez@example.com",
+                    Id_Pais = 2,
+                    Id_Rol = 2,
+                    Puesto = "Staff",
+                    Estado = true,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow
+                };
+
+                var UsuarioInterno3 = new Models.UsuarioInterno
+                {
+                    Nombre = "Roy Ruiz",
+                    Azure_AD_User_Id = "aad-royr",
+                    Email = "roy.ruiz@example.com",
+                    Id_Pais = 3,
+                    Id_Rol = 3,
+                    Puesto = "Staff",
+                    Estado = true,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow
+                };
+
+                _context.UsuariosInternos.AddRange(UsuarioInterno1, UsuarioInterno2, UsuarioInterno3);
                 _context.SaveChanges();
 
                 var contrato1 = new Models.Contrato
@@ -294,8 +336,11 @@ namespace WS_Onboarding.Controllers
                 var AllRoles = _context.Roles.ToList();
                 _context.Roles.RemoveRange(AllRoles);
 
-                var AllUsuarios = _context.Usuarios.ToList();
-                _context.Usuarios.RemoveRange(AllUsuarios);
+                var AllUsuariosInternos = _context.UsuariosInternos.ToList();
+                _context.UsuariosInternos.RemoveRange(AllUsuariosInternos);
+
+                var AllUsuariosExternos = _context.UsuariosExternos.ToList();
+                _context.UsuariosExternos.RemoveRange(AllUsuariosExternos);
 
                 var AllServicios = _context.Servicios.ToList();
                 _context.Servicios.RemoveRange(AllServicios);
@@ -311,7 +356,8 @@ namespace WS_Onboarding.Controllers
 
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Paises', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Roles', RESEED, 0);");
-                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Usuarios', RESEED, 0);");
+                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('UsuariosInternos', RESEED, 0);");
+                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('UsuariosExternos', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Servicios', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Clientes', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Contratos', RESEED, 0);");
