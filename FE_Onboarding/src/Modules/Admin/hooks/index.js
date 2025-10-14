@@ -3,4 +3,4 @@ export * from "./useCustomersQuery";
 export * from "./useServicesQuery";
 export * from "./useRolesQuery";
 export * from "./useExternalUsersQuery";
-export * from "./useInternalUsers";
+export * from "./useInternalUsersQuery";
