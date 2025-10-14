@@ -1,143 +1,179 @@
 // src/Modules/Admin/pages/Users.jsx
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsPersonAdd } from "react-icons/bs";
+import { useExternalUsersQuery } from "../hooks";
 
 /**
- * Página de gestión de usuarios.
- * Usa CrudDashboard con operaciones CRUD simuladas y validaciones.
+ * Página de gestión de usuarios externos.
+ * Usa CrudDashboard con React Query para operaciones CRUD.
  */
 const Users = () => {
   const { setEntityIcon } = useContext(UIContext);
 
-  // Estado de usuarios y siguiente ID para crear nuevos
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      client: "Cliente A",
-      email: "user1@clienteA.com",
-      password: "password123",
-    },
-    {
-      id: 2,
-      client: "Cliente B",
-      email: "user2@clienteB.com",
-      password: "password456",
-    },
-    {
-      id: 3,
-      client: "Cliente A",
-      email: "user3@clienteA.com",
-      password: "password789",
-    },
-  ]);
-  const [nextId, setNextId] = useState(4);
+  const {
+    externalUsersQuery,
+    rolesQuery,
+    customersQuery,
+    createExternalUser,
+    updateExternalUser,
+    toggleExternalUserStatus,
+  } = useExternalUsersQuery();
 
-  // Establece el ícono para esta página
+  // Establece el ícono en el sidebar
   useEffect(() => {
     setEntityIcon(<BsPersonAdd />);
   }, [setEntityIcon]);
 
-  // --- Operaciones CRUD Simuladas ---
-  const getUsers = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    return users.map(({ id, client, email }) => ({ id, client, email }));
-  };
+  // ✅ Campos del formulario (memoizados)
+  const userFields = useMemo(() => {
+    const roles = rolesQuery.data ?? [];
+    const customers = customersQuery.data ?? [];
 
-  const createUser = async (user) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const newUser = {
-      id: nextId,
-      client: user.client,
-      email: user.email,
-      password: user.password || "default-password",
-    };
-    setUsers((prev) => [...prev, newUser]);
-    setNextId((prev) => prev + 1);
-    return { id: newUser.id, client: newUser.client, email: newUser.email };
-  };
+    return [
+      {
+        key: "id",
+        labelKey: "users.table.id",
+        type: "text",
+        isReadOnly: true,
+        isHidden: true,
+      },
+      {
+        key: "customerName",
+        formKey: "id_Cliente",
+        labelKey: "users.table.client",
+        type: "select",
+        options: customers.map((c) => ({
+          value: c.id,
+          label: c.name,
+        })),
+        validation: { required: true },
+        isReadOnly: (item) => !!item, // Bloquear al editar
+      },
+      {
+        key: "name",
+        labelKey: "users.table.name",
+        type: "text",
+        validation: { required: true },
+      },
+      {
+        key: "email",
+        labelKey: "users.table.email",
+        type: "email",
+        validation: { required: true },
+      },
+      {
+        key: "roleName",
+        formKey: "id_Rol",
+        labelKey: "users.table.role",
+        type: "select",
+        options: roles.map((r) => ({
+          value: r.id,
+          label: r.nombre || r.name,
+        })),
+        validation: { required: true },
+      },
+      {
+        key: "password",
+        labelKey: "users.table.password",
+        type: "password",
+        isTableVisible: false, // No mostrar en tabla
+        validation: {
+          required: (item) => !item, // Solo requerido al crear
+        },
+      },
+    ];
+  }, [rolesQuery.data, customersQuery.data]);
 
-  const updateUser = async (user) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    let updatedUser = {};
-    setUsers((prev) => {
-      const index = prev.findIndex((u) => u.id === user.id);
-      if (index === -1)
-        throw new Error("Usuario no encontrado para actualizar");
-      const existing = prev[index];
-      updatedUser = {
-        ...existing,
-        client: user.client,
-        email: user.email,
-        password: user.password?.length > 0 ? user.password : existing.password,
-      };
-      const newUsers = [...prev];
-      newUsers[index] = updatedUser;
-      return newUsers;
-    });
-    return {
-      id: updatedUser.id,
-      client: updatedUser.client,
-      email: updatedUser.email,
-    };
-  };
+  // ✅ Validaciones
+  const userValidations = useMemo(
+    () => ({
+      name: (value) => {
+        if (!value) return "El nombre es obligatorio";
+        if (value.length < 3) return "Debe tener al menos 3 caracteres";
+        if (value.length > 100) return "No puede superar 100 caracteres";
+        return null;
+      },
+      email: (value) => {
+        if (!value) return "El correo es obligatorio";
+        if (!/\S+@\S+\.\S+/.test(value)) return "Formato de correo inválido";
+        if (value.length > 255) return "No puede superar 255 caracteres";
+        return null;
+      },
+      password: (value, formValues) => {
+        // Solo validar si es un usuario nuevo (no tiene id)
+        if (!formValues.id) {
+          if (!value)
+            return "La contraseña es obligatoria para nuevos usuarios";
+          if (value.length < 8) return "Debe tener al menos 8 caracteres";
+          if (value.length > 255) return "No puede superar 255 caracteres";
+        }
+        return null;
+      },
+      id_Cliente: (value) => {
+        if (!value) return "Debe seleccionar un cliente";
+        return null;
+      },
+      id_Rol: (value) => {
+        if (!value) return "Debe seleccionar un rol";
+        return null;
+      },
+    }),
+    []
+  );
 
-  const deleteUser = async (id) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    setUsers((prev) => prev.filter((u) => u.id !== id));
-    return true;
-  };
+  // ✅ Wrapper para el update (excluir password)
+  const handleUpdate = useMemo(
+    () => async (user) => {
+      // El update NO incluye password, usar changePassword para eso
+      return updateExternalUser.mutateAsync(user);
+    },
+    [updateExternalUser]
+  );
 
-  // --- Campos para CrudForm ---
-  const userFields = [
-    {
-      key: "id",
-      labelKey: "users.table.id",
-      type: "text",
-      isReadOnly: true,
-      isHidden: true,
-    },
-    { key: "client", labelKey: "users.table.client", type: "text" },
-    { key: "email", labelKey: "users.table.email", type: "email" },
-    {
-      key: "password",
-      labelKey: "users.table.password",
-      type: "password",
-      isTableVisible: false,
-    },
-  ];
+  // ✅ Returns condicionales DESPUÉS de todos los hooks
+  if (
+    externalUsersQuery.isLoading ||
+    rolesQuery.isLoading ||
+    customersQuery.isLoading
+  ) {
+    return <div>Cargando usuarios...</div>;
+  }
 
-  // --- Validaciones ---
-  const userValidations = {
-    client: (value) => {
-      if (!value) return "El Cliente es obligatorio";
-      if (value.length < 3) return "Debe tener al menos 3 caracteres";
-      return null;
-    },
-    email: (value) => {
-      if (!value) return "El correo es obligatorio";
-      if (!/\S+@\S+\.\S+/.test(value)) return "Formato de correo inválido";
-      return null;
-    },
-    password: (value, formValues) => {
-      if (!formValues.id && !value)
-        return "La contraseña es obligatoria para nuevos usuarios";
-      if (value && value.length < 6) return "Debe tener al menos 6 caracteres";
-      return null;
-    },
-  };
+  if (
+    externalUsersQuery.isError ||
+    rolesQuery.isError ||
+    customersQuery.isError
+  ) {
+    return (
+      <div>
+        Error cargando datos de usuarios
+        {externalUsersQuery.error && <p>{externalUsersQuery.error.message}</p>}
+        {rolesQuery.error && <p>{rolesQuery.error.message}</p>}
+        {customersQuery.error && <p>{customersQuery.error.message}</p>}
+      </div>
+    );
+  }
 
   return (
     <CrudDashboard
       entityName="users"
       fields={userFields}
-      getItems={getUsers}
-      createItem={createUser}
-      updateItem={updateUser}
-      deleteItem={deleteUser}
+      getItems={() => externalUsersQuery.data ?? []}
+      createItem={createExternalUser.mutateAsync}
+      updateItem={handleUpdate}
+      deleteItem={(id) =>
+        toggleExternalUserStatus.mutateAsync({ userId: id, newStatus: false })
+      }
       validations={userValidations}
-      initialFormValues={{ client: "", email: "", password: "" }}
+      initialFormValues={{
+        name: "",
+        email: "",
+        password: "",
+        id_Cliente: null,
+        id_Rol: null,
+      }}
     />
   );
 };
