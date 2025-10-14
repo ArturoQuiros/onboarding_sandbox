@@ -26,7 +26,6 @@ export const useExternalUsersQuery = () => {
     queryKey: ["externalUsers"],
     queryFn: async () => {
       const { data } = await axiosClient.get("/User/Outside");
-      console.log(data);
       return data.map((u) => ({
         id: u.id,
         name: u.nombre,
