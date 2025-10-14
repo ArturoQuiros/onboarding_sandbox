@@ -5,3 +5,4 @@ export * from "./useRolesQuery";
 export * from "./useExternalUsersQuery";
 export * from "./useInternalUsersQuery";
 export * from "./useContractsQuery";
+export * from "./useContractServicesQuery";

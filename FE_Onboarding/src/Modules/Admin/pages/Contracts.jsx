@@ -39,7 +39,7 @@ const Contracts = () => {
         labelKey: "contracts.table.id",
         type: "text",
         isReadOnly: true,
-        isHidden: true,
+        isHidden: false,
       },
       {
         key: "client",
