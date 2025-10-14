@@ -18,7 +18,7 @@ namespace WS_Onboarding.Models
         public DateTime? Fecha_Modificacion { get; set; }
 
         // Navigation properties
-        public ICollection<Usuario>? Usuarios { get; set; }
+        public ICollection<UsuarioInterno>? Usuarios { get; set; }
         public ICollection<Servicio>? Servicios { get; set; }
     }
 }
