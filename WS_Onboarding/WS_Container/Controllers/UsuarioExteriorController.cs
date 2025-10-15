@@ -38,7 +38,8 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var Usuarios = _context.UsuariosExternos.ToList()
+                var Usuarios = _context.UsuariosExternos
+                    .Where(c => c.Estado == true).ToList()
                     .Select(c => c.ToUsuarioExternoDto());
 
                 return Ok(Usuarios);
@@ -252,6 +253,7 @@ namespace WS_Onboarding.Controllers
                     UsuarioModel.Nombre = (UsuarioDto.Nombre == null) ? UsuarioModel.Nombre : UsuarioDto.Nombre;
                     UsuarioModel.Email = (UsuarioDto.Email == null) ? UsuarioModel.Email : UsuarioDto.Email ;
                     UsuarioModel.Id_Rol = (UsuarioDto.Id_Rol == null) ? UsuarioModel.Id_Rol : UsuarioDto.Id_Rol;
+                    UsuarioModel.Contrasena = (UsuarioDto.Contrasena == null) ? UsuarioModel.Contrasena : UsuarioDto.Contrasena;
                     _context.SaveChanges();
 
                     return Ok(UsuarioModel.ToUsuarioExternoDto());
