@@ -93,6 +93,8 @@ namespace WS_Onboarding.Dtos
         [MaxLength(255)]
         public string? Email { get; set; }
         public int? Id_Rol { get; set; }
+        [MaxLength(255)]
+        public string? Contrasena { get; set; }
     }
 
     public class ChangeUsuarioPasswordDto
