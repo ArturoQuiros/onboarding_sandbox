@@ -37,7 +37,8 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var Usuarios = _context.UsuariosInternos.ToList()
+                var Usuarios = _context.UsuariosInternos
+                    .Where(c => c.Estado == true).ToList()
                     .Select(c => c.ToUsuarioInteriorDto());
 
                 return Ok(Usuarios);

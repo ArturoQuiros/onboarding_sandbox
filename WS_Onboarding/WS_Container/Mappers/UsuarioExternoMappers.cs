@@ -16,7 +16,6 @@ namespace WS_Onboarding.Mappers
                 Id = UsuarioModel.Id,
                 Nombre = UsuarioModel.Nombre,
                 Email = UsuarioModel.Email,
-                Contrasena = UsuarioModel.Contrasena,
                 Estado = UsuarioModel.Estado,
                 Id_Rol = UsuarioModel.Id_Rol,
                 Id_Cliente = UsuarioModel.Id_Cliente,
