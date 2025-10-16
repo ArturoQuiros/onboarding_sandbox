@@ -1,217 +1,204 @@
 export const MOCK_CONTRACT_DATA = [
   {
-    serviceId: 1,
-    title: "Constitución de Sociedad",
-    state: "IN_PROGRESS",
-    tasks: [
-      {
-        taskId: 101,
-        label: "Solicitud del servicio",
-        status: "COMPLETED",
-        form: {
-          fields: [
-            {
-              name: "fechaSolicitud",
-              label: "Fecha de Solicitud",
-              type: "date",
-              value: "2024-10-01",
-            },
-            {
-              name: "servicioSeleccionado",
-              label: "Servicio",
-              type: "text",
-              value: "Constitución de Sociedad",
-              readOnly: true,
-            },
-          ],
-        },
-      },
-      {
-        taskId: 102,
-        label: "Formulario de constitución",
-        status: "IN_PROGRESS",
-        form: {
-          fields: [
-            {
-              name: "nombreSocio",
-              label: "Nombre del Socio Principal",
-              type: "text",
-              value: "Juan Pérez",
-            },
-            {
-              name: "tipoSociedad",
-              label: "Tipo de Sociedad",
-              type: "select",
-              options: ["SRL", "SA", "Cooperativa"],
-              value: "SRL",
-            },
-            {
-              name: "capitalSocial",
-              label: "Capital Social ($)",
-              type: "number",
-              value: 15000,
-            },
-            {
-              name: "documentoIdentidad",
-              label: "Documento de Identidad del Socio",
-              type: "file",
-              value: null,
-            },
-          ],
-        },
-      },
-      {
-        taskId: 103,
-        label: "Pago de la factura",
-        status: "PENDING",
-        form: {
-          fields: [
-            {
-              name: "montoFactura",
-              label: "Monto a Pagar ($)",
-              type: "number",
-              value: 500,
-              readOnly: true,
-            },
-            {
-              name: "metodoPago",
-              label: "Método de Pago",
-              type: "select",
-              options: ["Tarjeta", "Transferencia", "Efectivo"],
-              value: "",
-            },
-            {
-              name: "comprobantePago",
-              label: "Adjuntar Comprobante",
-              type: "file",
-              value: null,
-            },
-          ],
-        },
-      },
-    ],
-  },
-  {
-    serviceId: 2,
-    title: "Inscripción en Hacienda",
+    serviceId: 4,
+    title: "Know Your Customer (KYC)",
     state: "PENDING",
     tasks: [
       {
-        taskId: 201,
-        label: "Solicitud de inscripción RUC",
+        taskId: 401,
+        label: "Formulario KYC - Información General",
         status: "PENDING",
         form: {
           fields: [
             {
-              name: "nombreEmpresa",
-              label: "Razón Social de la Empresa",
+              name: "legalName",
+              label: "Legal Name",
               type: "text",
-              value: "",
+              required: true,
             },
             {
-              name: "tipoContribuyente",
-              label: "Tipo de Contribuyente",
+              name: "tradeName",
+              label: "Trade Name or other used name",
+              type: "text",
+              required: true,
+            },
+            {
+              name: "economicActivity",
+              label: "Company’s economic activity",
+              type: "text",
+              required: true,
+            },
+            {
+              name: "companyAddress",
+              label: "Company Address",
+              type: "text",
+              required: true,
+            },
+            {
+              name: "regulatedCompany",
+              label: "Regulated Company",
               type: "radio",
-              options: ["Persona Física", "Sociedad"],
-              value: "Sociedad",
+              options: ["Yes", "No"],
+              required: true,
             },
             {
-              name: "actividadEconomica",
-              label: "Actividad Económica",
-              type: "text",
-              value: "",
-            },
-            {
-              name: "documentosAdjuntos",
-              label: "Adjuntar Documentos Legales",
-              type: "file",
-              value: null,
-            },
-          ],
-        },
-      },
-      {
-        taskId: 202,
-        label: "Asignación de número de RUC",
-        status: "PENDING",
-        form: {
-          fields: [
-            {
-              name: "rucAsignado",
-              label: "Número RUC Asignado",
-              type: "text",
-              value: "",
-              readOnly: true,
-            },
-            {
-              name: "fechaAsignacion",
-              label: "Fecha de Asignación",
-              type: "date",
-              value: "",
-              readOnly: true,
-            },
-          ],
-        },
-      },
-    ],
-  },
-  {
-    serviceId: 3,
-    title: "Inscripción en Bancos",
-    state: "PENDING",
-    tasks: [
-      {
-        taskId: 301,
-        label: "Apertura de cuenta",
-        status: "PENDING",
-        form: {
-          fields: [
-            {
-              name: "nombreBanco",
-              label: "Banco de Preferencia",
-              type: "text",
-              value: "",
-            },
-            {
-              name: "tipoCuenta",
-              label: "Tipo de Cuenta",
-              type: "select",
-              options: ["Corriente", "Ahorros"],
-              value: "Corriente",
-            },
-            {
-              name: "moneda",
-              label: "Moneda",
+              name: "listedOnStockExchange",
+              label: "Listed on the Stock Exchange",
               type: "radio",
-              options: ["USD", "EUR", "Local"],
-              value: "Local",
+              options: ["Yes", "No"],
             },
             {
-              name: "documentosAdjuntos",
-              label: "Adjuntar Certificación",
-              type: "file",
-              value: null,
+              name: "legalIdNumber",
+              label: "Legal Identification Number",
+              type: "text",
+            },
+            {
+              name: "physicalIdNumber",
+              label: "Physical Identification Number",
+              type: "text",
+            },
+            {
+              name: "hasParentCompany",
+              label: "Does your company have an Ultimate Parent Company?",
+              type: "radio",
+              options: ["Yes", "No"],
+              required: true,
+            },
+            {
+              name: "parentCompanyName",
+              label: "If yes, please provide the name",
+              type: "text",
+            },
+            {
+              name: "subsidiaryInternational",
+              label: "Subsidiary of an International Company",
+              type: "radio",
+              options: ["Yes", "No"],
+            },
+            {
+              name: "internationalOperations",
+              label: "Company with International Operations",
+              type: "radio",
+              options: ["Yes", "No"],
+            },
+            {
+              name: "contactPerson",
+              label: "Contact Person (First and Last Name)",
+              type: "text",
+              required: true,
+            },
+            { name: "jobTitle", label: "Job Title", type: "text" },
+            {
+              name: "phoneNumber",
+              label: "Phone Number",
+              type: "text",
+              required: true,
+            },
+            {
+              name: "email",
+              label: "Email for notifications and invoices",
+              type: "email",
+              required: true,
+            },
+            { name: "website", label: "Website", type: "text" },
+            {
+              name: "countryIncorporated",
+              label: "Country where the company was incorporated",
+              type: "text",
+            },
+            {
+              name: "previousAuditors",
+              label: "Previous Auditors",
+              type: "text",
+            },
+            { name: "companyLawyers", label: "Company Lawyers", type: "text" },
+          ],
+        },
+      },
+      {
+        taskId: 402,
+        label: "Formulario KYC - Estructura de la Empresa",
+        status: "PENDING",
+        form: {
+          sections: [
+            {
+              title: "Shareholders",
+              repeatable: true,
+              fields: [
+                { name: "name", label: "Name", type: "text", required: true },
+                { name: "firstSurname", label: "First Surname", type: "text" },
+                {
+                  name: "secondSurname",
+                  label: "Second Surname",
+                  type: "text",
+                },
+                { name: "nationality", label: "Nationality", type: "text" },
+              ],
+            },
+            {
+              title: "Directors",
+              repeatable: true,
+              fields: [
+                { name: "name", label: "Name", type: "text", required: true },
+                { name: "firstSurname", label: "First Surname", type: "text" },
+                {
+                  name: "secondSurname",
+                  label: "Second Surname",
+                  type: "text",
+                },
+                { name: "nationality", label: "Nationality", type: "text" },
+              ],
+            },
+            {
+              title: "Key Personnel",
+              repeatable: true,
+              fields: [
+                { name: "name", label: "Name", type: "text", required: true },
+                { name: "firstSurname", label: "First Surname", type: "text" },
+                {
+                  name: "secondSurname",
+                  label: "Second Surname",
+                  type: "text",
+                },
+                { name: "nationality", label: "Nationality", type: "text" },
+              ],
+            },
+            {
+              title: "Beneficial Owners",
+              repeatable: true,
+              fields: [
+                { name: "name", label: "Name", type: "text", required: true },
+                { name: "firstSurname", label: "First Surname", type: "text" },
+                {
+                  name: "secondSurname",
+                  label: "Second Surname",
+                  type: "text",
+                },
+                { name: "nationality", label: "Nationality", type: "text" },
+              ],
             },
           ],
         },
       },
       {
-        taskId: 302,
-        label: "Entrega de chequera",
+        taskId: 403,
+        label: "Formulario KYC - Consentimiento e Información Adicional",
         status: "PENDING",
         form: {
           fields: [
             {
-              name: "chequeraRecibida",
-              label: "¿Chequera recibida?",
-              type: "checkbox",
-              value: false,
+              name: "informedConsentText",
+              label: "Informed Consent",
+              type: "paragraph",
+              readOnly: true,
+              value:
+                "We hereby inform you that the information required in this form by BDO Costa Rica will be handled in accordance with our policies: (i) the global firm’s policy, (ii) conflict of interest management policy, and (iii) risk and independence policy. This protocol is implemented under the highest ethical standards to protect our clients. We ensure the confidentiality and security of your data, which are essential for our Firm to comply with the processes for potential hiring and to ensure the absence of conflicts in the provision of our services. If you wish to exercise your right to information self-determination or if you have any inquiries, please direct them to privacidad@bdo.cr. More information at www.bdo.cr.",
             },
+            { name: "date", label: "Date", type: "date", required: true },
             {
-              name: "fechaEntrega",
-              label: "Fecha de Entrega Estimada",
-              type: "date",
-              value: "",
+              name: "importantComments",
+              label: "Important Comments",
+              type: "textarea",
             },
           ],
         },
