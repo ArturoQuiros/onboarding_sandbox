@@ -19,7 +19,6 @@
   font-size: 2rem;
   font-weight: 700;
   color: var(--bdo-red);
-  margin: 0 0 10px 0;
   text-align: left;
 }
 
@@ -27,7 +26,6 @@
 .formDescription {
   font-size: 1rem;
   color: var(--bdo-slate);
-  margin: 0 0 20px 0;
   text-align: left;
 }
 
