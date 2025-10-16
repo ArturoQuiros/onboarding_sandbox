@@ -12,6 +12,7 @@ namespace WS_Onboarding.Dtos
         public int? Id_Cliente { get; set; }
         public required string Estado { get; set; }
         public int? Account_manager { get; set; }
+        public int? Id_Pais { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
     }
@@ -20,11 +21,10 @@ namespace WS_Onboarding.Dtos
     {
         [Required]
         public int Id_Cliente { get; set; }
-
         [MaxLength(20)]
         public required string Estado { get; set; }
-
         public int? Account_manager { get; set; }
+        public int? Id_Pais { get; set; }
     }
 
     public class UpdateContratoDto : CreateContratoDto

@@ -19,6 +19,7 @@ namespace WS_Onboarding.Mappers
                 Account_manager = ContratoModel.Account_manager,
                 Fecha_Creacion = ContratoModel.Fecha_Creacion,
                 Fecha_Modificacion = ContratoModel.Fecha_Modificacion,
+                Id_Pais = ContratoModel.Id_Pais
             };
         }
 
@@ -29,6 +30,7 @@ namespace WS_Onboarding.Mappers
                 Id_Cliente = ContratoModel.Id_Cliente,
                 Estado = ContratoModel.Estado,
                 Account_manager = ContratoModel.Account_manager,
+                Id_Pais = ContratoModel.Id_Pais,
                 Fecha_Creacion = DateTime.UtcNow,
                 Fecha_Modificacion = DateTime.UtcNow
             };
