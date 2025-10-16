@@ -1,174 +1,100 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useContext, useEffect, useMemo } from "react";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
 import { BsNewspaper, BsTools } from "react-icons/bs";
-import axiosClient from "../../../Api/axiosClient";
 import { useNavigate } from "react-router-dom";
 import styles from "../components/CrudDataTable.module.css";
+// Importar el hook de contratos que creamos
+import { useContractsQuery } from "../hooks";
 
 const Contracts = () => {
   const { setEntityIcon } = useContext(UIContext);
   const navigate = useNavigate();
 
-  const [clientes, setClientes] = useState([]);
-  const [usuarios, setUsuarios] = useState([]);
-  const [contracts, setContracts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // 1. Usar el hook de React Query para obtener datos y mutaciones
+  const {
+    contractsQuery,
+    customersQuery,
+    internalUsersQuery,
+    countriesQuery, // 🆕 Obtenemos el hook de países
+    createContract,
+    updateContract,
+    deleteContract,
+  } = useContractsQuery();
 
-  // --- Set icon al montar
+  // Establece el ícono en el sidebar
   useEffect(() => {
     setEntityIcon(<BsNewspaper />);
   }, [setEntityIcon]);
 
-  // --- Carga inicial de clientes, usuarios y contratos
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [clientesRes, usuariosRes, contratosRes] = await Promise.all([
-          axiosClient.get("/cliente"),
-          axiosClient.get("/usuario"),
-          axiosClient.get("/Contrato"),
-        ]);
+  // 2. Mapeo de campos del formulario (depende de clientes, usuarios y países)
+  const contractFields = useMemo(() => {
+    const clientes = customersQuery.data ?? [];
+    const usuarios = internalUsersQuery.data ?? [];
+    const paises = countriesQuery.data ?? []; // 🆕 Obtenemos la data de países
 
-        setClientes(clientesRes.data);
-        setUsuarios(usuariosRes.data);
+    return [
+      {
+        key: "id",
+        labelKey: "contracts.table.id",
+        type: "text",
+        isReadOnly: true,
+        isHidden: false,
+      },
+      {
+        key: "client",
+        formKey: "id_Cliente",
+        labelKey: "contracts.table.client",
+        type: "select",
+        options: clientes.map((c) => ({ value: c.id, label: c.name })),
+        validation: { required: true },
+        isReadOnly: (item) => !!item, // Bloquea al editar
+      },
+      // 🆕 Nuevo campo para seleccionar el País
+      {
+        key: "country", // Campo mapeado del query (nombre del país)
+        formKey: "id_Pais", // Key que va en el payload de la API (ID)
+        labelKey: "contracts.table.country", // Necesitas tener esta key en tus traducciones
+        type: "select",
+        // Usamos la data de países. El valor es el ID, la etiqueta es el nombre (p.name)
+        options: paises.map((p) => ({ value: p.id, label: p.name })),
+        validation: { required: true },
+      },
+      {
+        key: "status",
+        labelKey: "contracts.table.status",
+        type: "select",
+        options: [
+          { value: "Activo", label: "Activo" },
+          { value: "Pendiente", label: "Pendiente" },
+          { value: "Cancelado", label: "Cancelado" },
+        ],
+        validation: { required: true },
+      },
+      {
+        key: "accountManager",
+        formKey: "account_manager",
+        labelKey: "contracts.table.accountManager",
+        type: "select",
+        options: usuarios.map((u) => ({ value: u.id, label: u.name })),
+        validation: { required: true },
+      },
+    ];
+  }, [customersQuery.data, internalUsersQuery.data, countriesQuery.data]); // 🆕 Agregar dependencia
 
-        const mappedContracts = contratosRes.data.map((c) => ({
-          id: c.id,
-          client:
-            clientesRes.data.find((cl) => cl.id === c.id_Cliente)?.nombre ||
-            c.id_Cliente,
-          accountManager:
-            usuariosRes.data.find((u) => u.id === c.account_manager)?.nombre ||
-            c.account_manager,
-          status: c.estado,
-          id_Cliente: c.id_Cliente,
-          account_manager: c.account_manager,
-        }));
-
-        setContracts(mappedContracts);
-      } catch (error) {
-        console.error("Error cargando datos iniciales", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  // --- CRUD Functions dinámicas ---
-  const createContract = useCallback(
-    async (contract) => {
-      const payload = {
-        id_Cliente: contract.id_Cliente,
-        estado: contract.status,
-        account_manager: contract.account_manager,
-      };
-      const res = await axiosClient.post("/Contrato", payload);
-
-      const newContract = {
-        id: res.data.id,
-        client:
-          clientes.find((cl) => cl.id === res.data.id_Cliente)?.nombre ||
-          res.data.id_Cliente,
-        accountManager:
-          usuarios.find((u) => u.id === res.data.account_manager)?.nombre ||
-          res.data.account_manager,
-        status: res.data.estado,
-        id_Cliente: res.data.id_Cliente,
-        account_manager: res.data.account_manager,
-      };
-
-      // Agregar al estado local inmediatamente
-      setContracts((prev) => [newContract, ...prev]);
-      return newContract;
-    },
-    [clientes, usuarios]
+  // 3. Validaciones
+  const contractValidations = useMemo(
+    () => ({
+      id_Cliente: (value) => (!value ? "Debe seleccionar un cliente" : null),
+      id_Pais: (value) => (!value ? "Debe seleccionar un país" : null), // 🆕 Nueva validación
+      status: (value) => (!value ? "Debe seleccionar un estado" : null),
+      account_manager: (value) =>
+        !value ? "Debe seleccionar un Account Manager" : null,
+    }),
+    []
   );
 
-  const updateContract = useCallback(
-    async (contract) => {
-      const payload = {
-        id_Cliente: contract.id_Cliente,
-        estado: contract.status,
-        account_manager: contract.account_manager,
-      };
-      const res = await axiosClient.put(`/Contrato/${contract.id}`, payload);
-
-      const updatedContract = {
-        id: res.data.id,
-        client:
-          clientes.find((cl) => cl.id === res.data.id_Cliente)?.nombre ||
-          res.data.id_Cliente,
-        accountManager:
-          usuarios.find((u) => u.id === res.data.account_manager)?.nombre ||
-          res.data.account_manager,
-        status: res.data.estado,
-        id_Cliente: res.data.id_Cliente,
-        account_manager: res.data.account_manager,
-      };
-
-      // Actualizar en estado local
-      setContracts((prev) =>
-        prev.map((c) => (c.id === updatedContract.id ? updatedContract : c))
-      );
-
-      return updatedContract;
-    },
-    [clientes, usuarios]
-  );
-
-  const deleteContract = useCallback(async (id) => {
-    await axiosClient.delete(`/Contrato/${id}`);
-    // Eliminar del estado local
-    setContracts((prev) => prev.filter((c) => c.id !== id));
-    return true;
-  }, []);
-
-  const getContracts = useCallback(async () => {
-    return contracts;
-  }, [contracts]);
-
-  // --- Campos para CrudForm / DataTable ---
-  const contractFields = [
-    {
-      key: "id",
-      labelKey: "contracts.table.id",
-      type: "text",
-      isReadOnly: true,
-      isHidden: true,
-    },
-    {
-      key: "client",
-      formKey: "id_Cliente",
-      labelKey: "contracts.table.client",
-      type: "select",
-      options: clientes.map((c) => ({ value: c.id, label: c.nombre })),
-      validation: { required: true },
-      isReadOnly: (item) => !!item, // Bloquea el select solo al editar
-    },
-    {
-      key: "status",
-      labelKey: "contracts.table.status",
-      type: "select",
-      options: [
-        { value: "Activo", label: "Activo" },
-        { value: "Pendiente", label: "Pendiente" },
-        { value: "Cancelado", label: "Cancelado" },
-      ],
-      validation: { required: true },
-    },
-    {
-      key: "accountManager",
-      formKey: "account_manager",
-      labelKey: "contracts.table.accountManager",
-      type: "select",
-      options: usuarios.map((u) => ({ value: u.id, label: u.nombre })),
-      validation: { required: true },
-    },
-  ];
-
-  // --- Acción extra: ver servicios de contrato ---
+  // 4. Acción extra: ver servicios de contrato
   const extraActionRenderer = (item) => (
     <button
       onClick={() => navigate(`/admin/contracts/${item.id}/services`)}
@@ -179,17 +105,43 @@ const Contracts = () => {
     </button>
   );
 
-  if (isLoading) return <div>Cargando configuración de contratos...</div>;
+  // 5. Renderizado condicional de carga y error (Combinando todas las queries)
+  const isLoading =
+    contractsQuery.isLoading ||
+    customersQuery.isLoading ||
+    internalUsersQuery.isLoading ||
+    countriesQuery.isLoading; // 🆕 Incluir carga de países
+
+  const isError =
+    contractsQuery.isError ||
+    customersQuery.isError ||
+    internalUsersQuery.isError ||
+    countriesQuery.isError; // 🆕 Incluir error de países
+
+  if (isLoading)
+    return <div>Cargando configuración de contratos y dependencias...</div>;
+
+  if (isError)
+    return <div>Error cargando datos de contratos o sus dependencias.</div>;
 
   return (
     <CrudDashboard
       entityName="contracts"
       fields={contractFields}
-      getItems={getContracts}
-      createItem={createContract}
-      updateItem={updateContract}
-      deleteItem={deleteContract}
+      // Pasamos los datos del hook
+      getItems={() => contractsQuery.data ?? []}
+      // Pasamos las funciones de mutación
+      createItem={createContract.mutateAsync}
+      updateItem={updateContract.mutateAsync}
+      deleteItem={deleteContract.mutateAsync}
+      validations={contractValidations}
       extraActionRenderer={extraActionRenderer}
+      initialFormValues={{
+        status: "Activo",
+        id_Cliente: null,
+        account_manager: null,
+        id_Pais: null, // 🆕 Valor inicial para el nuevo campo
+      }}
     />
   );
 };

@@ -19,7 +19,6 @@
   font-size: 2rem;
   font-weight: 700;
   color: var(--bdo-red);
-  margin: 0 0 10px 0;
   text-align: left;
 }
 
@@ -27,7 +26,6 @@
 .formDescription {
   font-size: 1rem;
   color: var(--bdo-slate);
-  margin: 0 0 20px 0;
   text-align: left;
 }
 
@@ -55,10 +53,12 @@
   color: var(--bdo-charcoal);
 }
 
-/* Base común para todos los inputs */
+/* Base común para todos los inputs y textarea */
 .formInput,
 .formSelect,
-.formFile {
+.formFile,
+.formTextarea {
+  /* Añadido .formTextarea */
   width: 100%;
   padding: 12px 14px;
   font-size: 1rem;
@@ -72,17 +72,26 @@
   color: var(--bdo-charcoal);
 }
 
+.formTextarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
 /* Estados de focus compartidos */
 .formInput:focus,
 .formSelect:focus,
-.formFile:focus {
+.formFile:focus,
+.formTextarea:focus {
+  /* Añadido .formTextarea */
   border-color: var(--bdo-ocean);
   box-shadow: 0 0 4px rgba(0, 143, 210, 0.3);
 }
 
 /* Placeholders compartidos */
 .formInput::placeholder,
-.formSelect::placeholder {
+.formSelect::placeholder,
+.formTextarea::placeholder {
+  /* Añadido .formTextarea */
   color: var(--bdo-slate);
   opacity: 0.6;
 }
@@ -90,7 +99,10 @@
 /* Estados disabled/readonly compartidos */
 .formInput:disabled,
 .formInput:read-only,
-.formSelect:disabled {
+.formSelect:disabled,
+.formTextarea:disabled,
+.formTextarea:read-only {
+  /* Añadido .formTextarea */
   background-color: var(--bdo-pale-charcoal);
   color: var(--bdo-slate);
   cursor: not-allowed;
@@ -227,7 +239,7 @@
   cursor: pointer;
 }
 
-.formRadio,
+.formRadio, /* Clase añadida en el JSX */
 .formCheckbox {
   width: 18px;
   height: 18px;
@@ -290,4 +302,52 @@
     width: 100%;
     text-align: center;
   }
+}
+
+/* 🔹 Asegura que los radio y checkbox sean clicables */
+.radioGroup input[type="radio"],
+.radioGroup input[type="checkbox"] {
+  cursor: pointer !important;
+}
+
+/* 🔹 Asegura que los labels también sean clicables */
+.radioGroup label {
+  cursor: pointer !important;
+}
+
+/* 🔹 Evita que algún contenedor padre los bloquee */
+.radioGroup {
+  cursor: default !important;
+}
+
+/* ✨ Aplica estilo al texto de la opción de radio/checkbox seleccionado */
+.radioGroup input[type="radio"]:checked + span,
+.radioGroup input[type="checkbox"]:checked + span {
+  /* Añadido para checkbox si usas span */
+  font-weight: 600;
+  color: var(--bdo-ocean);
+  transition: color 0.2s ease;
+}
+
+.readOnlyText {
+  /* Estilos para el campo de tipo "paragraph" */
+  padding: 12px 0;
+  font-size: 1rem;
+  color: var(--bdo-slate);
+  border: none;
+}
+
+.removeButton {
+  margin-top: 10px;
+}
+
+.addButton {
+  margin-top: 10px;
+  background-color: var(--bdo-ocean);
+}
+
+.addButton:hover {
+  margin-top: 10px;
+  background-color: var(--bdo-slate);
+  border-color: var(--bdo-slate);
 }

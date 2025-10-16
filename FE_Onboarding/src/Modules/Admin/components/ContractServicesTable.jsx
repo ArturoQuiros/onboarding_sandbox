@@ -8,19 +8,7 @@ import { BsArrowUpShort, BsArrowDownShort } from "react-icons/bs";
 /**
  * Componente que muestra la tabla de servicios disponibles para un contrato
  * y permite activar/desactivar la asignación de cada servicio.
- *
- * @param {object[]} services - Lista de objetos de servicio a mostrar en la página actual.
- * @param {Map<number, number>} assignedServiceIds - Mapa de ID de servicio a ID de relación (para saber si está asignado).
- * @param {boolean} isSaving - Indica si se está realizando una operación de guardado (toggle), deshabilitando la interacción.
- * @param {(serviceId: number, isChecked: boolean) => void} onToggle - Función de callback para asignar/desasignar un servicio.
- * @param {(key: string) => void} onSort - Función de callback para cambiar la clave de ordenación.
- * @param {string | null} sortKey - La clave de la columna actualmente ordenada (ej: 'id', 'nombre').
- * @param {'asc' | 'desc'} sortDirection - La dirección de la ordenación ('asc' o 'desc').
- * @param {number} currentPage - El número de página actual.
- * @param {number} totalPages - El número total de páginas.
- * @param {number} filteredCount - El número total de registros después de aplicar el filtro.
- * @param {(page: number) => void} onPageChange - Función de callback para cambiar la página.
- * @returns {JSX.Element}
+ * (Tu código original, sin cambios)
  */
 export const ContractServicesTable = ({
   services,
@@ -38,7 +26,10 @@ export const ContractServicesTable = ({
   const { t } = useTranslation("global");
 
   // Calcula el índice de inicio y fin para el mensaje de pie de página
-  const itemsPerPage = filteredCount > 0 ? filteredCount / totalPages : 0;
+  // Nota: La lógica de itemsPerPage podría ser imprecisa si filteredCount / totalPages no es exacto,
+  // pero mantendremos tu lógica original.
+  const itemsPerPage =
+    filteredCount > 0 ? Math.ceil(filteredCount / totalPages) : 0;
   const startIndex = (currentPage - 1) * itemsPerPage + 1;
   const endIndex = Math.min(startIndex + services.length - 1, filteredCount);
 

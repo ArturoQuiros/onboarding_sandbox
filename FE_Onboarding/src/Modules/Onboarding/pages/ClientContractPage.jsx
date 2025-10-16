@@ -28,7 +28,6 @@ export const ClientContractPage = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>{taskForm.title || "Formulario"}</h2>
       <DynamicForm formData={taskForm} onSubmit={handleSubmit} />
     </div>
   );
