@@ -270,6 +270,7 @@ namespace WS_Onboarding.Controllers
                     Id_Cliente = 1,
                     Estado = "Activo",
                     Account_manager = 1,
+                    Id_Pais = 1,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
@@ -279,6 +280,7 @@ namespace WS_Onboarding.Controllers
                     Id_Cliente = 2,
                     Estado = "Pendiente",
                     Account_manager = 2,
+                    Id_Pais = 2,
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow
                 };
