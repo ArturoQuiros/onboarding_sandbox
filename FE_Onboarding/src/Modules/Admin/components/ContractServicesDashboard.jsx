@@ -8,6 +8,8 @@ import styles from "./ContractServicesDashboard.module.css";
 import { UIContext } from "../../../Global/Context";
 import { SearchBar, ItemsPerPageSelector } from "./";
 import { useContractServicesQuery } from "../hooks/useContractServicesQuery";
+// 🆕 Importamos el hook de países directamente (más simple que pasar por Contracts)
+import { useCountriesQuery } from "../hooks/useCountriesQuery";
 
 export const ContractServiceDashboard = () => {
   const { contractId } = useParams();
@@ -16,6 +18,7 @@ export const ContractServiceDashboard = () => {
 
   console.log("[Dashboard] contractId:", contractId);
 
+  // 1. Obtener datos de servicios y el ID del País
   const {
     contractDetailQuery,
     availableServicesQuery,
@@ -23,6 +26,9 @@ export const ContractServiceDashboard = () => {
     toggleAssignmentMutation,
     idPais,
   } = useContractServicesQuery(contractId);
+
+  // 2. Obtener el mapa de países para mostrar el nombre
+  const { countriesQuery, countryMap } = useCountriesQuery();
 
   const allServices = availableServicesQuery.data ?? [];
   const assignedServiceIds = assignedRelationsQuery.data ?? new Map();
@@ -38,7 +44,18 @@ export const ContractServiceDashboard = () => {
     [entityIcon]
   );
 
-  // Ordenamiento
+  // 3. Obtener el nombre del País usando el mapa
+  const countryName = useMemo(() => {
+    // Si el mapa o el idPais no están listos, muestra el ID o un placeholder
+    if (!countryMap || !idPais) {
+      return `ID: ${idPais}`;
+    }
+    // Retorna el nombre del país usando el mapa
+    return countryMap[idPais] || `ID: ${idPais} (Desconocido)`;
+  }, [countryMap, idPais]); // 🆕 Depende de countryMap y idPais
+
+  // Ordenamiento, Filtrado y Paginación (Sin cambios)
+  // ... (Toda la lógica de useMemo para sortedItems, filteredItems, paginatedItems) ...
   const sortedItems = useMemo(() => {
     if (!sortKey) return allServices;
     return [...allServices].sort((a, b) => {
@@ -50,7 +67,6 @@ export const ContractServiceDashboard = () => {
     });
   }, [allServices, sortKey, sortDirection]);
 
-  // Filtrado
   const filteredItems = useMemo(() => {
     if (!searchTerm) return sortedItems;
     return sortedItems.filter(
@@ -60,7 +76,6 @@ export const ContractServiceDashboard = () => {
     );
   }, [sortedItems, searchTerm]);
 
-  // Paginación
   const paginatedItems = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredItems.slice(startIndex, startIndex + itemsPerPage);
@@ -99,15 +114,18 @@ export const ContractServiceDashboard = () => {
     setCurrentPage(1);
   };
 
+  // 4. Renderizado condicional de carga y error (Incluir la carga de países)
   const isLoading =
     contractDetailQuery.isLoading ||
     availableServicesQuery.isLoading ||
-    assignedRelationsQuery.isLoading;
+    assignedRelationsQuery.isLoading ||
+    countriesQuery.isLoading; // 🆕 Incluir la carga de países
 
   const isError =
     contractDetailQuery.isError ||
     availableServicesQuery.isError ||
-    assignedRelationsQuery.isError;
+    assignedRelationsQuery.isError ||
+    countriesQuery.isError; // 🆕 Incluir el error de países
 
   if (!contractId)
     return <p className={styles.loadingMessage}>⚠️ Contract ID missing</p>;
@@ -120,9 +138,14 @@ export const ContractServiceDashboard = () => {
       errorMessage = t("contractServices.errorServicesByCountry");
     else if (assignedRelationsQuery.isError)
       errorMessage = t("contractServices.errorAssignedRelations");
+    else if (countriesQuery.isError)
+      // 🆕 Manejar el error de países
+      errorMessage = t("common.errorLoadingData") + " (Países)";
+
     return <p className={styles.loadingMessage}>❌ {errorMessage}</p>;
   }
 
+  // Si está cargando o falta el ID del País, mostramos el mensaje de carga
   if (isLoading)
     return <p className={styles.loadingMessage}>{t("common.loading")}</p>;
 
@@ -135,7 +158,8 @@ export const ContractServiceDashboard = () => {
           {contractId && (
             <span className={styles.contractIdLabel}>
               {" "}
-              (ID: {contractId} | País: {idPais})
+              (ID: {contractId} | País: {countryName}){" "}
+              {/* 🆕 Usamos countryName */}
             </span>
           )}
         </h2>
