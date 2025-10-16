@@ -118,7 +118,8 @@ namespace WS_Onboarding.Controllers
                 {
                     ContratoModel.Id_Cliente = ContratoDto.Id_Cliente;
                     ContratoModel.Estado = ContratoDto.Estado;
-                    ContratoModel.Account_manager = ContratoDto.Account_manager;
+                    ContratoModel.Account_manager = (ContratoDto.Account_manager == null) ? ContratoModel.Account_manager : ContratoDto.Account_manager;
+                    ContratoModel.Id_Pais = (ContratoDto.Id_Pais == null) ? ContratoModel.Id_Pais : ContratoDto.Id_Pais;
                     ContratoModel.Fecha_Modificacion = DateTime.UtcNow;
                     _context.SaveChanges();
 

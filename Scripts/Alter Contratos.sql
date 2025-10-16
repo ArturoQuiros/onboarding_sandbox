@@ -1,0 +1,7 @@
+ALTER TABLE Contratos
+ADD Id_Pais INT
+
+ALTER TABLE Contratos
+ADD CONSTRAINT FK_Contratos_Paises
+FOREIGN KEY (Id_Pais)
+REFERENCES Paises(Id);

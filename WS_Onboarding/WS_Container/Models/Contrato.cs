@@ -17,6 +17,8 @@ namespace WS_Onboarding.Models
         public required string Estado { get; set; }
         [Column("Account_manager")]
         public int? Account_manager { get; set; }
+        [Column("Id_Pais")]
+        public int? Id_Pais { get; set; }
 
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
@@ -24,6 +26,8 @@ namespace WS_Onboarding.Models
         // Navigation
         [ForeignKey("Id_Cliente")]
         public Cliente? Cliente { get; set; }
+        [ForeignKey("Id_Pais")]
+        public Pais? Pais { get; set; }
         [ForeignKey("Account_manager")]
         public UsuarioInterno? UsuarioAccountManager { get; set; }
         public ICollection<ContratoServicio>? ContratoServicios { get; set; }
