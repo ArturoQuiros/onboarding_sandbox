@@ -9,6 +9,8 @@ export const MOCK_CONTRACT_DATA = [
         label: "Formulario KYC - Información General",
         status: "PENDING",
         form: {
+          title: "Formulario KYC",
+          description: "Este formulario es para conocer al cliente",
           fields: [
             {
               name: "legalName",

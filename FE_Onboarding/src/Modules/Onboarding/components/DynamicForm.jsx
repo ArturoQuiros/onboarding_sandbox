@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./DynamicForm.module.css";
 
 export const DynamicForm = ({ formData, onSubmit }) => {
   const [sectionEntries, setSectionEntries] = useState(
     formData.sections ? formData.sections.map(() => [{}]) : [[]]
   );
+
+  // 🔁 Resetea sectionEntries cada vez que cambia formData
+  useEffect(() => {
+    if (formData.sections) {
+      setSectionEntries(formData.sections.map(() => [{}]));
+    } else {
+      setSectionEntries([[]]);
+    }
+  }, [formData]);
 
   const handleAdd = (sectionIndex) => {
     setSectionEntries((prev) => {
@@ -34,6 +43,7 @@ export const DynamicForm = ({ formData, onSubmit }) => {
           section.fields.forEach((f) => {
             const fieldName = `${section.title}-${f.name}-${entryIndex}`;
             const el = e.target.elements[fieldName];
+            if (!el) return; // previene errores si no existe el input
             if (f.type === "checkbox") values[f.name] = el.checked;
             else if (f.type === "file") values[f.name] = el.files[0] || null;
             else values[f.name] = el.value;
@@ -48,9 +58,7 @@ export const DynamicForm = ({ formData, onSubmit }) => {
       const values = {};
       formData.fields.forEach((f) => {
         const el = e.target.elements[f.name];
-        // En un formulario simple, si es radio, el valor viene del grupo.
-        // Si tienes varios radios con el mismo 'name', e.target.elements[f.name].value
-        // debería devolver el valor seleccionado (esto funciona en formularios no controlados).
+        if (!el) return;
         if (f.type === "checkbox") values[f.name] = el.checked;
         else if (f.type === "file") values[f.name] = el.files[0] || null;
         else values[f.name] = el.value;
@@ -71,7 +79,7 @@ export const DynamicForm = ({ formData, onSubmit }) => {
         <div key={sIndex} className={styles.sectionContainer}>
           <h3>{section.title}</h3>
 
-          {sectionEntries[sIndex].map((_, entryIndex) => (
+          {sectionEntries[sIndex]?.map((_, entryIndex) => (
             <div key={entryIndex} className={styles.entryBlock}>
               <h4>{`${section.title} ${entryIndex + 1}`}</h4>
 
@@ -127,23 +135,23 @@ export const DynamicForm = ({ formData, onSubmit }) => {
                   className={styles.formTextarea}
                   required={field.required}
                 />
-              ) : field.type === "radio" ? ( // ✨ Manejo de Radio Buttons
+              ) : field.type === "radio" ? (
                 <div className={styles.radioGroup}>
-                  {field.options.map((opt) => (
+                  {field.options?.map((opt) => (
                     <label key={opt}>
                       <input
                         type="radio"
-                        className={styles.formRadio} // Clase específica para radio/checkbox
-                        name={field.name} // Importante: mismo nombre para agrupar
+                        className={styles.formRadio}
+                        name={field.name}
                         value={opt}
                         defaultChecked={field.value === opt}
+                        required={field.required}
                       />
-                      <span>{opt}</span>{" "}
-                      {/* Agregamos un span para el estilo :checked + span */}
+                      <span>{opt}</span>
                     </label>
                   ))}
                 </div>
-              ) : field.type === "select" ? ( // Manejo de Select
+              ) : field.type === "select" ? (
                 <select
                   name={field.name}
                   className={styles.formSelect}
