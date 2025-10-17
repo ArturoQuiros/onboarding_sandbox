@@ -116,18 +116,28 @@ CREATE TABLE Tareas (
 );
 
 
+DROP TABLE IF EXISTS Estados_Tarea;
+CREATE TABLE Estados_Tarea (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Nombre VARCHAR(50) NOT NULL UNIQUE,
+    Fecha_Creacion DATETIME,
+    Fecha_Modificacion DATETIME
+);
+
 DROP TABLE IF EXISTS Tarea_Contrato;
 CREATE TABLE Tarea_Contrato (
     Id INT PRIMARY KEY IDENTITY(1,1),
     Id_Contrato INT NOT NULL,
     Id_Tarea INT NOT NULL,
     Id_UsuarioResponsable INT NOT NULL,
-    Estado VARCHAR(20) DEFAULT 'Pendiente',  -- Pendiente, En Progreso, Completada
+    Id_Estado INT NOT NULL,                  -- FK a Estados_Tarea
     Json_Respuesta NVARCHAR(MAX),            -- JSON con datos completados
+    Observaciones NVARCHAR(MAX),             -- Comentarios del staff para el cliente
     Fecha_Asignacion DATETIME,
     Fecha_Modificacion DATETIME,
     Fecha_Envio DATETIME,
     CONSTRAINT FK_TareaContrato_Contrato FOREIGN KEY (Id_Contrato) REFERENCES Contratos(Id),
     CONSTRAINT FK_TareaContrato_Tarea FOREIGN KEY (Id_Tarea) REFERENCES Tareas(Id),
-    CONSTRAINT FK_TareaContrato_Usuario FOREIGN KEY (Id_UsuarioResponsable) REFERENCES UsuariosInternos(Id)
+    CONSTRAINT FK_TareaContrato_Usuario FOREIGN KEY (Id_UsuarioResponsable) REFERENCES UsuariosInternos(Id),
+    CONSTRAINT FK_TareaContrato_Estado FOREIGN KEY (Id_Estado) REFERENCES Estados_Tarea(Id)
 );

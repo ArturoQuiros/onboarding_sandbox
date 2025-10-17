@@ -34,8 +34,19 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
     );
   };
 
+  // 🏠 Función para manejar la navegación a Home
+  const handleGoHome = () => {
+    const basePath = role === "staff" ? "/staff" : "/client";
+    navigate(`${basePath}/contract/${contractId}`); // Navega a la vista principal del contrato
+  };
+
   return (
     <div className={styles.accordion}>
+      {/* 🏠 Botón de Home agregado y estilizado */}
+      <button className={styles.homeButton} onClick={handleGoHome}>
+        <span>Inicio</span>
+      </button>
+
       <button
         className={headerClass}
         onClick={() => onToggle(service.serviceId)}

@@ -152,3 +152,27 @@
   flex: 1;
   word-break: break-word;
 }
+
+/* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
+.homeButton {
+  /* Derivado de .formButton */
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 10px;
+  background-color: var(--bdo-ocean);
+}
+
+/* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
+.homeButton:hover {
+  /* Derivado de .formButton */
+  background-color: color-mix(in srgb, var(--bdo-ocean) 80%, black 20%);
+}
