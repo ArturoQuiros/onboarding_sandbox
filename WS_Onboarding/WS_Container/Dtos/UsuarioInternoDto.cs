@@ -10,8 +10,8 @@ namespace WS_Onboarding.Dtos
     {
         public int Id { get; set; }
         public required string Nombre { get; set; }
-        public required string Email { get; set; }
-        public string? Azure_AD_User_Id { get; set; }
+        public string? Email { get; set; }
+        public required string Azure_AD_User_Id { get; set; }
         public string? Puesto { get; set; }
         public bool? Estado { get; set; }
         public int? Id_Rol { get; set; }
@@ -28,7 +28,7 @@ namespace WS_Onboarding.Dtos
         [MaxLength(255)]
         public string? Email { get; set; }
         [MaxLength(100)]
-        public string? Azure_AD_User_Id { get; set; }
+        public required string Azure_AD_User_Id { get; set; }
         public string? Puesto { get; set; }
         public bool? Estado { get; set; }
         public int? Id_Rol { get; set; }
@@ -59,9 +59,9 @@ namespace WS_Onboarding.Dtos
         [Required]
         [EmailAddress]
         [MaxLength(255)]
-        public required string Email { get; set; }
+        public string? Email { get; set; }
         [MaxLength(100)]
-        public string? Azure_AD_User_Id { get; set; }
+        public required string Azure_AD_User_Id { get; set; }
         public string? Puesto { get; set; }
         public int? Id_Rol { get; set; }
         public int? Id_Pais { get; set; }
