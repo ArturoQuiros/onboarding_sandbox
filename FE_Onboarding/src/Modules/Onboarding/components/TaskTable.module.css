@@ -1,49 +1,79 @@
-.tableWrap {
+/* src/Modules/Admin/components/Crud/TaskTable.module.css */
+/* O el archivo CSS que uses para tu tabla de tareas */
+
+.tableContainer {
   overflow-x: auto;
   margin-top: 1rem;
 }
 
+/* TABLA BASE */
 .table {
   width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   background-color: white;
-  border-radius: 0.8rem;
+  /* El overflow: hidden y box-shadow se aplican al contenedor si quieres el redondeo */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px; /* Aplicar redondeo aquí */
+  overflow: hidden; /* Necesario para que el redondeo del header y footer se vea */
+}
+
+/* --- HEADER --- */
+.table thead {
+  background-color: var(--bdo-red);
+  color: white;
+  /* Se eliminan los border-radius aquí ya que se aplican al .table */
 }
 
 .table th {
-  background-color: var(--bdo-red);
-  color: white;
   padding: 12px 16px;
   text-align: left;
   font-weight: bold;
+  border-right: 1px solid rgba(255, 255, 255, 0.2); /* Borde entre celdas */
+  border-bottom: none; /* Se elimina el borde inferior del TH */
+  cursor: pointer;
+}
+
+.table th:last-child {
+  border-right: none;
+}
+
+/* --- FILAS --- */
+.table tbody tr {
+  background-color: #ffffff;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.table tbody tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+.table tbody tr:hover {
+  background-color: #e0e0e0;
 }
 
 .table td {
   padding: 10px 16px;
-  border-bottom: 1px solid #f0f0f0;
+  /* Cambié el borde inferior a uno más suave */
+  border-bottom: 1px solid var(--bdo-pale-charcoal);
+  border-right: 1px solid var(--bdo-pale-charcoal);
+  color: var(--bdo-charcoal);
 }
 
-.table tr:hover td {
-  background-color: #fafafa;
+.table td:last-child {
+  border-right: none;
 }
 
-.encargadoSelect {
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #d1d5db;
+/* ✅ Para eliminar el borde inferior de la última fila */
+.table tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.observationNote {
-  font-style: italic;
-  color: var(--bdo-slate);
-}
-
+/* --- ESTADOS (Se mantiene) --- */
 .status_Pendiente {
   color: #e81a3b;
   font-weight: 600;
 }
-.status_Pendientederevisión {
+.status_PendientedeRevision {
   color: #ff9800;
   font-weight: 600;
 }
@@ -56,24 +86,84 @@
   font-weight: 600;
 }
 
+/* --- SELECT DE ENCARGADO y OBSERVACIONES (Se mantiene) --- */
+.encargadoSelect {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+}
+
+.observationNote {
+  font-style: italic;
+  color: var(--bdo-slate);
+}
+
+/* --- BOTÓN DE ACCIÓN (Corregido para ser más claro) --- */
 .actionButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bdo-burgundy);
+  background-color: var(--bdo-ocean); /* Usando Ocean para distinción */
   color: white;
   padding: 0.4rem 0.6rem;
+  border: none;
   border-radius: 6px;
   transition: all 0.2s ease-in-out;
 }
 
 .actionButton:hover {
-  background-color: color-mix(in srgb, var(--bdo-burgundy) 80%, black 20%);
-  transform: translateX(3px);
+  background-color: #0077b3; /* Tono más oscuro de Ocean */
+  transform: translateY(-1px); /* Efecto sutil */
 }
 
+/* --- TABLA VACÍA (Se mantiene) --- */
 .emptyMessage {
   text-align: center;
   padding: 1rem;
   color: var(--bdo-slate);
+}
+
+/* 🚀 --- FOOTER Y PAGINACIÓN (Armonizado del primer bloque) --- */
+
+.tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f7fafc;
+  border-top: 1px solid #e2e8f0;
+  /* Se eliminan los border-radius aquí porque el .table los maneja */
+  /* margin-top: 0; se elimina */
+}
+
+.recordsInfo {
+  font-size: 0.9rem;
+  font-weight: 600; /* Lo bajé de 1000 a 600 para que sea legible */
+  color: var(--bdo-charcoal);
+}
+
+.paginationControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

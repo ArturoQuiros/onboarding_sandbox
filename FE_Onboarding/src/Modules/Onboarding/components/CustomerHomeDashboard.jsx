@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { TaskStatsCards } from "./TaskStatsCards";
 import { TaskCharts } from "./TaskCharts";
 import { TaskTable } from "./TaskTable";
+import { ItemsPerPageSelector } from "./ItemsPerPageSelector";
 import styles from "./CustomerHomeDashboard.module.css";
 
 export const CustomerHomeDashboard = () => {
@@ -73,8 +74,12 @@ export const CustomerHomeDashboard = () => {
     "Luis Soto",
   ];
   const contractId = 1;
+
   const [activeTab, setActiveTab] = useState("Todas");
   const [searchTerm, setSearchTerm] = useState("");
+  // ✅ Inicialización como Número
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleAssignChange = (taskId, newValue) => {
     setTasks((prev) =>
@@ -103,15 +108,25 @@ export const CustomerHomeDashboard = () => {
     });
   }, [tasks, activeTab, searchTerm]);
 
+  // Asegura que totalPages se calcule correctamente con el número de itemsPerPage
+  const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
+
+  // ✅ Lógica de paginación para obtener solo las tareas de la página actual
+  const paginatedTasks = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return filteredTasks.slice(startIndex, endIndex);
+  }, [filteredTasks, currentPage, itemsPerPage]);
+
   return (
     <div className={styles.dashboardContainer}>
-      {/* LINEA SUPERIOR: estadísticas compactas */}
+      {/* LINEA SUPERIOR: estadísticas compactas (descomentada) */}
       <TaskStatsCards totals={totals} />
 
       {/* GRAFICOS */}
       <TaskCharts tasks={filteredTasks} />
 
-      {/* FILTROS: tabs + búsqueda */}
+      {/* FILTROS: tabs + búsqueda + selector de registros */}
       <div className={styles.controlsRow}>
         <div className={styles.tabs}>
           {[
@@ -126,28 +141,50 @@ export const CustomerHomeDashboard = () => {
               className={`${styles.tabButton} ${
                 activeTab === tab ? styles.activeTab : ""
               }`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                setActiveTab(tab);
+                setCurrentPage(1);
+              }}
             >
               {tab}
             </button>
           ))}
         </div>
-        <div className={styles.searchWrap}>
+
+        <div className={styles.rightControls}>
           <input
             className={styles.searchInput}
             placeholder="Buscar tarea..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              setCurrentPage(1);
+            }}
+          />
+          {/* ✅ ItemsPerPageSelector corregido en su archivo para pasar Number */}
+          <ItemsPerPageSelector
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={(value) => {
+              // 'value' ya es un número gracias al cambio en ItemsPerPageSelector
+              setItemsPerPage(value);
+              setCurrentPage(1);
+            }}
           />
         </div>
       </div>
 
-      {/* TABLA */}
+      {/* TABLA: Recibe solo las tareas paginadas */}
       <TaskTable
-        tasks={filteredTasks}
+        tasks={paginatedTasks}
         staffOptions={staffOptions}
         handleAssignChange={handleAssignChange}
         contractId={contractId}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        itemsPerPage={itemsPerPage}
+        onPageChange={setCurrentPage}
+        // Se puede añadir el total de registros filtrados para la visualización del footer
+        filteredCount={filteredTasks.length}
       />
     </div>
   );

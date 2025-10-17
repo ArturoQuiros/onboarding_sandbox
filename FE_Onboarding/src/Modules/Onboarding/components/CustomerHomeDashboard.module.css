@@ -1,26 +1,41 @@
-:root {
-  --bdo-burgundy: #98002e;
-  --bdo-red: #e81a3b;
-  --bdo-slate: #5b6e7f;
-  --bdo-charcoal: #333333;
-  --bdo-green: #4caf50;
-  --bdo-orange: #ff9800;
-}
-
 .dashboardContainer {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1.5rem 2rem;
   font-family: Arial, sans-serif;
 }
 
 .controlsRow {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* tabs a la izquierda, rightControls a la derecha */
   align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* opcional: que en pantallas muy pequeñas se acomode */
   gap: 1rem;
-  flex-wrap: wrap;
+}
+
+.rightControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* espacio entre búsqueda y selector */
+}
+
+/* Mantener búsqueda con tamaño fijo o flexible */
+.searchInput {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  min-width: 200px; /* evita que se encoja demasiado */
+}
+
+.searchWrap {
+  flex: 1; /* ocupa el espacio restante */
+  min-width: 200px; /* para que no se achique demasiado */
+}
+
+.itemsPerPageWrapper {
+  /* solo para envolver ItemsPerPageSelector */
+  flex-shrink: 0; /* no se achica */
 }
 
 .tabs {
@@ -43,10 +58,15 @@
   transition: all 0.15s ease;
 }
 
-.activeTab {
-  background: var(--bdo-burgundy);
+.tabButton:hover {
+  background-color: var(--bdo-burgundy) !important;
   color: white;
-  border-color: var(--bdo-burgundy);
+}
+
+.activeTab {
+  background: var(--bdo-red);
+  color: white;
+  border-color: var(--bdo-red);
 }
 
 .searchWrap {

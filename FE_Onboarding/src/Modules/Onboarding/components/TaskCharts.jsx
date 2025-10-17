@@ -6,6 +6,11 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
 } from "recharts";
 import styles from "./TaskCharts.module.css";
 
@@ -44,8 +49,36 @@ export const TaskCharts = ({ tasks }) => {
     "#9ca3af",
   ];
 
+  // Función para mostrar valor dentro del gráfico de pastel
+  const renderLabelInside = ({
+    cx,
+    cy,
+    midAngle,
+    innerRadius,
+    outerRadius,
+    value,
+  }) => {
+    const RADIAN = Math.PI / 180;
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    return (
+      <text
+        x={x}
+        y={y}
+        fill="white"
+        textAnchor="middle"
+        dominantBaseline="central"
+        fontSize={12}
+      >
+        {value}
+      </text>
+    );
+  };
+
   return (
     <div className={styles.chartsRow}>
+      {/* Gráfico de pastel por estado */}
       <div className={styles.chartBox}>
         <div className={styles.chartTitle}>Tareas por Estado</div>
         <ResponsiveContainer width="100%" height={220}>
@@ -57,7 +90,8 @@ export const TaskCharts = ({ tasks }) => {
               cx="50%"
               cy="50%"
               outerRadius={70}
-              label
+              label={renderLabelInside}
+              labelLine={false}
             >
               {chartByState.map((entry, idx) => (
                 <Cell
@@ -67,34 +101,33 @@ export const TaskCharts = ({ tasks }) => {
               ))}
             </Pie>
             <Tooltip />
-            <Legend verticalAlign="bottom" height={36} />
+            <Legend verticalAlign="middle" align="left" layout="vertical" />
           </PieChart>
         </ResponsiveContainer>
       </div>
 
+      {/* Gráfico de barras por encargado */}
       <div className={styles.chartBox}>
         <div className={styles.chartTitle}>Tareas por Encargado</div>
         <ResponsiveContainer width="100%" height={220}>
-          <PieChart>
-            <Pie
-              data={chartByAssignee}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={70}
-              label
-            >
+          <BarChart
+            data={chartByAssignee}
+            margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis allowDecimals={false} />
+            <Tooltip />
+            <Legend verticalAlign="middle" align="left" layout="vertical" />
+            <Bar dataKey="value">
               {chartByAssignee.map((entry, idx) => (
                 <Cell
                   key={`a-${idx}`}
                   fill={COLORS_ASSIGNEE[idx % COLORS_ASSIGNEE.length]}
                 />
               ))}
-            </Pie>
-            <Tooltip />
-            <Legend verticalAlign="bottom" height={36} />
-          </PieChart>
+            </Bar>
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
