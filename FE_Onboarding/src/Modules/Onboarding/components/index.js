@@ -5,3 +5,4 @@ export * from "./ChecklistServiceAccordion";
 export * from "./TaskChecklist";
 export * from "./Navbar";
 export * from "./DynamicForm";
+export * from "./CustomerHomeDashboard";

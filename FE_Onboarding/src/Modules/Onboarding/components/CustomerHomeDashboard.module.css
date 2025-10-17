@@ -1,0 +1,31 @@
+.dashboardContainer {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.taskSummary {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.taskTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.taskTable th,
+.taskTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.taskTable th {
+  background-color: #f0f0f0;
+}
+
+.taskTable select {
+  padding: 4px;
+}
