@@ -1,13 +1,7 @@
-import React, { useState } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
-import { FaArrowRight } from "react-icons/fa";
+import React, { useMemo, useState } from "react";
+import { TaskStatsCards } from "./TaskStatsCards";
+import { TaskCharts } from "./TaskCharts";
+import { TaskTable } from "./TaskTable";
 import styles from "./CustomerHomeDashboard.module.css";
 
 export const CustomerHomeDashboard = () => {
@@ -15,7 +9,7 @@ export const CustomerHomeDashboard = () => {
     {
       id: 1,
       name: "Revisión de documentos legales",
-      status: "Completada",
+      status: "Aceptada",
       assignedTo: "María Gómez",
       observation: "",
       serviceId: 1,
@@ -23,9 +17,9 @@ export const CustomerHomeDashboard = () => {
     {
       id: 2,
       name: "Configuración inicial del sistema",
-      status: "En progreso",
+      status: "Pendiente de revisión",
       assignedTo: "José Rojas",
-      observation: "Falta completar los datos de acceso del cliente.",
+      observation: "Falta completar datos de acceso.",
       serviceId: 2,
     },
     {
@@ -36,10 +30,51 @@ export const CustomerHomeDashboard = () => {
       observation: "",
       serviceId: 1,
     },
+    {
+      id: 4,
+      name: "Carga de anexos técnicos",
+      status: "Devuelta",
+      assignedTo: "Carlos Méndez",
+      observation: "Revisar anexos incompletos",
+      serviceId: 3,
+    },
+    {
+      id: 5,
+      name: "Aprobación final y firma",
+      status: "Pendiente de revisión",
+      assignedTo: "María Gómez",
+      observation: "En espera de confirmación del cliente.",
+      serviceId: 2,
+    },
+    {
+      id: 6,
+      name: "Revisión de políticas internas",
+      status: "Aceptada",
+      assignedTo: "Andrea Vargas",
+      observation: "",
+      serviceId: 4,
+    },
+    {
+      id: 7,
+      name: "Verificación de cuentas bancarias",
+      status: "Pendiente",
+      assignedTo: "Luis Soto",
+      observation: "Documento bancario incompleto.",
+      serviceId: 2,
+    },
   ]);
 
-  const staffOptions = ["", "María Gómez", "José Rojas", "Carlos Méndez"];
+  const staffOptions = [
+    "",
+    "María Gómez",
+    "José Rojas",
+    "Carlos Méndez",
+    "Andrea Vargas",
+    "Luis Soto",
+  ];
   const contractId = 1;
+  const [activeTab, setActiveTab] = useState("Todas");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleAssignChange = (taskId, newValue) => {
     setTasks((prev) =>
@@ -47,122 +82,73 @@ export const CustomerHomeDashboard = () => {
     );
   };
 
-  const total = tasks.length;
-  const completed = tasks.filter((t) => t.status === "Completada").length;
-  const inProgress = tasks.filter((t) => t.status === "En progreso").length;
-  const pending = tasks.filter((t) => t.status === "Pendiente").length;
+  const totals = useMemo(() => {
+    const total = tasks.length;
+    const completed = tasks.filter((t) => t.status === "Aceptada").length;
+    const inReview = tasks.filter(
+      (t) => t.status === "Pendiente de revisión"
+    ).length;
+    const pending = tasks.filter((t) => t.status === "Pendiente").length;
+    const returned = tasks.filter((t) => t.status === "Devuelta").length;
+    return { total, completed, inReview, pending, returned };
+  }, [tasks]);
 
-  const chartData = [
-    { name: "Completadas", value: completed },
-    { name: "En progreso", value: inProgress },
-    { name: "Pendientes", value: pending },
-  ];
-
-  const COLORS = ["#4caf50", "#ff9800", "#e81a3b"];
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((t) => {
+      const matchesTab = activeTab === "Todas" || t.status === activeTab;
+      const matchesSearch = t.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      return matchesTab && matchesSearch;
+    });
+  }, [tasks, activeTab, searchTerm]);
 
   return (
     <div className={styles.dashboardContainer}>
-      <h2 className={styles.title}>Resumen del Contrato</h2>
+      {/* LINEA SUPERIOR: estadísticas compactas */}
+      <TaskStatsCards totals={totals} />
 
-      <div className={styles.topGrid}>
-        <div className={styles.statsGrid}>
-          <div className={`${styles.card} ${styles.completed}`}>
-            <h3>{completed}</h3>
-            <p>Completadas</p>
-          </div>
-          <div className={`${styles.card} ${styles.inProgress}`}>
-            <h3>{inProgress}</h3>
-            <p>En progreso</p>
-          </div>
-          <div className={`${styles.card} ${styles.pending}`}>
-            <h3>{pending}</h3>
-            <p>Pendientes</p>
-          </div>
-          <div className={styles.card}>
-            <h3>{total}</h3>
-            <p>Total</p>
-          </div>
+      {/* GRAFICOS */}
+      <TaskCharts tasks={filteredTasks} />
+
+      {/* FILTROS: tabs + búsqueda */}
+      <div className={styles.controlsRow}>
+        <div className={styles.tabs}>
+          {[
+            "Todas",
+            "Pendiente",
+            "Pendiente de revisión",
+            "Aceptada",
+            "Devuelta",
+          ].map((tab) => (
+            <button
+              key={tab}
+              className={`${styles.tabButton} ${
+                activeTab === tab ? styles.activeTab : ""
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
-
-        <div className={styles.chartContainer}>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={chartData}
-                cx="50%"
-                cy="50%"
-                outerRadius={90}
-                dataKey="value"
-                label
-              >
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+        <div className={styles.searchWrap}>
+          <input
+            className={styles.searchInput}
+            placeholder="Buscar tarea..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
       </div>
 
-      <h3 className={styles.subtitle}>Detalle de Tareas</h3>
-
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Tarea</th>
-            <th>Estado</th>
-            <th>Encargado</th>
-            <th>Observaciones</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task) => (
-            <tr key={task.id}>
-              <td>{task.name}</td>
-              <td className={styles[`status_${task.status.replace(" ", "")}`]}>
-                {task.status}
-              </td>
-              <td>
-                <select
-                  value={task.assignedTo}
-                  onChange={(e) => handleAssignChange(task.id, e.target.value)}
-                  className={styles.selectInput}
-                >
-                  {staffOptions.map((name, idx) => (
-                    <option key={idx} value={name}>
-                      {name === "" ? "— No asignado —" : name}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td>
-                {task.observation ? (
-                  <span className={styles.observationNote}>
-                    💬 {task.observation}
-                  </span>
-                ) : (
-                  <span className={styles.noObservation}>—</span>
-                )}
-              </td>
-              <td>
-                <a
-                  href={`http://localhost:5173/client/contract/${contractId}/service/${task.serviceId}/task/${task.id}`}
-                  className={styles.actionButton}
-                  title="Ir a la tarea"
-                >
-                  <FaArrowRight />
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* TABLA */}
+      <TaskTable
+        tasks={filteredTasks}
+        staffOptions={staffOptions}
+        handleAssignChange={handleAssignChange}
+        contractId={contractId}
+      />
     </div>
   );
 };

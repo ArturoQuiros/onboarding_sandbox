@@ -1,118 +1,64 @@
+:root {
+  --bdo-burgundy: #98002e;
+  --bdo-red: #e81a3b;
+  --bdo-slate: #5b6e7f;
+  --bdo-charcoal: #333333;
+  --bdo-green: #4caf50;
+  --bdo-orange: #ff9800;
+}
+
 .dashboardContainer {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  padding: 2rem;
-}
-
-.title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--bdo-charcoal);
-  text-align: left;
-}
-
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  font-family: Arial, sans-serif;
 }
 
-.card {
-  background-color: white;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 1.5rem;
-  text-align: center;
-  transition: all 0.2s ease-in-out;
-}
-
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
-}
-
-.card h3 {
-  font-size: 2rem;
-  margin: 0;
-}
-
-.card p {
-  color: var(--bdo-slate);
-  margin: 0.3rem 0 0;
-}
-
-.completed {
-  border-top: 5px solid #4caf50;
-}
-
-.inProgress {
-  border-top: 5px solid #ff9800;
-}
-
-.pending {
-  border-top: 5px solid #e81a3b;
-}
-
-.subtitle {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: var(--bdo-charcoal);
-  margin-bottom: 0.5rem;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: white;
-  border-radius: 0.8rem;
-  overflow: hidden;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
-}
-
-.table th {
-  background-color: var(--bdo-burgundy);
-  color: white;
-  text-align: left;
-  padding: 0.8rem 1rem;
-}
-
-.table td {
-  padding: 0.8rem 1rem;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.table tr:hover td {
-  background-color: #fafafa;
-}
-
-.status_Completada {
-  color: #4caf50;
-  font-weight: 600;
-}
-
-.status_Enprogreso {
-  color: #ff9800;
-  font-weight: 600;
-}
-
-.status_Pendiente {
-  color: #e81a3b;
-  font-weight: 600;
-}
-
-.actionButton {
-  display: inline-flex;
+.controlsRow {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  background-color: var(--bdo-burgundy);
-  color: white;
-  padding: 0.4rem 0.6rem;
-  border-radius: 6px;
-  transition: all 0.2s ease-in-out;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.actionButton:hover {
-  background-color: color-mix(in srgb, var(--bdo-burgundy) 80%, black 20%);
-  transform: translateX(3px);
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tabButton {
+  background: transparent;
+  border: 1px solid var(--bdo-slate);
+  color: var(--bdo-charcoal);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+
+.activeTab {
+  background: var(--bdo-burgundy);
+  color: white;
+  border-color: var(--bdo-burgundy);
+}
+
+.searchWrap {
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  padding: 0.35rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  min-width: 220px;
+  height: 32px;
+  font-size: 0.9rem;
 }
