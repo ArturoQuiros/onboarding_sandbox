@@ -120,8 +120,7 @@ export const CustomerHomeDashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* LINEA SUPERIOR: estadísticas compactas (descomentada) */}
-      <TaskStatsCards totals={totals} />
+      {/* <TaskStatsCards totals={totals} /> */}
 
       {/* GRAFICOS */}
       <TaskCharts tasks={filteredTasks} />

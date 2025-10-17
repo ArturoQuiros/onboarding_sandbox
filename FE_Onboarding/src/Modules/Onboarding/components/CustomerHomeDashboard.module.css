@@ -51,7 +51,7 @@
   padding: 0.35rem 0.8rem;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 1rem;
   height: 32px;
   display: flex;
   align-items: center;
@@ -59,7 +59,8 @@
 }
 
 .tabButton:hover {
-  background-color: var(--bdo-burgundy) !important;
+  background-color: var(--bdo-ocean);
+  border-color: var(--bdo-ocean);
   color: white;
 }
 

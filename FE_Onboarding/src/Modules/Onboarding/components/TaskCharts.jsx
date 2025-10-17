@@ -4,7 +4,7 @@ import {
   Pie,
   Cell,
   Tooltip,
-  Legend,
+  Legend, // Se mantiene el import, pero se controla su uso
   ResponsiveContainer,
   BarChart,
   Bar,
@@ -14,17 +14,40 @@ import {
 } from "recharts";
 import styles from "./TaskCharts.module.css";
 
+// 🎨 Nueva paleta de colores BDO según los estados
+const BDO_COLORS = {
+  // Rojo: Devuelta (Más crítico)
+  Devuelta: "#e81a3b",
+  // Oro: Pendiente (Necesita atención)
+  Pendiente: "#d67900",
+  // Ocean: Pendiente de revisión (En proceso/Revisión)
+  "Pendiente de revisión": "#008fd2",
+  // Jade: Aceptada (Completada/Éxito)
+  Aceptada: "#009966",
+};
+
+// 🎨 Colores de encargado actualizados (para BarChart)
+const COLORS_ASSIGNEE = [
+  "#008fd2", // Ocean
+  "#e81a3b", // Red
+  "#d67900", // Gold
+  "#009966", // Jade
+  "#5b6e7f",
+  "#9ca3af",
+];
+
 export const TaskCharts = ({ tasks }) => {
   const chartByState = useMemo(() => {
     const map = tasks.reduce((acc, t) => {
       acc[t.status] = (acc[t.status] || 0) + 1;
       return acc;
     }, {});
+    // ✅ Ordenamos los estados para mapear los colores consistentemente
     const order = [
+      "Devuelta",
       "Pendiente",
       "Pendiente de revisión",
       "Aceptada",
-      "Devuelta",
     ];
     return order.map((k) => ({ name: k, value: map[k] || 0 }));
   }, [tasks]);
@@ -39,17 +62,15 @@ export const TaskCharts = ({ tasks }) => {
     return Object.entries(map).map(([name, value]) => ({ name, value }));
   }, [tasks]);
 
-  const COLORS_STATE = ["#e81a3b", "#ff9800", "#4caf50", "#98002e"];
-  const COLORS_ASSIGNEE = [
-    "#98002e",
-    "#e81a3b",
-    "#5b6e7f",
-    "#333333",
-    "#6b7280",
-    "#9ca3af",
+  // Se corrige la asignación de colores para que use BDO_COLORS basado en el orden
+  const COLORS_STATE_ARRAY = [
+    BDO_COLORS["Devuelta"],
+    BDO_COLORS["Pendiente"],
+    BDO_COLORS["Pendiente de revisión"],
+    BDO_COLORS["Aceptada"],
   ];
 
-  // Función para mostrar valor dentro del gráfico de pastel
+  // Función para mostrar valor dentro del gráfico de pastel/donut
   const renderLabelInside = ({
     cx,
     cy,
@@ -58,7 +79,10 @@ export const TaskCharts = ({ tasks }) => {
     outerRadius,
     value,
   }) => {
+    if (value === 0) return null; // No mostrar etiqueta para valor cero
+
     const RADIAN = Math.PI / 180;
+    // Se calcula el radio para centrar el valor en el Donut (entre inner y outer)
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -78,7 +102,7 @@ export const TaskCharts = ({ tasks }) => {
 
   return (
     <div className={styles.chartsRow}>
-      {/* Gráfico de pastel por estado */}
+      {/* 🎯 Gráfico 1: Donut (Circular con centro vacío) con Colores BDO */}
       <div className={styles.chartBox}>
         <div className={styles.chartTitle}>Tareas por Estado</div>
         <ResponsiveContainer width="100%" height={220}>
@@ -89,24 +113,26 @@ export const TaskCharts = ({ tasks }) => {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius={70}
+              outerRadius={90}
+              innerRadius={50} // DONUT
+              paddingAngle={2}
               label={renderLabelInside}
               labelLine={false}
             >
               {chartByState.map((entry, idx) => (
                 <Cell
                   key={`s-${idx}`}
-                  fill={COLORS_STATE[idx % COLORS_STATE.length]}
+                  fill={COLORS_STATE_ARRAY[idx % COLORS_STATE_ARRAY.length]}
                 />
               ))}
             </Pie>
             <Tooltip />
+            {/* ✅ CORRECCIÓN: Leyenda Vertical a la Izquierda */}
             <Legend verticalAlign="middle" align="left" layout="vertical" />
           </PieChart>
         </ResponsiveContainer>
       </div>
-
-      {/* Gráfico de barras por encargado */}
+      {/* 🛑 Gráfico 2: Barras por encargado (Leyenda Eliminada) */}
       <div className={styles.chartBox}>
         <div className={styles.chartTitle}>Tareas por Encargado</div>
         <ResponsiveContainer width="100%" height={220}>
@@ -118,8 +144,8 @@ export const TaskCharts = ({ tasks }) => {
             <XAxis dataKey="name" />
             <YAxis allowDecimals={false} />
             <Tooltip />
-            <Legend verticalAlign="middle" align="left" layout="vertical" />
-            <Bar dataKey="value">
+            {/* 🛑 Leyenda ELIMINADA (quitando el componente <Legend />) */}
+            <Bar dataKey="value" fill={COLORS_ASSIGNEE[0]}>
               {chartByAssignee.map((entry, idx) => (
                 <Cell
                   key={`a-${idx}`}
