@@ -1,31 +1,118 @@
 .dashboardContainer {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.taskSummary {
   display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-  font-weight: bold;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
 }
 
-.taskTable {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.taskTable th,
-.taskTable td {
-  border: 1px solid #ccc;
-  padding: 8px;
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--bdo-charcoal);
   text-align: left;
 }
 
-.taskTable th {
-  background-color: #f0f0f0;
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
 }
 
-.taskTable select {
-  padding: 4px;
+.card {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1.5rem;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.card h3 {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.card p {
+  color: var(--bdo-slate);
+  margin: 0.3rem 0 0;
+}
+
+.completed {
+  border-top: 5px solid #4caf50;
+}
+
+.inProgress {
+  border-top: 5px solid #ff9800;
+}
+
+.pending {
+  border-top: 5px solid #e81a3b;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+  margin-bottom: 0.5rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+}
+
+.table th {
+  background-color: var(--bdo-burgundy);
+  color: white;
+  text-align: left;
+  padding: 0.8rem 1rem;
+}
+
+.table td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.table tr:hover td {
+  background-color: #fafafa;
+}
+
+.status_Completada {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.status_Enprogreso {
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.status_Pendiente {
+  color: #e81a3b;
+  font-weight: 600;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bdo-burgundy);
+  color: white;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.actionButton:hover {
+  background-color: color-mix(in srgb, var(--bdo-burgundy) 80%, black 20%);
+  transform: translateX(3px);
 }

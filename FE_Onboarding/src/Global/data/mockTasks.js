@@ -1,11 +1,11 @@
 export const MOCK_CONTRACT_DATA = [
   {
-    serviceId: 4,
+    serviceId: 1,
     title: "Know Your Customer (KYC)",
     state: "PENDING",
     tasks: [
       {
-        taskId: 401,
+        taskId: 1,
         label: "Formulario KYC - Información General",
         status: "PENDING",
         form: {
