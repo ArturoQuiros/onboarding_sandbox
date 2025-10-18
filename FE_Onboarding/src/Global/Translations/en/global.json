@@ -153,5 +153,16 @@
     "loading": "Loading...",
     "savingChanges": "Saving changes...",
     "errorSavingChanges": "Error saving changes."
-  }
+  },
+  "charts": {
+    "by_status": "Tasks by Status",
+    "by_assignee": "Tasks by Assignee"
+  },
+  "statuses": {
+    "Pendiente": "Pending",
+    "Pendiente de revisión": "Under Review",
+    "Aceptada": "Accepted",
+    "Devuelta": "Returned"
+  },
+  "no_assignee": "Unassigned"
 }
