@@ -1,91 +1,123 @@
 /* src/Modules/Onboarding/components/DynamicFormReadOnly.module.css */
 
+/* Contenedor general - Replicando .formContainer del cliente */
 .formContainer {
-  background-color: var(--bdo-white, #ffffff);
-  padding: 2rem;
-  border-radius: 8px;
-  border: 1px solid var(--bdo-border, #e5e7eb);
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: var(--bdo-white, white);
+  width: 100%;
+  margin: 0;
+  font-family: "Trebuchet MS", sans-serif;
+  color: var(--bdo-charcoal, #333);
+  /* Se quitan los bordes y sombras si el formContainer original no los tiene */
 }
 
+/* Título del form - Replicando .formTitle */
 .formTitle {
-  color: var(--bdo-charcoal, #333333);
-  font-size: 1.6rem;
-  margin-bottom: 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--bdo-red);
+  text-align: left;
 }
 
+/* Sección contenedora (para elementos repetibles) */
 .sectionContainer {
-  margin-bottom: 2rem;
-  padding: 1rem;
-  border: 1px solid var(--bdo-light-blue, #f3f4f6);
-  border-radius: 6px;
+  margin-bottom: 30px; /* Consistente con el gap de 30px */
+  padding: 20px;
+  border: 1px solid var(--bdo-pale-charcoal, #e0e0e0);
+  border-radius: 4px;
   background-color: var(--bdo-section-bg, #fcfdff);
 }
 
 .sectionContainer h3 {
   color: var(--bdo-ocean, #008fd2);
-  font-size: 1.3rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px dashed var(--bdo-ocean-light, #b3d9f0);
+  font-size: 1.5rem;
+  margin-top: 0;
+  margin-bottom: 15px;
+  border-bottom: 2px solid var(--bdo-pale-charcoal, #e0e0e0);
   padding-bottom: 5px;
 }
 
+/* Bloque de entrada repetible */
 .entryBlock {
-  border-left: 3px solid var(--bdo-gold, #d67900);
-  padding-left: 15px;
-  margin-bottom: 1rem;
-  background-color: var(--bdo-entry-bg, #fffdf8);
-  padding: 15px;
-  border-radius: 4px;
+  border-left: 4px solid var(--bdo-gold, #d67900);
+  padding-left: 20px;
+  margin-bottom: 20px;
+  padding-top: 5px;
 }
 
 .entryBlock h4 {
   color: var(--bdo-gold-dark, #a86000);
   font-size: 1.1rem;
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
 }
 
+/* Grid de campos - DOS COLUMNAS (Replicando .formFieldsGrid) */
 .formFieldsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px 40px;
+  width: 100%;
 }
 
+/* Grupo de campo - Replicando .formGroup */
 .formGroup {
   display: flex;
   flex-direction: column;
+  gap: 8px;
+  width: 100%;
 }
 
+/* Label - Replicando .formLabel */
 .formLabel {
   font-weight: 600;
-  color: var(--bdo-charcoal, #333333);
-  margin-bottom: 0.3rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--bdo-charcoal, #333);
 }
 
-/* Estilo para los valores de solo lectura */
+/* ESTILO CLAVE: El valor de solo lectura */
 .readOnlyValue {
-  background-color: var(--bdo-gray-lightest, #f9fafb);
-  border: 1px solid var(--bdo-border, #e5e7eb);
-  padding: 0.75rem;
+  /* Simula el padding y altura de los inputs originales */
+  padding: 12px 14px;
+  font-size: 1rem;
+
+  /* Indicador visual de solo lectura */
+  background-color: var(--bdo-pale-charcoal, #f0f0f0);
+  border: 1px solid var(--bdo-pale-charcoal, #e0e0e0);
   border-radius: 4px;
-  color: var(--bdo-charcoal, #333333);
+  color: var(--bdo-charcoal, #333);
   margin: 0;
-  min-height: 40px; /* Para mantener consistencia con la altura del input */
-  word-break: break-word; /* Para URLs o textos largos */
+  min-height: 44px; /* Altura de input + padding (12*2+20) = 44px si 1rem es 20px, ajustado a 44px */
+  display: flex; /* Para centrado vertical si el texto es corto */
+  align-items: center;
+  word-break: break-word;
+  white-space: pre-wrap; /* Para respetar saltos de línea en textareas */
 }
 
-/* Estilo específico para enlaces de archivos */
+/* Estilo para enlaces de archivos */
 .fileLink {
   color: var(--bdo-ocean, #008fd2);
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .emptyForm {
-  color: var(--bdo-gray, #6b7280);
+  background-color: var(--bdo-pale-charcoal, #f0f0f0);
+  color: var(--bdo-slate, #6b7280);
+  padding: 20px;
+  border: 1px dashed var(--bdo-slate, #6b7280);
+  border-radius: 4px;
   text-align: center;
-  padding: 2rem;
-  border: 1px solid var(--bdo-border, #e5e7eb);
-  border-radius: 6px;
+  margin-top: 20px;
+}
+
+/* Responsividad - Replicando la lógica de grid */
+@media (max-width: 768px) {
+  .formFieldsGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 }

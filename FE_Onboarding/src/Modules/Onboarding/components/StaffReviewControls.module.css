@@ -2,76 +2,82 @@
 
 .controlsBar {
   background-color: var(--bdo-white, #ffffff);
-  padding: 1.5rem;
+  padding: 25px 30px; /* Padding generoso */
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra para destacarse */
+  margin-bottom: 30px; /* Separación del formulario de abajo */
   display: grid;
   grid-template-columns: 1fr 2fr 1fr; /* Estado | Observaciones | Acciones */
-  gap: 2rem;
+  gap: 30px;
   align-items: flex-start;
 }
 
-/* Flexibilidad para dispositivos más pequeños */
 @media (max-width: 900px) {
   .controlsBar {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 20px;
   }
 }
 
 .controlGroup {
   display: flex;
   flex-direction: column;
+  gap: 8px; /* Igual que .formGroup */
 }
 
 .controlGroup label {
+  /* Replicando .formLabel */
   font-weight: 600;
-  color: var(--bdo-charcoal, #333333);
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  color: var(--bdo-charcoal, #333);
 }
 
-/* Estilo para Select y Textarea (general) */
+/* Estilo para Select y Textarea (tomado de la base de .formInput/Textarea) */
 .controlsBar select,
 .controlsBar textarea {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--bdo-border, #ccc);
-  border-radius: 4px;
-  font-size: 1rem;
   width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid var(--bdo-pale-charcoal, #ccc);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  background-color: #fff;
   box-sizing: border-box;
-  transition: border-color 0.2s;
+  color: var(--bdo-charcoal, #333);
 }
 
+.controlsBar textarea {
+  min-height: 100px; /* Igual que el textarea del cliente */
+  resize: vertical;
+}
+
+/* Estados de focus compartidos */
 .controlsBar select:focus,
 .controlsBar textarea:focus {
   border-color: var(--bdo-ocean, #008fd2);
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(0, 143, 210, 0.2);
-}
-
-.controlsBar textarea {
-  min-height: 80px; /* Altura adecuada para observaciones */
-  resize: vertical;
+  box-shadow: 0 0 4px rgba(0, 143, 210, 0.3);
 }
 
 .actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  align-items: stretch; /* Estirar botones a lo ancho */
+  align-items: stretch;
 }
 
-/* Estilo para Botones */
+/* Estilo para Botones - Replicando la base de .formButton */
 .saveButton,
 .printButton {
-  padding: 0.75rem 1rem;
+  /* Base de .formButton pero ligeramente menos padding para el flujo */
+  padding: 12px 20px;
   border: none;
-  border-radius: 4px;
-  font-weight: 700;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  transition: background-color 0.2s, transform 0.1s;
 }
 
 .saveButton {
@@ -80,16 +86,17 @@
 }
 
 .saveButton:hover {
-  background-color: var(--bdo-red-dark, #c01532);
-  box-shadow: 0 2px 8px rgba(232, 26, 59, 0.4);
+  background-color: var(--bdo-burgundy, #c01532);
+  transform: translateY(-1px);
 }
 
 .printButton {
-  background-color: var(--bdo-gray-light, #e5e7eb);
-  color: var(--bdo-charcoal, #333333);
-  border: 1px solid var(--bdo-border, #ccc);
+  background-color: var(--bdo-pale-charcoal, #f0f0f0);
+  color: var(--bdo-charcoal, #333);
+  border: 1px solid var(--bdo-pale-charcoal, #ccc);
 }
 
 .printButton:hover {
-  background-color: var(--bdo-gray-medium, #d1d5db);
+  background-color: var(--bdo-slate, #d1d5db);
+  transform: translateY(-1px);
 }
