@@ -1,0 +1,91 @@
+/* src/Modules/Onboarding/components/DynamicFormReadOnly.module.css */
+
+.formContainer {
+  background-color: var(--bdo-white, #ffffff);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--bdo-border, #e5e7eb);
+}
+
+.formTitle {
+  color: var(--bdo-charcoal, #333333);
+  font-size: 1.6rem;
+  margin-bottom: 0.5rem;
+}
+
+.sectionContainer {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 1px solid var(--bdo-light-blue, #f3f4f6);
+  border-radius: 6px;
+  background-color: var(--bdo-section-bg, #fcfdff);
+}
+
+.sectionContainer h3 {
+  color: var(--bdo-ocean, #008fd2);
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px dashed var(--bdo-ocean-light, #b3d9f0);
+  padding-bottom: 5px;
+}
+
+.entryBlock {
+  border-left: 3px solid var(--bdo-gold, #d67900);
+  padding-left: 15px;
+  margin-bottom: 1rem;
+  background-color: var(--bdo-entry-bg, #fffdf8);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.entryBlock h4 {
+  color: var(--bdo-gold-dark, #a86000);
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.formFieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formLabel {
+  font-weight: 600;
+  color: var(--bdo-charcoal, #333333);
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
+}
+
+/* Estilo para los valores de solo lectura */
+.readOnlyValue {
+  background-color: var(--bdo-gray-lightest, #f9fafb);
+  border: 1px solid var(--bdo-border, #e5e7eb);
+  padding: 0.75rem;
+  border-radius: 4px;
+  color: var(--bdo-charcoal, #333333);
+  margin: 0;
+  min-height: 40px; /* Para mantener consistencia con la altura del input */
+  word-break: break-word; /* Para URLs o textos largos */
+}
+
+/* Estilo específico para enlaces de archivos */
+.fileLink {
+  color: var(--bdo-ocean, #008fd2);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.emptyForm {
+  color: var(--bdo-gray, #6b7280);
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid var(--bdo-border, #e5e7eb);
+  border-radius: 6px;
+}
