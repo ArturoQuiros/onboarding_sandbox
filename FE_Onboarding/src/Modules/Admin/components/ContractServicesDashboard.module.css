@@ -1,29 +1,50 @@
+/* src/Modules/Admin/components/ContractServicesDashboard.module.css */
+
 .container {
-  padding: 30px;
-  background-color: #f7f9fc;
-  min-height: 100vh;
+  width: 90%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--bdo-pale-charcoal);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto; /* Centrar contenedor */
+}
+
+/* Asegura que los elementos hijos ocupen todo el ancho */
+.container > * {
+  width: 100%;
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
-  padding-bottom: 15px;
-  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .title {
-  font-size: 1.8rem;
-  color: var(--bdo-charcoal, #333);
+  color: var(--bdo-charcoal);
+  font-size: 2.2em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5em;
+  margin-top: 1;
   display: flex;
-  align-items: center;
-  font-weight: 600;
+  align-items: center; /* Centra el icono y el texto verticalmente */
+  flex-grow: 1;
 }
 
-.icon {
-  margin-right: 10px;
-  color: var(--bdo-red, #cc0000);
+/* Estilo para la barra de búsqueda y selector de items por página */
+.controlsBar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .description {
@@ -32,19 +53,54 @@
   font-size: 1rem;
 }
 
+/* ========================= */
+/* ÍCONOS (Unificados)      */
+/* ========================= */
+
+/* Estilo general para íconos (FaLayerGroup, entityIcon si se usan fuera del título) */
+.icon {
+  font-size: 1.2em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bdo-ocean);
+  line-height: 1;
+  /* 📌 Ajuste: usar padding-right si 'ContractServiceDashboard' usa esa convención */
+  padding-right: 10px;
+}
+
+/* Variante para íconos dentro del H2 (.title) */
+.title .icon {
+  font-size: 1.5em;
+  margin-right: 0.5rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ========================= */
+/* Mensajes de estado */
+/* ========================= */
+
 .loadingMessage,
 .savingMessage {
-  padding: 15px;
+  padding: 12px;
   text-align: center;
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--bdo-red, #cc0000);
+  border-radius: 6px;
+  margin: 10px 0;
+  width: 100%;
+}
+
+.loadingMessage {
+  color: var(--bdo-red);
   background-color: #fff;
-  border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .savingMessage {
-  margin-top: 15px;
-  color: #4caf50; /* Un color de éxito/guardado */
+  color: var(--bdo-ocean);
+  background-color: #f0fdf4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }

@@ -1,9 +1,9 @@
-// src/Modules/Landing/pages/StaffLogin.jsx
 import React, { useState } from "react";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../Global/auth";
 import { useNavigate } from "react-router-dom";
-import axiosClient from "../../../Api/axiosClient"; // tu cliente Axios configurado
+import axiosClient from "../../../Api/axiosClient";
+import { useAuth } from "../../../Global/hooks";
 import styles from "./StaffLogin.module.css";
 import logo from "../../../Global/assets/onboarding_logo.png";
 
@@ -12,22 +12,38 @@ export const StaffLogin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const { setUser } = useAuth();
 
+  /**
+   * Maneja el proceso de login:
+   * 1. Inicia sesión con Azure MSAL.
+   * 2. Obtiene datos del usuario desde el backend.
+   * 3. Guarda los datos en el contexto global.
+   * 4. Redirige al área protegida.
+   */
   const handleLogin = async () => {
     setLoading(true);
     setErrorMsg("");
+
     try {
       const response = await instance.loginPopup(loginRequest);
       const token = response.accessToken;
+      sessionStorage.setItem("accessToken", token);
 
-      // Llamada al backend usando axiosClient
-      await axiosClient.get("/WS_Onboarding/LogIn", {
-        headers: { Authorization: `Bearer ${token}` },
+      const loginResponse = await axiosClient.post("/LogIn");
+
+      setUser({
+        id: loginResponse.data.id,
+        nombre: loginResponse.data.nombre,
+        iniciales: loginResponse.data.iniciales,
+        rol: loginResponse.data.rol,
       });
 
       navigate("/admin");
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
+      sessionStorage.removeItem("accessToken");
+      setUser(null);
       setErrorMsg("No se pudo iniciar sesión. Intenta nuevamente.");
     } finally {
       setLoading(false);
@@ -55,7 +71,9 @@ export const StaffLogin = () => {
       {errorMsg && <p className={styles.errorMessage}>{errorMsg}</p>}
 
       <p className={styles.backLink}>
-        <a href="/">Volver a la página principal</a>
+        <a onClick={() => navigate("/")} className={styles.backButton}>
+          Volver a la página principal
+        </a>
       </p>
     </div>
   );

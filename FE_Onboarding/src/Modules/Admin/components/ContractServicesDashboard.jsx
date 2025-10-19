@@ -1,143 +1,193 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { useParams } from "react-router-dom";
-import axiosClient from "../../../Api/axiosClient";
+import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { FaLayerGroup } from "react-icons/fa";
 import { ContractServicesTable } from "./ContractServicesTable";
 import styles from "./ContractServicesDashboard.module.css";
+import { UIContext } from "../../../Global/Context";
+import { SearchBar, ItemsPerPageSelector } from "./";
+import { useContractServicesQuery } from "../hooks/useContractServicesQuery";
+// 🆕 Importamos el hook de países directamente (más simple que pasar por Contracts)
+import { useCountriesQuery } from "../hooks/useCountriesQuery";
 
 export const ContractServiceDashboard = () => {
-  // 1. Obtenemos el ID del contrato de la URL
-  const { id: contractId } = useParams();
+  const { contractId } = useParams();
+  const { entityIcon } = useContext(UIContext);
+  const { t } = useTranslation("global");
 
-  // Estados de datos y control
-  const [allServices, setAllServices] = useState([]); // Lista completa de servicios
-  // Map: serviceId -> relationshipId (Necesario para el DELETE)
-  const [assignedServiceIds, setAssignedServiceIds] = useState(new Map());
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  console.log("[Dashboard] contractId:", contractId);
 
-  // --- FUNCIÓN DE CARGA DE DATOS ---
+  // 1. Obtener datos de servicios y el ID del País
+  const {
+    contractDetailQuery,
+    availableServicesQuery,
+    assignedRelationsQuery,
+    toggleAssignmentMutation,
+    idPais,
+  } = useContractServicesQuery(contractId);
 
-  const getAllAvailableServices = async () => {
-    try {
-      // RUTA quemada: /Servicio
-      const response = await axiosClient.get("/Servicio");
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener todos los servicios disponibles:", error);
-      return [];
+  // 2. Obtener el mapa de países para mostrar el nombre
+  const { countriesQuery, countryMap } = useCountriesQuery();
+
+  const allServices = availableServicesQuery.data ?? [];
+  const assignedServiceIds = assignedRelationsQuery.data ?? new Map();
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [sortKey, setSortKey] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc");
+
+  const displayIcon = useMemo(
+    () => entityIcon ?? <FaLayerGroup />,
+    [entityIcon]
+  );
+
+  // 3. Obtener el nombre del País usando el mapa
+  const countryName = useMemo(() => {
+    // Si el mapa o el idPais no están listos, muestra el ID o un placeholder
+    if (!countryMap || !idPais) {
+      return `ID: ${idPais}`;
     }
-  };
+    // Retorna el nombre del país usando el mapa
+    return countryMap[idPais] || `ID: ${idPais} (Desconocido)`;
+  }, [countryMap, idPais]); // 🆕 Depende de countryMap y idPais
 
-  const getAssignedServiceRelationships = async () => {
-    if (!contractId) return [];
-    try {
-      // RUTA quemada: /ContratoServicio/ByContrato
-      const response = await axiosClient.get(
-        `/ContratoServicio/ByContrato?idContrato=${contractId}`
-      );
-      return response.data;
-    } catch (error) {
-      console.error("Error al obtener relaciones de servicio:", error);
-      return [];
-    }
-  };
-
-  const loadData = async () => {
-    setIsLoading(true);
-    const [availableServices, assignedRelations] = await Promise.all([
-      getAllAvailableServices(),
-      getAssignedServiceRelationships(),
-    ]);
-
-    setAllServices(availableServices);
-
-    // Mapeamos [ID_Servicio] -> [ID_Relación] para permitir el borrado eficiente
-    const assignedMap = new Map();
-    assignedRelations.forEach((rel) => {
-      assignedMap.set(rel.id_Servicio, rel.id);
+  // Ordenamiento, Filtrado y Paginación (Sin cambios)
+  // ... (Toda la lógica de useMemo para sortedItems, filteredItems, paginatedItems) ...
+  const sortedItems = useMemo(() => {
+    if (!sortKey) return allServices;
+    return [...allServices].sort((a, b) => {
+      const aValue = String(a[sortKey] ?? "").toLowerCase();
+      const bValue = String(b[sortKey] ?? "").toLowerCase();
+      return sortDirection === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
     });
+  }, [allServices, sortKey, sortDirection]);
 
-    setAssignedServiceIds(assignedMap);
-    setIsLoading(false);
-    toast.success(
-      `Datos cargados: ${availableServices.length} servicios disponibles.`
+  const filteredItems = useMemo(() => {
+    if (!searchTerm) return sortedItems;
+    return sortedItems.filter(
+      (item) =>
+        String(item.id).includes(searchTerm) ||
+        String(item.nombre).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [sortedItems, searchTerm]);
+
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+
+  // Toggle
+  const handleServiceToggle = (serviceId, isChecked) => {
+    toggleAssignmentMutation.mutate(
+      { serviceId, isAssigned: isChecked },
+      {
+        onSuccess: (result) => {
+          const messageKey =
+            result.action === "ASSIGNED"
+              ? "contractServices.serviceAssigned"
+              : "contractServices.serviceUnassigned";
+          toast.success(t(messageKey));
+        },
+        onError: (error) => {
+          console.error("Error al modificar el servicio:", error);
+          toast.error(t("common.errorSavingChanges"));
+        },
+      }
     );
   };
 
-  // --- FUNCIÓN DE TOGGLE ---
-
-  /**
-   * Alterna (asigna/desasigna) un servicio del contrato.
-   */
-  const handleServiceToggle = async (serviceId, isChecked) => {
-    if (isSaving) return;
-
-    setIsSaving(true);
-    try {
-      if (isChecked) {
-        // ASIGNAR (POST)
-        const payload = {
-          id_Contrato: parseInt(contractId),
-          id_Servicio: serviceId,
-        };
-        // RUTA quemada: POST /ContratoServicio
-        await axiosClient.post("/ContratoServicio", payload);
-        toast.success(`Servicio asignado.`);
-      } else {
-        // DESASIGNAR (DELETE)
-        const relationshipId = assignedServiceIds.get(serviceId);
-        if (relationshipId) {
-          // RUTA quemada: DELETE /ContratoServicio/{id} (Usando el ID de la relación)
-          await axiosClient.delete(`/ContratoServicio/${relationshipId}`);
-          toast.success(`Servicio desasignado.`);
-        }
-      }
-
-      // Recargamos los datos para actualizar el estado de la tabla y obtener el nuevo ID de relación
-      await loadData();
-    } catch (error) {
-      console.error("Error al modificar el servicio:", error);
-      toast.error("Error al guardar los cambios.");
-    } finally {
-      setIsSaving(false);
-    }
+  const handleSort = (key) => {
+    setSortKey(key);
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    setCurrentPage(1);
   };
 
-  // Carga inicial al montar el componente o cambiar el ID del contrato
-  useEffect(() => {
-    loadData();
-  }, [contractId]);
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
+  };
 
-  // --- RENDERIZADO ---
+  // 4. Renderizado condicional de carga y error (Incluir la carga de países)
+  const isLoading =
+    contractDetailQuery.isLoading ||
+    availableServicesQuery.isLoading ||
+    assignedRelationsQuery.isLoading ||
+    countriesQuery.isLoading; // 🆕 Incluir la carga de países
+
+  const isError =
+    contractDetailQuery.isError ||
+    availableServicesQuery.isError ||
+    assignedRelationsQuery.isError ||
+    countriesQuery.isError; // 🆕 Incluir el error de países
+
+  if (!contractId)
+    return <p className={styles.loadingMessage}>⚠️ Contract ID missing</p>;
+
+  if (isError) {
+    let errorMessage = t("common.errorLoadingData");
+    if (contractDetailQuery.isError)
+      errorMessage = t("contractServices.errorContractDetails");
+    else if (availableServicesQuery.isError)
+      errorMessage = t("contractServices.errorServicesByCountry");
+    else if (assignedRelationsQuery.isError)
+      errorMessage = t("contractServices.errorAssignedRelations");
+    else if (countriesQuery.isError)
+      // 🆕 Manejar el error de países
+      errorMessage = t("common.errorLoadingData") + " (Países)";
+
+    return <p className={styles.loadingMessage}>❌ {errorMessage}</p>;
+  }
+
+  // Si está cargando o falta el ID del País, mostramos el mensaje de carga
+  if (isLoading)
+    return <p className={styles.loadingMessage}>{t("common.loading")}</p>;
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
-          <FaLayerGroup className={styles.icon} />
-          Servicios del Contrato ID: {contractId}
+          <span className={styles.icon}>{displayIcon}</span>
+          {t("contractServices.title")}
+          {contractId && (
+            <span className={styles.contractIdLabel}>
+              {" "}
+              (ID: {contractId} | País: {countryName}){" "}
+              {/* 🆕 Usamos countryName */}
+            </span>
+          )}
         </h2>
       </div>
 
-      <p className={styles.description}>
-        Marque la casilla para asignar un servicio o desmarque para desasignarlo
-        del contrato.
-      </p>
-
-      {isLoading ? (
-        <p className={styles.loadingMessage}>Cargando servicios...</p>
-      ) : (
-        // Pasa los datos y el handler a la tabla de presentación
-        <ContractServicesTable
-          services={allServices}
-          assignedServiceIds={assignedServiceIds}
-          isSaving={isSaving}
-          onToggle={handleServiceToggle}
-        />
+      {allServices.length > 0 && (
+        <div className={styles.controlsBar}>
+          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          <ItemsPerPageSelector
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </div>
       )}
 
-      {isSaving && <p className={styles.savingMessage}>Guardando cambios...</p>}
+      <ContractServicesTable
+        services={paginatedItems}
+        assignedServiceIds={assignedServiceIds}
+        isSaving={toggleAssignmentMutation.isLoading}
+        onToggle={handleServiceToggle}
+        onSort={handleSort}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        filteredCount={filteredItems.length}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 };

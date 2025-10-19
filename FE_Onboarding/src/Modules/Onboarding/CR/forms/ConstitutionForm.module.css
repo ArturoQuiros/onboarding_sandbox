@@ -1,0 +1,100 @@
+/* src/Modules/Contracts/TaskFlow/forms/ConstitutionForm.module.css */
+
+/* ... (Estilos del header, inputGrid, etc. de antes) ... */
+
+/* --------------------------------------
+ * Controles de Navegación (Footer)
+ * -------------------------------------- */
+
+.formControlsWrapper {
+  /* Pegar al fondo del formPanel */
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--bdo-pale-charcoal);
+
+  display: flex;
+  /* Necesitamos alinear el botón Next a la derecha del grupo de navegación, 
+       pero el FormControls ya tiene justify-content: space-between */
+}
+
+/* Para alinear: FormControls tiene (Back | Contacto) y queremos (Back, Next | Contacto).
+   Una forma limpia es modificar el FormControls para que acepte un slot de botón.
+   La forma sencilla ahora es reestructurar la wrapper:
+*/
+
+.formControlsWrapper {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--bdo-pale-charcoal);
+
+  display: flex;
+  justify-content: space-between; /* Para separar los botones de Contacto */
+  align-items: center;
+}
+
+/* Necesitamos envolver el botón Next y el componente FormControls para que queden agrupados */
+/* Vamos a modificar el JSX de ConstitutionForm para que FormControls y NextButton estén en un div */
+/* ... Esto se hace en el JSX de ConstitutionForm.jsx ... */
+/*
+<div className={styles.formControlsWrapper}>
+    <div className={styles.leftControls}> // Nuevo div
+        <FormControls ... /> // <- Tiene el botón Back
+        <button type="submit" ... /> // <- El botón Next
+    </div>
+    <button type="button" className={styles.contactButton} /> // <- Lo movemos del FormControls para simplificar
+</div>
+*/
+
+/* --- Solución más Limpia (Modificando solo FormControlsWrapper y agregando el NextButton) --- */
+/* (El JSX del paso 1 asume que FormControls se encarga del Contacto) */
+
+.formControlsWrapper {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid var(--bdo-pale-charcoal);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Nota: FormControls es un componente, y el NextButton es un elemento. 
+       Asegúrate que el FormControls tenga un ancho de 100% para que el NextButton 
+       pueda empujar el botón de Contacto si estuviera dentro de FormControls.
+       Dado que FormControls renderiza (Back y Contacto), y aquí queremos (Back, Next y Contacto),
+       la única forma de que el NextButton aparezca es que lo pongamos en el JSX junto al FormControls.
+    */
+
+  /* El diseño propuesto en el JSX de FormControls es (Back | Contacto).
+       Si queremos (Back, Next | Contacto), debemos modificar FormControls o su contenedor. 
+       Para no romper FormControls, ajustaremos la envoltura en ConstitutionForm.
+    */
+}
+
+/* Estilos para el botón Next (igual que el botón principal de index.css) */
+.nextButton {
+  /* Estilo primario de BDO */
+  background-color: var(--bdo-red);
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.25s, opacity 0.25s;
+
+  /* Lo esencial: para que se alinee con el botón Back del FormControls */
+  margin-left: 15px; /* Espacio entre Back y Next */
+}
+
+.nextButton:hover:not(:disabled) {
+  background-color: var(--bdo-burgundy);
+}
+
+.nextButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(
+    --bdo-red
+  ); /* Mantiene el color base, pero con opacidad */
+}

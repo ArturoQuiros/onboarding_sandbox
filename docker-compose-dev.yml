@@ -18,6 +18,7 @@ services:
       - ./WS_Onboarding:/app/WS_Onboarding
     restart: unless-stopped
     command: ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:5005"]
+
   container_db_onboarding:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: docker_db_onboarding
@@ -31,19 +32,22 @@ services:
     volumes:
       - db_onboarding_data:/var/opt/mssql
     restart: unless-stopped
+
   container_fe_onboarding:
     build:
       context: ./FE_Onboarding
       dockerfile: Dockerfile.dev
     container_name: docker_fe_onboarding
     ports:
-      - "5173:5173"  # Vite (si usas Vite)
-      - "3000:3000"  # CRA o Next.js
+      - "5173:5173" # Vite
     volumes:
-      - ./FE_Onboarding:/app
-      - node_modules:/app/node_modules
+      - ./FE_Onboarding/src:/app/src # 🔥 Solo src para hot-reload
+      - ./FE_Onboarding/public:/app/public # Archivos públicos
+      - ./FE_Onboarding/index.html:/app/index.html # HTML principal (Vite)
+      - ./FE_Onboarding/vite.config.js:/app/vite.config.js # Config de Vite
+      - /app/node_modules # ⚠️ NO sobrescribir node_modules
     working_dir: /app
-    command: ["npm", "run", "dev"]
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
     networks:
       - onboarding_net
     depends_on:
@@ -51,10 +55,11 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=development
-      - HOST=0.0.0.0
-      - ROLLUP_USE_NATIVE=false
+      - CHOKIDAR_USEPOLLING=true # ✅ Necesario para hot-reload
+      - WATCHPACK_POLLING=true # ✅ Necesario para hot-reload
+
 networks:
   onboarding_net:
+
 volumes:
   db_onboarding_data:
-  node_modules:

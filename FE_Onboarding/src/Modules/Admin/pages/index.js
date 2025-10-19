@@ -7,3 +7,4 @@ export { default as Staff } from "./Staff.jsx";
 export { default as Contracts } from "./Contracts.jsx";
 export { default as Users } from "./Users.jsx";
 export { default as ContractServices } from "./ContractServices.jsx";
+export { default as Tasks } from "./Tasks.jsx";

@@ -1,31 +1,42 @@
-// src/Modules/Admin/components/Crud/CrudForm.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { UIContext } from "../../../Global/Context";
 import styles from "./CrudForm.module.css";
+import { FiEye, FiEyeOff, FiRefreshCcw } from "react-icons/fi";
 
 export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
 
+  const getFormKey = (field) => field.formKey || field.key;
+
   const [formData, setFormData] = useState({});
   const [formErrors, setFormErrors] = useState({});
+  const [showPassword, setShowPassword] = useState({});
 
-  // Inicializa los datos del formulario
   useEffect(() => {
     if (item) {
-      setFormData(item);
+      const initialData = {};
+      fields.forEach((field) => {
+        const key = getFormKey(field);
+        if (field.transformForEdit) {
+          Object.assign(initialData, field.transformForEdit(item));
+        } else {
+          initialData[key] = item[key];
+        }
+      });
+      setFormData(initialData);
     } else {
       const initialData = {};
       fields.forEach((field) => {
-        if (field.key !== "id") initialData[field.key] = "";
+        const key = getFormKey(field);
+        if (key !== "id") initialData[key] = "";
       });
       setFormData(initialData);
     }
     setFormErrors({});
   }, [item, fields]);
 
-  // Maneja cambios en los inputs y valida dinámicamente
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -36,27 +47,46 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
     }
   };
 
-  // Maneja el submit
+  const togglePasswordVisibility = (key) => {
+    setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  const generatePassword = (length = 12) => {
+    const chars =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-+=<>?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let dataToSave = formData;
 
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
-        const error = validations[key](formData[key], formData);
+        const error = validations[key](dataToSave[key], dataToSave);
         if (error) newErrors[key] = error;
       }
       setFormErrors(newErrors);
-
-      if (Object.keys(newErrors).length > 0) return; // bloquea envío si hay errores
+      if (Object.keys(newErrors).length > 0) return;
     }
 
-    onSave(formData);
+    fields.forEach((field) => {
+      if (field.transformForSave) {
+        dataToSave = field.transformForSave(dataToSave);
+      }
+    });
+
+    onSave(dataToSave);
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      {/* Encabezado */}
       <div className={styles.formHeader}>
         {entityIcon && <div className={styles.entityIcon}>{entityIcon}</div>}
         <h2 className={styles.formTitle}>
@@ -64,10 +94,16 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         </h2>
       </div>
 
-      {/* Campos dinámicos */}
       {fields.map((field) => {
         if (!item && field.key === "id") return null;
         const isIdField = field.key === "id";
+        const nameKey = getFormKey(field);
+
+        const isFieldReadOnly =
+          isIdField ||
+          (typeof field.isReadOnly === "function"
+            ? field.isReadOnly(item)
+            : field.isReadOnly);
 
         return (
           <div key={field.key} className={styles.formGroup}>
@@ -75,11 +111,12 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
             {field.type === "select" ? (
               <select
-                name={field.key}
-                value={formData[field.key] || ""}
+                name={nameKey}
+                value={formData[nameKey] || ""}
                 onChange={handleChange}
+                disabled={isFieldReadOnly}
                 className={`${styles.input} ${
-                  formErrors[field.key] ? styles.inputError : ""
+                  formErrors[nameKey] ? styles.inputError : ""
                 }`}
               >
                 <option value="">{t("common.selectOption")}</option>
@@ -89,27 +126,73 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                   </option>
                 ))}
               </select>
+            ) : field.type === "textarea" ? (
+              <textarea
+                name={nameKey}
+                value={formData[nameKey] || ""}
+                onChange={handleChange}
+                readOnly={isFieldReadOnly}
+                rows={20}
+                className={`${styles.input} ${
+                  formErrors[nameKey] ? styles.inputError : ""
+                }`}
+              />
+            ) : field.type === "password" ? (
+              <div className={styles.passwordWrapper}>
+                <input
+                  type={showPassword[nameKey] ? "text" : "password"}
+                  name={nameKey}
+                  value={formData[nameKey] || ""}
+                  onChange={handleChange}
+                  readOnly={isFieldReadOnly}
+                  className={`${styles.input} ${
+                    formErrors[nameKey] ? styles.inputError : ""
+                  }`}
+                />
+
+                {/* Botón mostrar/ocultar */}
+                <button
+                  type="button"
+                  onClick={() => togglePasswordVisibility(nameKey)}
+                  className={styles.showPasswordButton}
+                  tabIndex={-1}
+                >
+                  {showPassword[nameKey] ? <FiEyeOff /> : <FiEye />}
+                </button>
+
+                {/* Botón generar contraseña */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    const generated = generatePassword();
+                    setFormData((prev) => ({ ...prev, [nameKey]: generated }));
+                  }}
+                  className={styles.generatePasswordButton}
+                  tabIndex={-1}
+                >
+                  <FiRefreshCcw />
+                </button>
+              </div>
             ) : (
               <input
                 type={field.type || "text"}
-                name={field.key}
-                value={formData[field.key] || ""}
-                onChange={isIdField ? null : handleChange}
-                readOnly={isIdField}
+                name={nameKey}
+                value={formData[nameKey] || ""}
+                onChange={handleChange}
+                readOnly={isFieldReadOnly}
                 className={`${styles.input} ${
-                  formErrors[field.key] ? styles.inputError : ""
+                  formErrors[nameKey] ? styles.inputError : ""
                 }`}
               />
             )}
 
-            {formErrors[field.key] && (
-              <div className={styles.errorMessage}>{formErrors[field.key]}</div>
+            {formErrors[nameKey] && (
+              <div className={styles.errorMessage}>{formErrors[nameKey]}</div>
             )}
           </div>
         );
       })}
 
-      {/* Botones */}
       <div className={styles.buttonGroup}>
         <button type="submit" className={styles.saveButton}>
           {t("common.save")}
