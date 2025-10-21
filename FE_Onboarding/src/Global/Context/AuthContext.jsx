@@ -1,3 +1,5 @@
+// src/Global/AuthContext.jsx
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../Api/axiosClient";
@@ -12,6 +14,7 @@ export const AuthProvider = ({ children }) => {
 
   const clientLogout = useCallback(() => {
     sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("userEmail");
     setUser(null);
     navigate("/");
   }, [navigate]);
@@ -26,6 +29,19 @@ export const AuthProvider = ({ children }) => {
     }
   }, [clientLogout]);
 
+  // ÚNICA FUNCIÓN DE MAPEO Y ASIGNACIÓN DE USUARIO
+  const login = useCallback((userData) => {
+    setUser({
+      id: userData.id,
+      nombre: userData.nombre,
+      email: userData.email,
+      puesto: userData.puesto,
+      id_Rol: userData.id_Rol,
+      id_Pais: userData.id_Pais,
+      estado: userData.estado,
+    });
+  }, []);
+
   const handleUnauthorized = useCallback(() => clientLogout(), [clientLogout]);
 
   useEffect(() => {
@@ -33,16 +49,29 @@ export const AuthProvider = ({ children }) => {
 
     const checkAuth = async () => {
       const token = sessionStorage.getItem("accessToken");
-      if (token) {
+      const email = sessionStorage.getItem("userEmail");
+
+      if (token && email) {
         try {
-          const response = await axiosClient.post("/LogIn");
-          setUser({
-            id: response.data.id,
-            nombre: response.data.nombre,
-            iniciales: response.data.iniciales,
-            rol: response.data.rol,
-          });
-        } catch {
+          // Enviar el email en el body para revalidar la sesión
+          // NO enviar el token de Authorization porque este endpoint no lo requiere
+          const response = await axiosClient.post(
+            "/User/Inside/LogIn",
+            { email: email },
+            {
+              headers: {
+                Authorization: undefined, // Quitar el token para este endpoint
+              },
+            }
+          );
+
+          if (response.data && response.data.id) {
+            login(response.data); // Usa la función centralizada
+          } else {
+            clientLogout();
+          }
+        } catch (e) {
+          console.error("Error al verificar sesión persistente:", e);
           clientLogout();
         }
       }
@@ -50,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkAuth();
-  }, [handleUnauthorized, clientLogout]);
+  }, [handleUnauthorized, clientLogout, login]);
 
   if (loading)
     return (
@@ -61,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser, logout, isAuthenticated: !!user }}
+      value={{ user, setUser, login, logout, isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>

@@ -26,7 +26,7 @@ export const StaffTable = ({
               <th className={styles.staffTable_tableHeaderCell}>ID</th>
               <th className={styles.staffTable_tableHeaderCell}>Nombre</th>
               <th className={styles.staffTable_tableHeaderCell}>Email</th>
-              <th className={styles.staffTable_tableHeaderCell}>Puesto</th>{" "}
+              <th className={styles.staffTable_tableHeaderCell}>Puesto</th>
               {/* 👈 AÑADIDO */}
               <th className={styles.staffTable_tableHeaderCell}>País</th>
               <th className={styles.staffTable_tableHeaderCell}>Habilitado</th>
@@ -40,9 +40,7 @@ export const StaffTable = ({
                 <td className={styles.staffTable_tableCell}>{user.id}</td>
                 <td className={styles.staffTable_tableCell}>{user.name}</td>
                 <td className={styles.staffTable_tableCell}>{user.email}</td>
-                <td className={styles.staffTable_tableCell}>
-                  {user.puesto}
-                </td>{" "}
+                <td className={styles.staffTable_tableCell}>{user.puesto}</td>
                 {/* 👈 AÑADIDO */}
                 <td className={styles.staffTable_tableCell}>
                   {user.countryName}

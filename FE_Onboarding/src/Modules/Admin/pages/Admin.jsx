@@ -1,37 +1,26 @@
 // src/Modules/Admin/pages/Admin.jsx
 
 import React from "react";
-// 💡 Asumo que useAuth se importa desde tu archivo de barril o AuthContext.jsx
-import { useAuth } from "../../../Global/hooks";
+import { useAuth } from "../../../Global/hooks"; // Asumo que useAuth es un custom hook que envuelve useContext(AuthContext)
 
 /**
  * Página principal del panel de administración.
- * Muestra información resumida sobre clientes, contratos y servicios.
  */
 const Admin = () => {
-  // 💡 LLAMADA AL HOOK DENTRO DEL COMPONENTE
-  const {
-    user, // Objeto completo del usuario
-    isAuthenticated, // Estado de autenticación
-    nombre, // Nombre del usuario
-    rol, // Rol del usuario
-    logout, // Función para cerrar sesión
-  } = useAuth();
+  // Desestructuramos el objeto user y el estado de autenticación
+  const { user, isAuthenticated, logout } = useAuth(); // 🛑 CORRECCIÓN: Si no está autenticado o el objeto user es null/undefined, mostramos la pantalla de carga/error.
 
-  // --- Lógica Condicional ---
-
-  if (!isAuthenticated) {
-    // Si por alguna razón el usuario llega aquí sin autenticar,
-    // podríamos mostrar un mensaje o, mejor aún, redirigir
+  if (!isAuthenticated || !user) {
     return (
-      <div style={{ padding: "20px", color: "red" }}>
-        <h2>Acceso Denegado</h2>
-        <p>No se encontró una sesión válida. Por favor, inicia sesión.</p>
+      <div style={{ padding: "20px", color: "gray" }}>
+        <h2>Cargando Datos de Usuario...</h2>
+        <p>Verificando el perfil de usuario.</p>
       </div>
     );
   }
 
-  // --- Renderizado del Contenido ---
+  // A partir de aquí, el objeto 'user' está garantizado y cargado
+  const { nombre, email, puesto, id_Rol } = user; // --- Renderizado del Contenido ---
 
   return (
     <div style={{ padding: "20px" }}>
@@ -40,7 +29,6 @@ const Admin = () => {
         Vista general de clientes actuales, estado de contratos y servicios
         contratados.
       </p>
-
       {/* --- Sección de Estado de Autenticación y Datos --- */}
       <div
         style={{
@@ -50,29 +38,38 @@ const Admin = () => {
           borderRadius: "5px",
         }}
       >
-        <h2>Estado de la Sesión</h2>
+        <h2>Estado de la Sesión y Datos Cargados ✅</h2>
         <p>
           Estado de Autenticación:
-          <strong style={{ color: isAuthenticated ? "green" : "red" }}>
-            {isAuthenticated ? "AUTENTICADO" : "NO AUTENTICADO"}
-          </strong>
+          <strong style={{ color: "green" }}>AUTENTICADO</strong>
         </p>
 
-        {/* Mostrar detalles solo si está autenticado */}
-        {user && (
-          <div>
-            <p>
-              <strong>Bienvenido:</strong> {nombre}
-            </p>
-            <p>
-              <strong>Rol Asignado:</strong> {rol}
-            </p>
-            <p>
-              <strong>ID de Usuario:</strong> {user.id}
-            </p>
-          </div>
-        )}
+        <div>
+          <p>
+            <strong>Bienvenido:</strong> {nombre}
+          </p>
+
+          <p>
+            <strong>Email:</strong> {email}
+          </p>
+
+          <p>
+            <strong>Puesto:</strong> {puesto}
+          </p>
+
+          <p>
+            <strong>Rol ID:</strong> {id_Rol}
+          </p>
+
+          <p>
+            <strong>ID de Usuario (API):</strong> {user.id}
+          </p>
+        </div>
       </div>
+      {/* Botón de ejemplo para cerrar sesión */}
+      <button onClick={logout} style={{ marginTop: "20px", padding: "10px" }}>
+        Cerrar Sesión
+      </button>
     </div>
   );
 };

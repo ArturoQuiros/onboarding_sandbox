@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 import styles from "./StaffDashboard.module.css";
 import { StaffTable } from "./StaffTable";
 import { SearchBar, ItemsPerPageSelector } from "./"; // Asegúrate que estos componentes existan
-import { FaPlus, FaUsers } from "react-icons/fa";
+import { FaPlus, FaSync, FaUsers } from "react-icons/fa";
 import { useInternalUsersQuery } from "../hooks"; // 👈 1. Importar el hook
 
 export const StaffDashboard = () => {
@@ -63,9 +63,6 @@ export const StaffDashboard = () => {
           <FaUsers className={styles.icon} />
           Gestión de Staff
         </h2>
-        <button className={styles.createButton}>
-          <FaPlus /> Agregar Staff
-        </button>
       </div>
 
       <div className={styles.controlsBar}>
