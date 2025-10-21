@@ -13,11 +13,11 @@ namespace WS_Onboarding.Models
         [Required]
         [MaxLength(100)]
         public required string Nombre { get; set; }
-        [Required]
         [MaxLength(255)]
-        public required string Email { get; set; }
+        public string? Email { get; set; }
+        [Required]
         [MaxLength(100)]
-        public string? Azure_AD_User_Id { get; set; }
+        public required string Azure_AD_User_Id { get; set; }
         [MaxLength(100)]
         public string? Puesto { get; set; }
         public bool? Estado { get; set; }

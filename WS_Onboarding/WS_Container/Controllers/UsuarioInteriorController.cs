@@ -359,7 +359,7 @@ namespace WS_Onboarding.Controllers
                 {
                     requestConfig.QueryParameters.Select = new[]
                     {
-                        "id", "displayName", "mail", "userPrincipalName"
+                        "id", "displayName", "mail", "userPrincipalName","jobTitle","country","employeeType"
                     };
                     requestConfig.QueryParameters.Top = 10;
                 });
@@ -380,6 +380,103 @@ namespace WS_Onboarding.Controllers
                 return StatusCode(500, errorDetails);
             }
         }*/
+
+        [HttpGet("Inside/GetAllSync")]
+        [Authorize]
+        public async Task<IActionResult> GetAllSync()
+        {
+            try
+            {
+                var UsuariosInternos = _context.UsuariosInternos
+                    .Where(c => c.Estado == true).ToList()
+                    .Select(c => c.ToUsuarioInteriorDto());
+
+                var UsersAzureAD = await _graphClient.Users.GetAsync(requestConfig =>
+                {
+                    requestConfig.QueryParameters.Select = new[]
+                    {
+                        "id", "displayName", "mail", "userPrincipalName","jobTitle","country","employeeType"
+                    };
+                    requestConfig.QueryParameters.Top = 10;
+                });
+
+                var AzureIdFromUsuarios = UsuariosInternos
+                    .Select(u => u.Azure_AD_User_Id).ToHashSet();
+
+                if(UsersAzureAD != null && UsersAzureAD.Value != null)
+                {
+                    foreach (var User in UsersAzureAD.Value)
+                    {
+                        if (User.DisplayName != null && User.JobTitle != null &&
+                            User.Id != null && User.Mail != null && 
+                            User.Country != null && User.EmployeeType != null)
+                        {
+                            if (!AzureIdFromUsuarios.Contains(User.Id))
+                            {
+                                var UsuarioInterno = new Models.UsuarioInterno
+                                {
+                                    Nombre = User.DisplayName,
+                                    Azure_AD_User_Id = User.Id,
+                                    Email = User.Mail,
+                                    Id_Pais = int.TryParse(User.Country?.ToString(), out var country) ? country : null,
+                                    Id_Rol = int.TryParse(User.EmployeeType?.ToString(), out var employeeType) ? employeeType : null,
+                                    Puesto = User.JobTitle,
+                                    Estado = true,
+                                    Fecha_Creacion = DateTime.UtcNow,
+                                    Fecha_Modificacion = DateTime.UtcNow
+                                };
+
+                                _context.UsuariosInternos.Add(UsuarioInterno);
+                                _context.SaveChanges();
+                            }
+                            else
+                            {
+                                var UsuarioModel = _context.UsuariosInternos.FirstOrDefault(c => c.Azure_AD_User_Id == User.Id);
+
+                                if (UsuarioModel!=null)
+                                {
+                                    UsuarioModel.Nombre = User.DisplayName;
+                                    UsuarioModel.Email = User.Mail;
+                                    UsuarioModel.Puesto = User.JobTitle;
+                                    UsuarioModel.Estado = true;
+                                    UsuarioModel.Id_Rol = int.TryParse(User.EmployeeType?.ToString(), out var employeeType) ? employeeType : null;
+                                    UsuarioModel.Id_Pais = int.TryParse(User.Country?.ToString(), out var country) ? country : null;
+                                    UsuarioModel.Fecha_Modificacion = DateTime.UtcNow;
+                                    _context.SaveChanges();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("Al usuario de azure le faltan datos");
+                        }
+                    }
+                }
+                else
+                {
+                    return StatusCode(500, $"Error al extraer datos de usuarios de azure:\n");
+                }
+                
+                var Usuarios = _context.UsuariosInternos
+                    .Where(c => c.Estado == true).ToList()
+                    .Select(c => c.ToUsuarioInteriorDto());
+
+                return Ok(Usuarios);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
 
         [HttpPost("Login")]
         [Authorize]

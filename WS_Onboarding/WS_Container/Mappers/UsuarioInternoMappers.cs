@@ -32,6 +32,7 @@ namespace WS_Onboarding.Mappers
             {
                 Nombre = UsuarioModel.Nombre,
                 Email = UsuarioModel.Email,
+                Azure_AD_User_Id = UsuarioModel.Azure_AD_User_Id,
                 Puesto = UsuarioModel.Puesto,
                 Estado = true,
                 Id_Pais = UsuarioModel.Id_Pais,
