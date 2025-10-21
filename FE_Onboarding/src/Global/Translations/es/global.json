@@ -86,6 +86,8 @@
       "id": "ID",
       "client": "Cliente",
       "email": "Email",
+      "name": "Nombre",
+      "role": "Rol",
       "password": "Contraseña"
     },
     "form": {
@@ -107,7 +109,8 @@
       "id": "ID",
       "client": "Cliente",
       "status": "Estado",
-      "accountManager": "Gerente de Cuenta"
+      "accountManager": "Gerente de Cuenta",
+      "country": "País"
     },
     "form": {
       "editTitle": "Editar Contrato",

@@ -85,6 +85,8 @@
     "table": {
       "id": "ID",
       "client": "Client",
+      "name": "Name",
+      "role": "Role",
       "email": "Email",
       "password": "Password"
     },
@@ -107,7 +109,8 @@
       "id": "ID",
       "client": "Customer",
       "status": "Status",
-      "accountManager": "Account Manager"
+      "accountManager": "Account Manager",
+      "country": "Country"
     },
     "form": {
       "editTitle": "Edit Contract",
