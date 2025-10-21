@@ -1,0 +1,102 @@
+/* src/Modules/Onboarding/components/StaffReview/StaffReviewControls.module.css */
+
+.controlsBar {
+  background-color: var(--bdo-white, #ffffff);
+  padding: 25px 30px; /* Padding generoso */
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Sombra para destacarse */
+  margin-bottom: 30px; /* Separación del formulario de abajo */
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr; /* Estado | Observaciones | Acciones */
+  gap: 30px;
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .controlsBar {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.controlGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Igual que .formGroup */
+}
+
+.controlGroup label {
+  /* Replicando .formLabel */
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--bdo-charcoal, #333);
+}
+
+/* Estilo para Select y Textarea (tomado de la base de .formInput/Textarea) */
+.controlsBar select,
+.controlsBar textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  border: 1px solid var(--bdo-pale-charcoal, #ccc);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  background-color: #fff;
+  box-sizing: border-box;
+  color: var(--bdo-charcoal, #333);
+}
+
+.controlsBar textarea {
+  min-height: 100px; /* Igual que el textarea del cliente */
+  resize: vertical;
+}
+
+/* Estados de focus compartidos */
+.controlsBar select:focus,
+.controlsBar textarea:focus {
+  border-color: var(--bdo-ocean, #008fd2);
+  box-shadow: 0 0 4px rgba(0, 143, 210, 0.3);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+/* Estilo para Botones - Replicando la base de .formButton */
+.saveButton,
+.printButton {
+  /* Base de .formButton pero ligeramente menos padding para el flujo */
+  padding: 12px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.saveButton {
+  background-color: var(--bdo-red, #e81a3b);
+  color: white;
+}
+
+.saveButton:hover {
+  background-color: var(--bdo-burgundy, #c01532);
+  transform: translateY(-1px);
+}
+
+.printButton {
+  background-color: var(--bdo-pale-charcoal, #f0f0f0);
+  color: var(--bdo-charcoal, #333);
+  border: 1px solid var(--bdo-pale-charcoal, #ccc);
+}
+
+.printButton:hover {
+  background-color: var(--bdo-slate, #d1d5db);
+  transform: translateY(-1px);
+}

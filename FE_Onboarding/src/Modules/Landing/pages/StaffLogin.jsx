@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../Global/auth";
 import { useNavigate } from "react-router-dom";
@@ -10,42 +10,53 @@ import logo from "../../../Global/assets/onboarding_logo.png";
 export const StaffLogin = () => {
   const { instance } = useMsal();
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const { setUser } = useAuth();
 
-  /**
-   * Maneja el proceso de login:
-   * 1. Inicia sesión con Azure MSAL.
-   * 2. Obtiene datos del usuario desde el backend.
-   * 3. Guarda los datos en el contexto global.
-   * 4. Redirige al área protegida.
-   */
+  // Procesa la respuesta luego del redirect
+  useEffect(() => {
+    const handleRedirect = async () => {
+      setLoading(true);
+      try {
+        const response = await instance.handleRedirectPromise();
+        if (response) {
+          const token = response.accessToken;
+          sessionStorage.setItem("accessToken", token);
+
+          const loginResponse = await axiosClient.post("/LogIn");
+
+          setUser({
+            id: loginResponse.data.id,
+            nombre: loginResponse.data.nombre,
+            iniciales: loginResponse.data.iniciales,
+            rol: loginResponse.data.rol,
+          });
+
+          navigate("/admin");
+        }
+      } catch (error) {
+        console.error("Error al procesar el redirect:", error);
+        sessionStorage.removeItem("accessToken");
+        setUser(null);
+        setErrorMsg("No se pudo iniciar sesión. Intenta nuevamente.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleRedirect();
+  }, [instance, navigate, setUser]);
+
   const handleLogin = async () => {
     setLoading(true);
     setErrorMsg("");
-
     try {
-      const response = await instance.loginPopup(loginRequest);
-      const token = response.accessToken;
-      sessionStorage.setItem("accessToken", token);
-
-      const loginResponse = await axiosClient.post("/LogIn");
-
-      setUser({
-        id: loginResponse.data.id,
-        nombre: loginResponse.data.nombre,
-        iniciales: loginResponse.data.iniciales,
-        rol: loginResponse.data.rol,
-      });
-
-      navigate("/admin");
+      // Redirige a Microsoft para login
+      await instance.loginRedirect(loginRequest);
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      sessionStorage.removeItem("accessToken");
-      setUser(null);
       setErrorMsg("No se pudo iniciar sesión. Intenta nuevamente.");
-    } finally {
       setLoading(false);
     }
   };
