@@ -39,6 +39,9 @@ export const AuthProvider = ({ children }) => {
       id_Rol: userData.id_Rol,
       id_Pais: userData.id_Pais,
       estado: userData.estado,
+      azure_AD_User_Id: userData.azure_AD_User_Id,
+      fecha_Creacion: userData.fecha_Creacion,
+      fecha_Modificacion: userData.fecha_Modificacion,
     });
   }, []);
 

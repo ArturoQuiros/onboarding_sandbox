@@ -45,10 +45,8 @@ export const StaffLogin = () => {
             }
           );
 
-          // Si el backend devuelve su propio token, úsalo en lugar del de Microsoft
-          if (loginResponse.data.token) {
-            sessionStorage.setItem("accessToken", loginResponse.data.token);
-          }
+          // El backend no devuelve token, mantenemos el de Microsoft
+          // que ya fue guardado arriba para futuras peticiones autenticadas
 
           login(loginResponse.data);
           navigate("/admin");
