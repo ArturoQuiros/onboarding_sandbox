@@ -63,7 +63,14 @@ INSERT INTO Clientes (Nombre, Email, Telefono, Direccion, Fecha_Creacion, Fecha_
 VALUES
 ('Soluciones Globales S.A.', 'contacto@solucionesglobales.com', '555-123-4567', 'Avenida Central 101', GETDATE(), GETDATE()),
 ('Innovación Digital Ltda.', 'info@innovaciondigital.net', '555-987-6543', 'Calle del Sol 202', GETDATE(), GETDATE()),
-('Corporación Comercial C.R.', 'admin@corporacioncr.com', '555-555-5555', 'Boulevard Principal 303', GETDATE(), GETDATE());
+('Corporación Comercial C.R.', 'admin@corporacioncr.com', '555-555-5555', 'Boulevard Principal 303', GETDATE(), GETDATE()),
+('Tecnología Avanzada del Sur', 'ventas@tecavanzada.com', '555-222-3333', 'Paseo de la Montaña 404', GETDATE(), GETDATE()),
+('Fábrica Textil La Costa', 'gerencia@textilacosta.com', '555-444-5555', 'Zona Industrial 505', GETDATE(), GETDATE()),
+('Agencia de Viajes Mundo Feliz', 'reservas@mundofeliz.net', '555-666-7777', 'Plaza Mayor 606', GETDATE(), GETDATE()),
+('Distribuidora El Éxito', 'compras@distribuidoraexito.com', '555-888-9999', 'Carretera Vieja 707', GETDATE(), GETDATE()),
+('Constructora Del Valle', 'contacto@constructoradelvalle.com', '555-101-1010', 'Urbanización Nueva 808', GETDATE(), GETDATE()),
+('Servicios Médicos Integrales', 'info@medicosintegrales.com', '555-202-2020', 'Torre de Salud 909', GETDATE(), GETDATE()),
+('Exportadora Fénix', 'logistica@exportadorafenix.com', '555-303-3030', 'Puerto Comercial 110', GETDATE(), GETDATE());
 
 -- Insertar datos en la tabla Contratos
 -- (Id_Cliente y Account_Manager se refieren a los IDs de las tablas Clientes y Usuarios)
