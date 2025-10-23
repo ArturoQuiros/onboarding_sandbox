@@ -349,9 +349,9 @@ namespace WS_Onboarding.Controllers
             }
         }*/
 
-        //[HttpGet("Inside/GetAzureUsers")]
-        //[Authorize] // Requiere token de Azure AD
-        /*public async Task<IActionResult> GetAzureUsers()
+        [HttpGet("Inside/GetAzureUsers")]
+        [Authorize] // Requiere token de Azure AD
+        public async Task<IActionResult> GetAzureUsers()
         {
             try
             {
@@ -379,7 +379,7 @@ namespace WS_Onboarding.Controllers
 
                 return StatusCode(500, errorDetails);
             }
-        }*/
+        }
 
         [HttpGet("Inside/GetAllSync")]
         [Authorize]
@@ -395,7 +395,7 @@ namespace WS_Onboarding.Controllers
                 {
                     requestConfig.QueryParameters.Select = new[]
                     {
-                        "id", "displayName", "mail", "userPrincipalName","jobTitle","country","employeeType"
+                        "id", "displayName", "mail","mailboxSettings", "userPrincipalName","jobTitle","country","employeeType"
                     };
                     requestConfig.QueryParameters.Top = 10;
                 });
