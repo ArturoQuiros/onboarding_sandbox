@@ -124,12 +124,30 @@
     "deleteSuccess": "Contract deleted successfully!",
     "deleteError": "Could not delete contract!"
   },
-
   "contractServices": {
     "title": "Contract Services",
     "serviceAssigned": "Service successfully assigned!",
     "serviceUnassigned": "Service successfully unassigned!",
     "loadSuccess": "Data loaded: {{count}} services available."
+  },
+
+  "staffDashboard": {
+    "title": "Internal Staff Management",
+    "createButton": "Create New User",
+    "enableing": "Enabling user...",
+    "enableSuccess": "User enabled successfully!",
+    "disableing": "Disabling user...",
+    "disableSuccess": "User disabled successfully!",
+    "roleUpdating": "Updating role...",
+    "roleUpdateSuccess": "Role updated successfully!",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "position": "Position",
+      "role": "Role",
+      "country": "Country",
+      "status": "Status"
+    }
   },
 
   "common": {
@@ -155,7 +173,10 @@
     "selectOption": "Select Option",
     "loading": "Loading...",
     "savingChanges": "Saving changes...",
-    "errorSavingChanges": "Error saving changes."
+    "errorSavingChanges": "Error saving changes.",
+    "deleting": "Deleting...",
+    "deleteSuccess": "Item deleted successfully!",
+    "deleteError": "Error deleting item!"
   },
   "charts": {
     "by_status": "Tasks by Status",

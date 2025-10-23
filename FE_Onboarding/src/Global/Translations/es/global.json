@@ -124,12 +124,30 @@
     "deleteSuccess": "Contrato eliminado con éxito!",
     "deleteError": "No se pudo eliminar el contrato!"
   },
-
   "contractServices": {
     "title": "Servicios del Contrato",
     "serviceAssigned": "Servicio asignado con éxito!",
     "serviceUnassigned": "Servicio desasignado con éxito!",
     "loadSuccess": "Datos cargados: {{count}} servicios disponibles."
+  },
+
+  "staffDashboard": {
+    "title": "Gestión de Personal Interno",
+    "createButton": "Crear Nuevo Usuario",
+    "enableing": "Habilitando usuario...",
+    "enableSuccess": "Usuario habilitado con éxito!",
+    "disableing": "Deshabilitando usuario...",
+    "disableSuccess": "Usuario deshabilitado con éxito!",
+    "roleUpdating": "Actualizando rol...",
+    "roleUpdateSuccess": "Rol actualizado con éxito!",
+    "table": {
+      "name": "Nombre",
+      "email": "Email",
+      "position": "Puesto",
+      "role": "Rol",
+      "country": "País",
+      "status": "Estado"
+    }
   },
 
   "common": {
@@ -155,7 +173,10 @@
     "selectOption": "Seleccionar Opción",
     "loading": "Cargando...",
     "savingChanges": "Guardando cambios...",
-    "errorSavingChanges": "Error al guardar los cambios."
+    "errorSavingChanges": "Error al guardar los cambios.",
+    "deleting": "Eliminando...",
+    "deleteSuccess": "Elemento eliminado con éxito!",
+    "deleteError": "Error al eliminar el elemento!"
   },
   "charts": {
     "by_status": "Tareas por Estado",

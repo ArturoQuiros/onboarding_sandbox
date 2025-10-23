@@ -37,16 +37,45 @@ function App() {
           <Route path="staff-login" element={<StaffLogin />} />
         </Route>
 
-        {/* 🛡️ RUTAS ADMIN - Solo STAFF con rol Admin (1) */}
+        {/* 🛡️ RUTAS ADMIN + MANAGER - STAFF */}
         <Route
           path="/admin"
           element={
-            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1]}>
+            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
               <AdminLayout />
             </AuthGuard>
           }
         >
+          {/* Admin solamente */}
           <Route index element={<Admin />} />
+          <Route
+            path="users"
+            element={
+              <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1]}>
+                <Users />
+              </AuthGuard>
+            }
+          />
+
+          {/* Admin o Manager */}
+          <Route
+            path="customers"
+            element={
+              <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
+                <Customers />
+              </AuthGuard>
+            }
+          />
+          <Route
+            path="contracts"
+            element={
+              <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
+                <Contracts />
+              </AuthGuard>
+            }
+          />
+
+          {/* Admin */}
           <Route path="countries" element={<Countries />} />
           <Route path="services" element={<Services />} />
           <Route path="services/:serviceId/tasks" element={<Tasks />} />
@@ -57,33 +86,7 @@ function App() {
           />
         </Route>
 
-        {/* 🧩 RUTAS MANAGER - STAFF con rol Admin (1) o Manager (2) */}
-        <Route
-          path="customers"
-          element={
-            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
-              <Customers />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="contracts"
-          element={
-            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
-              <Contracts />
-            </AuthGuard>
-          }
-        />
-        <Route
-          path="users"
-          element={
-            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1]}>
-              <Users />
-            </AuthGuard>
-          }
-        />
-
-        {/* 🎯 RUTAS CLIENTE - Acceso a USUARIOS INTERNOS y EXTERNOS */}
+        {/* 🎯 RUTAS CLIENTE - Acceso a STAFF o CLIENT */}
         <Route
           path="client/contract/:contractId"
           element={

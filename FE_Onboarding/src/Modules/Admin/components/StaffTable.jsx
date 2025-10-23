@@ -4,14 +4,17 @@ import React from "react";
 import styles from "./StaffTable.module.css";
 import { EnableToggle } from "./EnableToggle";
 import { RoleSelector } from "./RoleSelector";
+import { useTranslation } from "react-i18next";
 
 export const StaffTable = ({
   staff,
   roles,
+  fields, // 👈 Se recibe la configuración de columnas
   onToggleEnabled,
-  onAssignRole,
-  // ... (otras props de paginación)
+  onAssignRole, // ... (otras props de paginación)
 }) => {
+  const { t } = useTranslation("global");
+
   return (
     <div className={styles.staffTable_tableContainer}>
       {staff.length === 0 ? (
@@ -21,30 +24,39 @@ export const StaffTable = ({
       ) : (
         <table className={styles.staffTable_table}>
           <thead className={styles.staffTable_tableHeader}>
-            {/* CORRECCIÓN: Asegurarse que no haya espacios ni comentarios aquí */}
             <tr>
-              <th className={styles.staffTable_tableHeaderCell}>ID</th>
-              <th className={styles.staffTable_tableHeaderCell}>Nombre</th>
-              <th className={styles.staffTable_tableHeaderCell}>Email</th>
-              <th className={styles.staffTable_tableHeaderCell}>Puesto</th>
-              {/* 👈 AÑADIDO */}
-              <th className={styles.staffTable_tableHeaderCell}>País</th>
-              <th className={styles.staffTable_tableHeaderCell}>Habilitado</th>
-              <th className={styles.staffTable_tableHeaderCell}>Rol</th>
+              {/* 1. Encabezados de Datos Dinámicos */}
+
+              {fields.map((field) => (
+                <th
+                  key={field.key}
+                  className={styles.staffTable_tableHeaderCell}
+                >
+                  {field.label} {/* Nombre traducido */}
+                </th>
+              ))}
+              {/* 2. Encabezados Fijos (Estado y Rol) */}
+              <th className={styles.staffTable_tableHeaderCell}>
+                {t("staffDashboard.table.status")}
+              </th>
+
+              <th className={styles.staffTable_tableHeaderCell}>
+                {t("staffDashboard.table.role")}
+              </th>
             </tr>
           </thead>
+
           <tbody>
             {staff.map((user) => (
-              // CORRECCIÓN: Asegurarse que no haya espacios ni comentarios aquí
               <tr key={user.id} className={styles.staffTable_tableRow}>
-                <td className={styles.staffTable_tableCell}>{user.id}</td>
-                <td className={styles.staffTable_tableCell}>{user.name}</td>
-                <td className={styles.staffTable_tableCell}>{user.email}</td>
-                <td className={styles.staffTable_tableCell}>{user.puesto}</td>
-                {/* 👈 AÑADIDO */}
-                <td className={styles.staffTable_tableCell}>
-                  {user.countryName}
-                </td>
+                {/* 1. Celdas de Datos Dinámicas */}
+                {fields.map((field) => (
+                  <td key={field.key} className={styles.staffTable_tableCell}>
+                    {user[field.key]}
+                  </td>
+                ))}
+                {/* 2. Celda de Estado (Toggle) */}
+
                 <td className={styles.staffTable_tableCell}>
                   <div className={styles.staffTable_actionCellWrapper}>
                     <EnableToggle
@@ -53,6 +65,8 @@ export const StaffTable = ({
                     />
                   </div>
                 </td>
+                {/* 3. Celda de Rol (RoleSelector) */}
+
                 <td className={styles.staffTable_tableCell}>
                   <div className={styles.staffTable_actionCellWrapper}>
                     <RoleSelector

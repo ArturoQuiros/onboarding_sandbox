@@ -13,9 +13,8 @@ export const useInternalUsersQuery = () => {
   const internalUsersQuery = useQuery({
     queryKey: ["insideUsers"],
     queryFn: async () => {
-      // 1. 🌟 NUEVA LÓGICA: Sincronizar AD antes de obtener los datos 🌟
-      // Ejecuta la acción de sincronización. No necesitamos la respuesta, solo esperar que termine.
-      await axiosClient.get("/User/Inside/Inside/GetAllSync"); // 2. Obtener los usuarios con los datos recién sincronizados
+      // 1. 🌟 Lógica de Sincronización (OK: Asumimos que trae todos los estados)
+      await axiosClient.get("/User/Inside/Inside/GetAllSync"); // 2. Obtener los usuarios (DEBE TRAER TODOS, incluidos los deshabilitados)
 
       const { data } = await axiosClient.get("/User/Inside");
       return data.map((user) => ({
@@ -27,7 +26,7 @@ export const useInternalUsersQuery = () => {
         roleId: user.id_Rol,
         countryName: countryMap[user.id_Pais] || "Sin País",
         countryId: user.id_Pais,
-        enabled: user.estado,
+        enabled: user.estado, // El campo 'enabled' es clave para la UI
         createdAt: user.fecha_Creacion,
         updatedAt: user.fecha_Modificacion,
       }));
@@ -37,7 +36,7 @@ export const useInternalUsersQuery = () => {
       countriesQuery.isSuccess &&
       !!roleMap &&
       !!countryMap,
-  });
+  }); // Mutación de Actualización de Rol (Mantenemos invalidación ya que los roles no cambian tanto)
 
   const updateInternalUserRole = useMutation({
     mutationFn: async ({ userId, newRoleId }) => {
@@ -47,15 +46,28 @@ export const useInternalUsersQuery = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["insideUsers"] });
     },
-  });
+  }); // Mutación de Toggle de Estado (CORREGIDA para actualización local)
 
   const toggleInternalUserStatus = useMutation({
     mutationFn: async ({ userId, newStatus }) => {
       const payload = { estado: newStatus };
       return axiosClient.patch(`/User/Inside/${userId}`, payload);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["insideUsers"] });
+    }, // 🛑 CORRECCIÓN CLAVE: Usamos setQueryData para actualizar la caché sin recargar la lista
+    onSuccess: (data, variables) => {
+      queryClient.setQueryData(["insideUsers"], (oldUsers) => {
+        if (!oldUsers) return []; // Si no hay datos, retorna un array vacío.
+
+        return oldUsers.map((user) => {
+          // Si encontramos el usuario, actualizamos su campo 'enabled' (estado)
+          if (user.id === variables.userId) {
+            return {
+              ...user,
+              enabled: variables.newStatus, // Si tu API devuelve el objeto actualizado, puedes usar data.estado: // enabled: data.estado
+            };
+          }
+          return user;
+        });
+      });
     },
   });
 
@@ -69,7 +81,7 @@ export const useInternalUsersQuery = () => {
 };
 
 // ----------------------------------------------------------------------
-// HOOK SEPARADO PARA SÓLO DISPARAR LA SINCRONIZACIÓN MANUALMENTE
+// HOOK SEPARADO PARA SÓLO DISPARAR LA SINCRONIZACIÓN MANUALMENTE (Sin cambios)
 // ----------------------------------------------------------------------
 
 export const useADSyncMutation = () => {
@@ -77,12 +89,9 @@ export const useADSyncMutation = () => {
 
   const adSyncMutation = useMutation({
     mutationFn: async () => {
-      // Llama al endpoint de sincronización
       return axiosClient.get("/WS_Onboarding/User/Inside/Inside/GetAllSync");
     },
     onSuccess: () => {
-      // Invalida la lista de usuarios para que se refetch (vuelva a ejecutar)
-      // la query principal (que ahora incluye la sincronización)
       queryClient.invalidateQueries({ queryKey: ["insideUsers"] });
       console.log(
         "Sincronización con AD completada y lista de usuarios invalidada."
