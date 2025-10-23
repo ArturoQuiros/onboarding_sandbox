@@ -9,7 +9,6 @@ import { useInternalUsersQuery } from "../hooks";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
-// ⚠️ El componente ahora espera recibir la prop 'fields'
 export const StaffDashboard = ({ fields }) => {
   const { t } = useTranslation("global");
 
@@ -25,7 +24,15 @@ export const StaffDashboard = ({ fields }) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(5); // 🔹 Función para toggler el estado (habilitar/deshabilitar)
+  const [itemsPerPage, setItemsPerPage] = useState(5); // 🆕 Estados de ordenación
+  const [sortKey, setSortKey] = useState(null);
+  const [sortDirection, setSortDirection] = useState("asc"); // 🆕 Función para manejar la ordenación (copiada de CrudDashboard)
+
+  const handleSort = (key) => {
+    setSortKey(key);
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    setCurrentPage(1);
+  }; // Función para toggler el estado (habilitar/deshabilitar)
 
   const handleToggleEnabled = (userId, currentStatus) => {
     const newStatus = !currentStatus;
@@ -36,7 +43,7 @@ export const StaffDashboard = ({ fields }) => {
       success: t(`staffDashboard.${actionKey}Success`),
       error: t("common.genericError"),
     });
-  }; // 🔹 Función para asignar un nuevo rol
+  }; // Función para asignar un nuevo rol
 
   const handleAssignRole = (userId, newRoleId) => {
     toast.promise(updateInternalUserRole.mutateAsync({ userId, newRoleId }), {
@@ -44,25 +51,37 @@ export const StaffDashboard = ({ fields }) => {
       success: t("staffDashboard.roleUpdateSuccess"),
       error: t("common.genericError"),
     });
-  }; // 🔹 Lógica de filtrado y paginación (sin cambios)
+  }; // 🆕 1. Lógica de Ordenación
+
+  const sortedStaff = useMemo(() => {
+    if (!sortKey) return staff;
+    return [...staff].sort((a, b) => {
+      const aValue = String(a[sortKey] ?? "").toLowerCase();
+      const bValue = String(b[sortKey] ?? "").toLowerCase();
+      return sortDirection === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    });
+  }, [staff, sortKey, sortDirection]); // 2. Lógica de Filtrado (Ahora usa sortedStaff)
 
   const filteredStaff = useMemo(() => {
-    if (!searchTerm) return staff;
-    return staff.filter(
+    if (!searchTerm) return sortedStaff;
+    // Usar la lógica de filtrado existente, pero sobre el array ordenado
+    return sortedStaff.filter(
       (user) =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (user.roleName &&
           user.roleName.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }, [staff, searchTerm]);
+  }, [sortedStaff, searchTerm]); // Cambiado 'staff' por 'sortedStaff' // 3. Lógica de Paginación
 
   const paginatedStaff = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredStaff.slice(start, start + itemsPerPage);
   }, [filteredStaff, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage); // 🔹 Renderizado condicional para estados de carga y error (usa common)
+  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage); // Renderizado condicional
 
   if (isLoading || isLoadingRoles)
     return <p className={styles.loadingMessage}>{t("common.loading")}</p>;
@@ -72,7 +91,7 @@ export const StaffDashboard = ({ fields }) => {
       <div className={styles.errorMessage}>
         <p>{t("common.genericError")}</p>
         <button onClick={() => refetch()} className={styles.retryButton}>
-          <FaSync /> {t("common.loading")}
+          <FaSync /> {t("common.retry")}
         </button>
       </div>
     );
@@ -84,13 +103,6 @@ export const StaffDashboard = ({ fields }) => {
           <FaUsers className={styles.icon} />
           {t("staffDashboard.title")}
         </h2>
-
-        <button
-          className={styles.createButton}
-          onClick={() => console.log("Crear usuario")}
-        >
-          <FaPlus /> {t("staffDashboard.createButton")}
-        </button>
       </div>
 
       <div className={styles.controlsBar}>
@@ -105,15 +117,21 @@ export const StaffDashboard = ({ fields }) => {
         />
       </div>
 
-      <StaffTable // ⚠️ Prop 'fields' añadida aquí
+      <StaffTable
         fields={fields}
         staff={paginatedStaff}
         roles={roles}
         onToggleEnabled={handleToggleEnabled}
-        onAssignRole={handleAssignRole}
+        onAssignRole={handleAssignRole} // 📤 Props de Paginación
         currentPage={currentPage}
         totalPages={totalPages}
+        filteredCount={filteredStaff.length} // Necesario para el footer
+        itemsPerPage={itemsPerPage} // Necesario para el footer
         onPageChange={setCurrentPage}
+        // 📤 Props de Ordenación
+        onSort={handleSort}
+        sortKey={sortKey}
+        sortDirection={sortDirection}
       />
     </div>
   );
