@@ -6,6 +6,7 @@ using Microsoft.Identity.Web;
 using Microsoft.Kiota.Abstractions.Authentication;
 using WS_Onboarding.Functions;
 using Microsoft.Graph;
+using WS_Onboarding.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,12 @@ builder.Services.AddScoped<GraphServiceClient>(sp =>
     var authProvider = sp.GetRequiredService<IAuthenticationProvider>();
     return new GraphServiceClient(authProvider);
 });
+
+builder.Services.Configure<AzureAdSettings>(
+    builder.Configuration.GetSection("AzureAd"));
+
+// Servicio para enviar emails
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

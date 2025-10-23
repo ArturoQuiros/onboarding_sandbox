@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "EDGjfBapGPs=",
+  "dgSpecHash": "QVawfB4vqpo=",
   "success": true,
   "projectFilePath": "C:\\Users\\USER\\OneDrive\\Practica_Arturo\\Proyectos\\GitHub\\onboarding_sandbox\\WS_Onboarding\\WS_Container\\WS_Onboarding.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,9 @@
     "C:\\Users\\USER\\.nuget\\packages\\azure.security.keyvault.certificates\\4.6.0\\azure.security.keyvault.certificates.4.6.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\azure.security.keyvault.secrets\\4.6.0\\azure.security.keyvault.secrets.4.6.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\bouncycastle.cryptography\\2.6.1\\bouncycastle.cryptography.2.6.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\mailkit\\4.14.1\\mailkit.4.14.1.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.9\\microsoft.aspnetcore.authentication.jwtbearer.9.0.9.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.authentication.openidconnect\\9.0.0\\microsoft.aspnetcore.authentication.openidconnect.9.0.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\9.0.0\\microsoft.aspnetcore.cryptography.internal.9.0.0.nupkg.sha512",
@@ -80,6 +82,7 @@
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.openapi\\1.6.25\\microsoft.openapi.1.6.25.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.sqlserver.server\\1.0.0\\microsoft.sqlserver.server.1.0.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
+    "C:\\Users\\USER\\.nuget\\packages\\mimekit\\4.14.0\\mimekit.4.14.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\scalar.aspnetcore\\2.8.4\\scalar.aspnetcore.2.8.4.nupkg.sha512",
     "C:\\Users\\USER\\.nuget\\packages\\std.uritemplate\\2.0.1\\std.uritemplate.2.0.1.nupkg.sha512",
