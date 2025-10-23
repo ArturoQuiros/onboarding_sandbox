@@ -1,5 +1,3 @@
-// src/App.jsx
-
 import { Routes, Route } from "react-router-dom";
 import AdminLayout from "./Modules/Admin/layouts/AdminLayout";
 import { LandingLayout } from "./Modules/Landing/layouts/";
@@ -16,6 +14,7 @@ import {
 } from "./Modules/Admin/pages";
 import { Landing, CustomerLogin, StaffLogin } from "./Modules/Landing/pages";
 import { Toaster } from "react-hot-toast";
+import { AuthGuard } from "./Global/auth";
 
 // 🎯 IMPORTACIONES DEL FLUJO DE TAREAS (Landing y Task Page)
 import {
@@ -26,32 +25,31 @@ import {
 
 import { TaskFlowLayout } from "./Modules/Onboarding/layouts";
 
-//Usuarios ADMIN
-
 function App() {
   return (
     <>
       <Toaster position="bottom-center" />
       <Routes>
-        {/* RUTAS PÚBLICAS */}
+        {/* 🌐 RUTAS PÚBLICAS */}
         <Route path="/" element={<LandingLayout />}>
           <Route index element={<Landing />} />
           <Route path="client-login" element={<CustomerLogin />} />
           <Route path="staff-login" element={<StaffLogin />} />
         </Route>
 
-        {/* SOLO ACCESO USUARIO INTERNO (STAFF) */}
-
-        {/* RUTAS ADMIN */}
-        <Route path="/admin" element={<AdminLayout />}>
+        {/* 🛡️ RUTAS ADMIN - Solo STAFF con rol Admin (1) */}
+        <Route
+          path="/admin"
+          element={
+            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1]}>
+              <AdminLayout />
+            </AuthGuard>
+          }
+        >
           <Route index element={<Admin />} />
           <Route path="countries" element={<Countries />} />
           <Route path="services" element={<Services />} />
-
-          <Route path="services/:serviceId/tasks">
-            <Route index element={<Tasks />} />
-          </Route>
-
+          <Route path="services/:serviceId/tasks" element={<Tasks />} />
           <Route path="staff" element={<Staff />} />
           <Route
             path="contracts/:contractId/services"
@@ -59,26 +57,60 @@ function App() {
           />
         </Route>
 
-        {/* RUTAS MAMANGER */}
-        <Route path="customers" element={<Customers />} />
-        <Route path="contracts" element={<Contracts />} />
-        <Route path="users" element={<Users />} />
+        {/* 🧩 RUTAS MANAGER - STAFF con rol Admin (1) o Manager (2) */}
+        <Route
+          path="customers"
+          element={
+            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
+              <Customers />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="contracts"
+          element={
+            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2]}>
+              <Contracts />
+            </AuthGuard>
+          }
+        />
+        <Route
+          path="users"
+          element={
+            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1]}>
+              <Users />
+            </AuthGuard>
+          }
+        />
 
-        {/* 🎯 RUTAS CLIENTE - ACCESO A USUARIO INTERNO y EXTERNO*/}
-        <Route path="client/contract/:contractId" element={<TaskFlowLayout />}>
-          {/* 🎯 RUTAS CLIENTE - PARA TODOS LOS ROLES*/}
-
+        {/* 🎯 RUTAS CLIENTE - Acceso a USUARIOS INTERNOS y EXTERNOS */}
+        <Route
+          path="client/contract/:contractId"
+          element={
+            <AuthGuard
+              allowedUserTypes={["staff", "client"]}
+              allowedRoles={[2, 3]}
+            >
+              <TaskFlowLayout />
+            </AuthGuard>
+          }
+        >
           <Route index element={<ClientHome />} />
-
-          {/* Vista de una tarea específica dentro de un servicio */}
           <Route
             path="service/:serviceId/task/:taskId"
             element={<ClientContractPage />}
           />
         </Route>
 
-        {/* 🎯 RUTAS STAFF (MANAGER, ADMIN y USER de USUARIO*/}
-        <Route path="staff/contract/:contractId" element={<TaskFlowLayout />}>
+        {/* 🎯 RUTAS STAFF (Manager, Admin y User) */}
+        <Route
+          path="staff/contract/:contractId"
+          element={
+            <AuthGuard allowedUserTypes={["staff"]} allowedRoles={[1, 2, 3]}>
+              <TaskFlowLayout />
+            </AuthGuard>
+          }
+        >
           <Route
             path="service/:serviceId/task/:taskId"
             element={<StaffReviewPage />}

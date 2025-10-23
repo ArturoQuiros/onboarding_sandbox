@@ -26,7 +26,7 @@ export const StaffAuthProvider = ({ children }) => {
     sessionStorage.removeItem("userEmail");
     sessionStorage.removeItem("userType");
     setUser(null);
-    navigate("/staff-login");
+    navigate("/", { replace: true });
   }, [navigate]);
 
   const logout = useCallback(() => {

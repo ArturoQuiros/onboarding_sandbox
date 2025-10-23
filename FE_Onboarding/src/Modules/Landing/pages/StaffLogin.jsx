@@ -33,6 +33,7 @@ export const StaffLogin = () => {
           // Guardar token y email en sessionStorage para persistencia
           sessionStorage.setItem("accessToken", token);
           sessionStorage.setItem("userEmail", email);
+          sessionStorage.setItem("userType", "staff");
 
           // Login inicial con email (sin token de Authorization)
           const loginResponse = await axiosClient.post(
