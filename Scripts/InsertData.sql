@@ -8,10 +8,8 @@ VALUES
 -- Insertar datos en la tabla Roles
 INSERT INTO Roles (Nombre, Fecha_Creacion, Fecha_Modificacion)
 VALUES
-('Administrador', GETDATE(), GETDATE()),
-('Usuario', GETDATE(), GETDATE()),
-('Staff', GETDATE(), GETDATE());
-
+('Admin', GETDATE(), GETDATE()),
+('User', GETDATE(), GETDATE())
 -- Insertar datos en la tabla Usuarios
 -- (Id_Pais y Role_Id se refieren a los IDs de las tablas Paises y Roles)
 INSERT INTO Usuarios (Nombre, Azure_AD_User_Id, Email, Id_Pais, Role_Id, Fecha_Creacion, Fecha_Modificacion)
@@ -30,8 +28,35 @@ VALUES
 INSERT INTO Servicios (Nombre, Id_pais, Fecha_Creacion, Fecha_Modificacion)
 VALUES
 ('Consultoría de Negocios', 1, GETDATE(), GETDATE()),
+('Auditoría Financiera', 1, GETDATE(), GETDATE()),
+('Asesoría Fiscal (Impuestos)', 1, GETDATE(), GETDATE()),
+('Gestión de Riesgos', 1, GETDATE(), GETDATE()),
+('Servicios de Cumplimiento (Compliance)', 1, GETDATE(), GETDATE()),
+('Ciberseguridad y Privacidad', 1, GETDATE(), GETDATE()),
+('Outsourcing Contable y Nómina', 1, GETDATE(), GETDATE()),
+('Valoración de Empresas', 1, GETDATE(), GETDATE()),
+('Fusiones y Adquisiciones (M&A)', 1, GETDATE(), GETDATE()),
+('Servicios Legales Corporativos', 1, GETDATE(), GETDATE()),
+('Consultoría de Negocios', 2, GETDATE(), GETDATE()),
 ('Auditoría Financiera', 2, GETDATE(), GETDATE()),
-('Asesoría Fiscal', 3, GETDATE(), GETDATE());
+('Asesoría Fiscal (Impuestos)', 2, GETDATE(), GETDATE()),
+('Gestión de Riesgos', 2, GETDATE(), GETDATE()),
+('Servicios de Cumplimiento (Compliance)', 2, GETDATE(), GETDATE()),
+('Ciberseguridad y Privacidad', 2, GETDATE(), GETDATE()),
+('Outsourcing Contable y Nómina', 2, GETDATE(), GETDATE()),
+('Valoración de Empresas', 2, GETDATE(), GETDATE()),
+('Fusiones y Adquisiciones (M&A)', 2, GETDATE(), GETDATE()),
+('Servicios Legales Corporativos', 2, GETDATE(), GETDATE()),
+('Consultoría de Negocios', 3, GETDATE(), GETDATE()),
+('Auditoría Financiera', 3, GETDATE(), GETDATE()),
+('Asesoría Fiscal (Impuestos)', 3, GETDATE(), GETDATE()),
+('Gestión de Riesgos', 3, GETDATE(), GETDATE()),
+('Servicios de Cumplimiento (Compliance)', 3, GETDATE(), GETDATE()),
+('Ciberseguridad y Privacidad', 3, GETDATE(), GETDATE()),
+('Outsourcing Contable y Nómina', 3, GETDATE(), GETDATE()),
+('Valoración de Empresas', 3, GETDATE(), GETDATE()),
+('Fusiones y Adquisiciones (M&A)', 3, GETDATE(), GETDATE()),
+('Servicios Legales Corporativos', 3, GETDATE(), GETDATE());
 
 -- Insertar datos en la tabla Clientes
 INSERT INTO Clientes (Nombre, Email, Telefono, Direccion, Fecha_Creacion, Fecha_Modificacion)
