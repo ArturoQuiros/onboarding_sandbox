@@ -1,13 +1,22 @@
-// src/Global/AuthContext.jsx
+// src/Global/Context/StaffAuthContext.jsx
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../Api/axiosClient";
 import { setUnauthorizedHandler } from "../hooks/authHooks";
 
-export const AuthContext = React.createContext(null);
+export const StaffAuthContext = React.createContext(null);
 
-export const AuthProvider = ({ children }) => {
+// Hook personalizado exportado desde el mismo archivo
+export const useStaffAuth = () => {
+  const context = useContext(StaffAuthContext);
+  if (!context) {
+    throw new Error("useStaffAuth debe usarse dentro de StaffAuthProvider");
+  }
+  return context;
+};
+
+export const StaffAuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -15,18 +24,13 @@ export const AuthProvider = ({ children }) => {
   const clientLogout = useCallback(() => {
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("userType");
     setUser(null);
-    navigate("/");
+    navigate("/staff/login");
   }, [navigate]);
 
-  const logout = useCallback(async () => {
-    try {
-      await axiosClient.post("/LogOut");
-    } catch (error) {
-      console.error("Error al cerrar sesión en servidor:", error);
-    } finally {
-      clientLogout();
-    }
+  const logout = useCallback(() => {
+    clientLogout();
   }, [clientLogout]);
 
   // ÚNICA FUNCIÓN DE MAPEO Y ASIGNACIÓN DE USUARIO
@@ -43,6 +47,7 @@ export const AuthProvider = ({ children }) => {
       fecha_Creacion: userData.fecha_Creacion,
       fecha_Modificacion: userData.fecha_Modificacion,
     });
+    sessionStorage.setItem("userType", "staff");
   }, []);
 
   const handleUnauthorized = useCallback(() => clientLogout(), [clientLogout]);
@@ -53,8 +58,10 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       const token = sessionStorage.getItem("accessToken");
       const email = sessionStorage.getItem("userEmail");
+      const userType = sessionStorage.getItem("userType");
 
-      if (token && email) {
+      // Solo verificar si es un usuario staff
+      if (token && email && userType === "staff") {
         try {
           // Enviar el email en el body para revalidar la sesión
           // NO enviar el token de Authorization porque este endpoint no lo requiere
@@ -74,7 +81,7 @@ export const AuthProvider = ({ children }) => {
             clientLogout();
           }
         } catch (e) {
-          console.error("Error al verificar sesión persistente:", e);
+          console.error("Error al verificar sesión de staff:", e);
           clientLogout();
         }
       }
@@ -87,15 +94,22 @@ export const AuthProvider = ({ children }) => {
   if (loading)
     return (
       <div style={{ textAlign: "center", padding: 50 }}>
-        Verificando sesión...
+        Verificando sesión de staff...
       </div>
     );
 
   return (
-    <AuthContext.Provider
-      value={{ user, setUser, login, logout, isAuthenticated: !!user }}
+    <StaffAuthContext.Provider
+      value={{
+        user,
+        setUser,
+        login,
+        logout,
+        isAuthenticated: !!user,
+        userType: "staff",
+      }}
     >
       {children}
-    </AuthContext.Provider>
+    </StaffAuthContext.Provider>
   );
 };

@@ -1,13 +1,13 @@
 // src/Modules/Admin/pages/Admin.jsx
 
 import React from "react";
-import { useAuth } from "../../../Global/hooks";
+import { useStaffAuth } from "../../../Global/Context";
 
 /**
  * Página principal del panel de administración.
  */
 const Admin = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useStaffAuth();
 
   if (!isAuthenticated || !user) {
     return (

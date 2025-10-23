@@ -4,7 +4,6 @@ import { FiLogOut } from "react-icons/fi";
 import { LanguageContext } from "../../../Global/Context";
 import styles from "./Navbar.module.css";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../Global/hooks";
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation("global");
@@ -16,7 +15,7 @@ export const Navbar = () => {
   };
 
   const handleLogOut = () => {
-    logout(); // Llama al logout del AuthContext
+    console.log("PENDIENTE LOGOUT CLIENTE");
   };
 
   return (

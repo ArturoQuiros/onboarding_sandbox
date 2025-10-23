@@ -4,14 +4,14 @@ import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../Global/auth";
 import { useNavigate } from "react-router-dom";
 import axiosClient from "../../../Api/axiosClient";
-import { useAuth } from "../../../Global/hooks";
+import { useStaffAuth } from "../../../Global/Context";
 import styles from "./StaffLogin.module.css";
 import logo from "../../../Global/assets/onboarding_logo.png";
 
 export const StaffLogin = () => {
   const { instance } = useMsal();
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useStaffAuth();
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 

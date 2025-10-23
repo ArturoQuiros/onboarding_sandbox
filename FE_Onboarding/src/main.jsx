@@ -8,7 +8,11 @@ import i18next from "i18next";
 import { I18nextProvider } from "react-i18next";
 
 // 💡 Contextos globales
-import { LanguageProvider, UIProvider, AuthProvider } from "./Global/Context";
+import {
+  LanguageProvider,
+  UIProvider,
+  StaffAuthProvider,
+} from "./Global/Context";
 import { enTranslation, esTranslation } from "./Global/Translations";
 
 // 💡 MSAL (Azure AD)
@@ -38,13 +42,13 @@ createRoot(document.getElementById("root")).render(
       <MsalProvider instance={msalInstance}>
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
-            <AuthProvider>
+            <StaffAuthProvider>
               <LanguageProvider>
                 <UIProvider>
                   <App />
                 </UIProvider>
               </LanguageProvider>
-            </AuthProvider>
+            </StaffAuthProvider>
           </BrowserRouter>
         </QueryClientProvider>
       </MsalProvider>
