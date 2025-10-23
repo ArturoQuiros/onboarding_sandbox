@@ -9,7 +9,8 @@ VALUES
 INSERT INTO Roles (Nombre, Fecha_Creacion, Fecha_Modificacion)
 VALUES
 ('Admin', GETDATE(), GETDATE()),
-('User', GETDATE(), GETDATE())
+('Manager', GETDATE(), GETDATE()),
+('User', GETDATE(), GETDATE());
 -- Insertar datos en la tabla Usuarios
 -- (Id_Pais y Role_Id se refieren a los IDs de las tablas Paises y Roles)
 INSERT INTO Usuarios (Nombre, Azure_AD_User_Id, Email, Id_Pais, Role_Id, Fecha_Creacion, Fecha_Modificacion)

@@ -26,6 +26,8 @@ import {
 
 import { TaskFlowLayout } from "./Modules/Onboarding/layouts";
 
+//Usuarios ADMIN
+
 function App() {
   return (
     <>
@@ -38,11 +40,12 @@ function App() {
           <Route path="staff-login" element={<StaffLogin />} />
         </Route>
 
+        {/* SOLO ACCESO USUARIO INTERNO (STAFF) */}
+
         {/* RUTAS ADMIN */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
           <Route path="countries" element={<Countries />} />
-          <Route path="customers" element={<Customers />} />
           <Route path="services" element={<Services />} />
 
           <Route path="services/:serviceId/tasks">
@@ -50,17 +53,21 @@ function App() {
           </Route>
 
           <Route path="staff" element={<Staff />} />
-          <Route path="contracts" element={<Contracts />} />
           <Route
             path="contracts/:contractId/services"
             element={<ContractServices />}
           />
-          <Route path="users" element={<Users />} />
         </Route>
 
-        {/* 🎯 RUTAS CLIENTE */}
+        {/* RUTAS MAMANGER */}
+        <Route path="customers" element={<Customers />} />
+        <Route path="contracts" element={<Contracts />} />
+        <Route path="users" element={<Users />} />
+
+        {/* 🎯 RUTAS CLIENTE - ACCESO A USUARIO INTERNO y EXTERNO*/}
         <Route path="client/contract/:contractId" element={<TaskFlowLayout />}>
-          {/* Vista general del contrato: Dashboard de tareas */}
+          {/* 🎯 RUTAS CLIENTE - PARA TODOS LOS ROLES*/}
+
           <Route index element={<ClientHome />} />
 
           {/* Vista de una tarea específica dentro de un servicio */}
@@ -70,7 +77,7 @@ function App() {
           />
         </Route>
 
-        {/* 🎯 RUTAS STAFF */}
+        {/* 🎯 RUTAS STAFF (MANAGER, ADMIN y USER de USUARIO*/}
         <Route path="staff/contract/:contractId" element={<TaskFlowLayout />}>
           <Route
             path="service/:serviceId/task/:taskId"
