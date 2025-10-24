@@ -1,19 +1,24 @@
 import { Navigate } from "react-router-dom";
-import { useStaffAuth } from "../Context";
-// import { useClientAuth } from "../Context/ClientAuthContext"; // se habilitará luego
+import { useStaffAuth, useCustomerAuth } from "../Context";
 
 export const AuthGuard = ({ allowedRoles, allowedUserTypes, children }) => {
   const staffAuth = useStaffAuth();
+  const customerAuth = useCustomerAuth();
   const userType = sessionStorage.getItem("userType");
 
   // Elegir contexto según tipo de usuario
-  const auth = userType === "staff" ? staffAuth : null; // luego se agregará: userType === "client" ? clientAuth : null;
+  const auth =
+    userType === "staff"
+      ? staffAuth
+      : userType === "client"
+      ? customerAuth
+      : null;
 
   // 🔹 Esperar mientras se verifica la sesión
   if (auth?.loading) {
     return (
       <div style={{ textAlign: "center", padding: 50 }}>
-        Verificando sesión...
+        Verifying session...
       </div>
     );
   }

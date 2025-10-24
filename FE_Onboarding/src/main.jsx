@@ -12,6 +12,7 @@ import {
   LanguageProvider,
   UIProvider,
   StaffAuthProvider,
+  CustomerAuthProvider,
 } from "./Global/Context";
 import { enTranslation, esTranslation } from "./Global/Translations";
 
@@ -43,11 +44,13 @@ createRoot(document.getElementById("root")).render(
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
             <StaffAuthProvider>
-              <LanguageProvider>
-                <UIProvider>
-                  <App />
-                </UIProvider>
-              </LanguageProvider>
+              <CustomerAuthProvider>
+                <LanguageProvider>
+                  <UIProvider>
+                    <App />
+                  </UIProvider>
+                </LanguageProvider>
+              </CustomerAuthProvider>
             </StaffAuthProvider>
           </BrowserRouter>
         </QueryClientProvider>
