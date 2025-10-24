@@ -92,7 +92,7 @@ function App() {
           element={
             <AuthGuard
               allowedUserTypes={["staff", "client"]}
-              allowedRoles={[2, 3]}
+              allowedRoles={[1, 2, 3]}
             >
               <TaskFlowLayout />
             </AuthGuard>

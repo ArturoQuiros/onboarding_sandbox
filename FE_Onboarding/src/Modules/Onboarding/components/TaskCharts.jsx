@@ -15,15 +15,15 @@ import {
 import { useTranslation } from "react-i18next";
 import styles from "./TaskCharts.module.css";
 
-// 🎨 Nueva paleta de colores BDO según los estados
-const BDO_COLORS = {
-  Devuelta: "#e81a3b", // Rojo crítico
-  Pendiente: "#d67900", // Dorado (pendiente)
-  "Pendiente de revisión": "#008fd2", // Azul (revisión)
-  Aceptada: "#009966", // Verde (éxito)
+// 🎨 Updated BDO color palette based on statuses
+const BDO_STATUS_COLORS = {
+  Returned: "#e81a3b", // Critical Red
+  Pending: "#d67900", // Gold (pending)
+  "Pending Review": "#008fd2", // Blue (review)
+  Accepted: "#009966", // Green (success)
 };
 
-// 🎨 Colores de encargado actualizados (para BarChart)
+// 🎨 Updated assignee colors (for BarChart)
 const COLORS_ASSIGNEE = [
   "#008fd2",
   "#e81a3b",
@@ -34,26 +34,21 @@ const COLORS_ASSIGNEE = [
 ];
 
 export const TaskCharts = ({ tasks }) => {
-  const { t } = useTranslation("global"); // 👈 Usa tu namespace (por ejemplo "dashboard")
+  const { t } = useTranslation("global"); // 👈 Use your preferred namespace (e.g. "dashboard") // 📊 Data for Pie Chart (By Status)
 
-  const chartByState = useMemo(() => {
+  const chartByStatus = useMemo(() => {
     const map = tasks.reduce((acc, t) => {
       acc[t.status] = (acc[t.status] || 0) + 1;
       return acc;
-    }, {});
+    }, {}); // Use English status keys that match the object keys in the map
 
-    const order = [
-      "Devuelta",
-      "Pendiente",
-      "Pendiente de revisión",
-      "Aceptada",
-    ];
+    const order = ["Returned", "Pending", "Pending Review", "Accepted"];
 
     return order.map((k) => ({
-      name: t(`statuses.${k}`), // 👈 Traducción dinámica
+      name: t(`statuses.${k.replace(/\s/g, "_").toLowerCase()}`), // 👈 Dynamic translation key (e.g., statuses.pending_review)
       value: map[k] || 0,
     }));
-  }, [tasks, t]);
+  }, [tasks, t]); // 📊 Data for Bar Chart (By Assignee)
 
   const chartByAssignee = useMemo(() => {
     const map = tasks.reduce((acc, task) => {
@@ -68,11 +63,11 @@ export const TaskCharts = ({ tasks }) => {
   }, [tasks, t]);
 
   const COLORS_STATE_ARRAY = [
-    BDO_COLORS["Devuelta"],
-    BDO_COLORS["Pendiente"],
-    BDO_COLORS["Pendiente de revisión"],
-    BDO_COLORS["Aceptada"],
-  ];
+    BDO_STATUS_COLORS["Returned"],
+    BDO_STATUS_COLORS["Pending"],
+    BDO_STATUS_COLORS["Pending Review"],
+    BDO_STATUS_COLORS["Accepted"],
+  ]; // Helper function to render the task count inside the pie slices
 
   const renderLabelInside = ({
     cx,
@@ -103,13 +98,14 @@ export const TaskCharts = ({ tasks }) => {
 
   return (
     <div className={styles.chartsRow}>
-      {/* 🟢 Gráfico 1: Donut por Estado */}
+      {/* 🟢 Chart 1: Donut by Status */}
       <div className={styles.chartBox}>
         <div className={styles.chartTitle}>{t("charts.by_status")}</div>
+
         <ResponsiveContainer width="100%" height={220}>
           <PieChart>
             <Pie
-              data={chartByState}
+              data={chartByStatus}
               dataKey="value"
               nameKey="name"
               cx="50%"
@@ -120,7 +116,7 @@ export const TaskCharts = ({ tasks }) => {
               label={renderLabelInside}
               labelLine={false}
             >
-              {chartByState.map((entry, idx) => (
+              {chartByStatus.map((entry, idx) => (
                 <Cell
                   key={`s-${idx}`}
                   fill={COLORS_STATE_ARRAY[idx % COLORS_STATE_ARRAY.length]}
@@ -128,14 +124,15 @@ export const TaskCharts = ({ tasks }) => {
               ))}
             </Pie>
             <Tooltip />
+
             <Legend verticalAlign="middle" align="left" layout="vertical" />
           </PieChart>
         </ResponsiveContainer>
       </div>
-
-      {/* 🟣 Gráfico 2: Barras por Encargado */}
+      {/* 🟣 Chart 2: Bar by Assignee */}
       <div className={styles.chartBox}>
         <div className={styles.chartTitle}>{t("charts.by_assignee")}</div>
+
         <ResponsiveContainer width="100%" height={220}>
           <BarChart
             data={chartByAssignee}
