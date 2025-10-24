@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using WS_Onboarding.Functions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Kiota.Abstractions.Authentication;
+using WS_Onboarding.Services;
 
 namespace WS_Onboarding.Controllers
 {
@@ -25,12 +26,25 @@ namespace WS_Onboarding.Controllers
         private readonly ITokenAcquisition _tokenAcquisition;
         private readonly GraphServiceClient _graphClient;
         private readonly AuthService _authService;
-        public UsuarioExteriorController(AuthService authService, ApplicatonDBContext context, ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient)
+        private readonly IEmailService _emailService;
+        private readonly string? _recoverLinkEmail;
+        private readonly string? _fromEmail;
+        private readonly string? _fromPassword;
+        private readonly JwtService _jwtService;
+        public UsuarioExteriorController(
+            AuthService authService, ApplicatonDBContext context,
+            ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient,
+            IEmailService emailService, IConfiguration config, JwtService jwtService)
         {
             _authService = authService;
             _context = context;
             _tokenAcquisition = tokenAcquisition;
             _graphClient = graphClient;
+            _emailService = emailService;
+            _recoverLinkEmail = config["AppValues:RecoverLinkEmail"];
+            _fromEmail = config["SMTP:from"];
+            _fromPassword = config["SMTP:password"];
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -253,7 +267,7 @@ namespace WS_Onboarding.Controllers
                     UsuarioModel.Nombre = (UsuarioDto.Nombre == null) ? UsuarioModel.Nombre : UsuarioDto.Nombre;
                     UsuarioModel.Email = (UsuarioDto.Email == null) ? UsuarioModel.Email : UsuarioDto.Email ;
                     UsuarioModel.Id_Rol = (UsuarioDto.Id_Rol == null) ? UsuarioModel.Id_Rol : UsuarioDto.Id_Rol;
-                    UsuarioModel.Contrasena = (UsuarioDto.Contrasena == null) ? UsuarioModel.Contrasena : UsuarioDto.Contrasena;
+                    UsuarioModel.Contrasena = (UsuarioDto.Contrasena == null || UsuarioDto.Contrasena == "") ? UsuarioModel.Contrasena : _authService.HashPassword(UsuarioDto.Contrasena);
                     _context.SaveChanges();
 
                     return Ok(UsuarioModel.ToUsuarioExternoDto());
@@ -395,7 +409,7 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpPost("Password/Change/{email}")]//Falta implementar Email
-        public IActionResult ChangePassword([FromRoute] string email,[FromBody] ChangeUsuarioPasswordDto UsuarioDto)
+        public IActionResult ChangePassword([FromRoute] string email, [FromBody] ChangeUsuarioPasswordDto UsuarioDto)
         {
             try
             {
@@ -422,7 +436,7 @@ namespace WS_Onboarding.Controllers
                     else
                     {
                         return StatusCode(500, $"La contraseña anterior ingresada: \"{UsuarioDto.ContrasenaVieja}\"."
-                            +" No coincide con la contraseña actualmente registrada\n");
+                            + " No coincide con la contraseña actualmente registrada\n");
                     }
                 }
             }
@@ -438,6 +452,60 @@ namespace WS_Onboarding.Controllers
                 };
 
                 return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+        
+        [HttpPost("Password/Recover/{email}")]//Falta implementar Email
+        public async Task<IActionResult> RecoverPassword([FromRoute] string email)
+        {
+            try
+            {
+                var UsuarioModel = _context.UsuariosExternos.FirstOrDefault(c => c.Email == email);
+
+                if (UsuarioModel == null)
+                {
+                    return StatusCode(500, $"No existe un usuario con el email: {email}\n");
+                }
+                else
+                {
+                    if (_recoverLinkEmail == null || _fromEmail == null || _fromPassword == null)
+                    {
+                        return StatusCode(500,
+                            $"Error al recuperar enlace de recuperación: {_recoverLinkEmail},"+
+                            $" email del sistema {_fromEmail} o la contraseña\n"
+                        );
+                    }
+                    else
+                    {
+                        string newPassword = PasswordGenerator.GenerateSimplePassword(10);
+
+                        UsuarioModel.Contrasena = _authService.HashPassword(newPassword);
+                        _context.SaveChanges();
+
+                        string link = _recoverLinkEmail;
+                        string fromEmail = _fromEmail;
+                        string fromPassword = _fromPassword;
+
+                        await _emailService.SendPasswordRecoveryEmail(
+                            "Recuperar Contraseña", fromEmail, fromPassword, email, link, newPassword
+                        );
+
+                        return Ok(new { message = "Correo enviado si el usuario existe." }); 
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails} \n Parametros: \n {_fromEmail}, {_fromPassword}");
             }
         }
 
@@ -459,9 +527,14 @@ namespace WS_Onboarding.Controllers
                 if (!_authService.VerifyPassword(LoginDto.Contrasena, UsuarioModel.Contrasena))
                     return Unauthorized("Credenciales inválidas");
 
-                return CreatedAtAction(nameof(GetUsuarioById),
-                    new { id = UsuarioModel.Id }, UsuarioModel.ToUsuarioExternoDto()
-                );
+                var token = _jwtService.GenerateToken(LoginDto.Email);
+                var loginData = new LoginDataDto
+                {
+                    Token = token,
+                    UsuariosExternos = UsuarioModel.ToUsuarioExternoDto()
+                };
+
+                return Ok(loginData );
             }
         }
     }
