@@ -2,7 +2,8 @@
   --navbar-height: 60px;
   --sidebar-width-open: 220px;
   --sidebar-width-closed: 70px;
-  --bdo-red: #d11242; /* Define el color para la paleta */
+  --bdo-red: #d11242; /* Define el color principal de BDO */
+  --bdo-charcoal: #333333; /* Color oscuro para texto */
 }
 
 .navbar {
@@ -30,61 +31,105 @@
 
 .menu {
   display: flex;
-  gap: 15px;
+  /* Reducimos el gap si solo queda un elemento, para compactar */
+  gap: 10px;
   margin-left: auto;
   align-items: center;
 }
 
-/* --- Estilos para Botones de Control (Idioma y Logout) --- */
+/* ------------------------------------------- */
+/* ESTILOS DE NOMBRE DE USUARIO */
+/* ------------------------------------------- */
 
-/* Estilos para el botón de Idioma (original: blanco con borde rojo) */
-.langButton {
+/* Nombre de Usuario: Más claro y con buen contraste */
+.userName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+  margin-right: 15px; /* Separación del círculo de usuario */
+  padding: 5px 0;
+}
+
+/* ------------------------------------------- */
+/* ESTILOS DEL CÍRCULO DE USUARIO Y DROPDOWN */
+/* ------------------------------------------- */
+
+/* Contenedor principal para el círculo y el menú */
+.userDropdownContainer {
+  position: relative;
+  display: inline-block;
+  height: 100%;
   display: flex;
   align-items: center;
-  gap: 6px;
-  border: 1px solid var(--bdo-red);
-  border-radius: 4px;
-  background: transparent;
-  padding: 6px 10px;
+}
+
+/* El círculo del usuario (botón) */
+.userCircleButton {
+  background-color: transparent;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  color: var(--bdo-red);
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: bold;
-  transition: background-color 0.2s, color 0.2s;
-}
-
-.langButton:hover {
-  background-color: var(--bdo-red);
-  color: white;
-}
-
-/* 🚩 Estilos para el botón de LOGOUT (NUEVO: rojo con letras blancas por defecto) */
-.logoutButton {
   display: flex;
   align-items: center;
-  gap: 6px;
-  border: 1px solid var(--bdo-red);
-  border-radius: 4px;
-  padding: 6px 10px;
-  cursor: pointer;
-  font-size: 14px;
-  text-transform: uppercase;
-  font-weight: bold;
-  transition: background-color 0.2s, color 0.2s;
-
-  /* Colores invertidos para que sea ROJO por defecto */
-  background-color: var(--bdo-red);
-  color: white;
+  justify-content: center;
 }
 
-.logoutButton:hover {
-  /* Al pasar el ratón, vuelve al estado del botón de idioma */
-  background: transparent;
+.userCircleButton:hover {
+  background-color: white;
+  transform: translateY(-2px);
+}
+
+.userIcon {
+  font-size: 30px; /* Tamaño del ícono de usuario */
+  color: var(--bdo-red);
+  transition: color 0.2s;
+}
+
+/* Menú desplegable */
+.dropdownMenu {
+  position: absolute;
+  top: var(--navbar-height); /* Coloca el menú justo debajo del navbar */
+  right: 0;
+  background-color: white;
+  min-width: 200px;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #eee;
+  z-index: 100;
+  padding: 8px 0;
+}
+
+/* Elementos del menú */
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 15px;
+  font-size: 14px;
+  color: var(--bdo-charcoal);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+}
+
+.dropdownItem:hover {
+  background-color: #f5f5f5; /* Fondo gris claro al pasar el ratón */
+}
+
+/* Íconos dentro del menú */
+.dropdownIcon {
+  font-size: 18px;
   color: var(--bdo-red);
 }
 
-.translateIcon,
-.logoutIcon {
-  font-size: 20px;
+/* Estilo específico para el botón de Cerrar Sesión */
+.logoutItem {
+  border-top: 1px solid #eee;
+  margin-top: 5px;
+  padding-top: 10px;
+}
+
+.logoutItem:hover {
+  color: var(--bdo-red);
+  background-color: #ffeaea; /* Rojo muy claro para el hover de logout */
 }
