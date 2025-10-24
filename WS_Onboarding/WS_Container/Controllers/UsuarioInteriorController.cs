@@ -32,7 +32,7 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Policy = "AzureAdPolicy")]
         public IActionResult GetAll()
         {
             try
@@ -59,7 +59,7 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Policy = "AzureAdPolicy")]
         public IActionResult GetUsuarioById([FromRoute] int id)
         {
             try
@@ -91,7 +91,7 @@ namespace WS_Onboarding.Controllers
         }
 
         //[HttpGet("ByEmail")]
-        /*[Authorize]
+        /*[Authorize(Policy = "AzureAdPolicy")]
         public IActionResult GetUsuariosByEmail([FromQuery] string Email)
         {
             try
@@ -125,7 +125,7 @@ namespace WS_Onboarding.Controllers
         }*/
 
         //[HttpGet("ByRol")]
-        /*[Authorize]
+        /*[Authorize(Policy = "AzureAdPolicy")]
         public IActionResult GetUsuariosByRol([FromQuery] SelectUsuarioInsideDtoRol UsuarioDto)
         {
             try
@@ -237,7 +237,7 @@ namespace WS_Onboarding.Controllers
         }*/
 
         [HttpPut("{id:int}")]
-        [Authorize]
+        [Authorize(Policy = "AzureAdPolicy")]
         public IActionResult UpdateRol([FromRoute] int id, [FromBody] UpdateUsuarioInsideDtoRol UsuarioDto)
         {
             try
@@ -308,7 +308,7 @@ namespace WS_Onboarding.Controllers
         }*/
 
         //[HttpPost("Register")]
-        //[Authorize]
+        //[Authorize(Policy = "AzureAdPolicy")]
         /*public IActionResult RegisterUserAzure([FromBody] RegisterUsuarioInsideDto UsuarioDto)
         {
             try
@@ -349,9 +349,9 @@ namespace WS_Onboarding.Controllers
             }
         }*/
 
-        //[HttpGet("Inside/GetAzureUsers")]
-        //[Authorize] // Requiere token de Azure AD
-        /*public async Task<IActionResult> GetAzureUsers()
+        /*[HttpGet("Inside/GetAzureUsers")]
+        [Authorize(Policy = "AzureAdPolicy")] // Requiere token de Azure AD
+        public async Task<IActionResult> GetAzureUsers()
         {
             try
             {
@@ -382,7 +382,7 @@ namespace WS_Onboarding.Controllers
         }*/
 
         [HttpGet("Inside/GetAllSync")]
-        [Authorize]
+        [Authorize(Policy = "AzureAdPolicy")]
         public async Task<IActionResult> GetAllSync()
         {
             try
@@ -395,7 +395,7 @@ namespace WS_Onboarding.Controllers
                 {
                     requestConfig.QueryParameters.Select = new[]
                     {
-                        "id", "displayName", "mail", "userPrincipalName","jobTitle","country","employeeType"
+                        "id", "displayName", "mail","mailboxSettings", "userPrincipalName","jobTitle","country","employeeType"
                     };
                     requestConfig.QueryParameters.Top = 10;
                 });
@@ -479,7 +479,7 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpPost("Login")]
-        [Authorize]
+        [Authorize(Policy = "AzureAdPolicy")]
         public IActionResult OutsideLogin([FromBody] LoginUsuarioInsideDto LoginDto)
         {
             var UsuarioModel = _context.UsuariosInternos.FirstOrDefault(c => c.Email == LoginDto.Email);
@@ -497,7 +497,7 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpPatch("{id:int}")]
-        [Authorize] 
+        [Authorize(Policy = "AzureAdPolicy")] 
         public IActionResult ActivateInside([FromRoute] int id, [FromBody] StatusUsuarioInsideDto UsuarioDto)
         {
             try

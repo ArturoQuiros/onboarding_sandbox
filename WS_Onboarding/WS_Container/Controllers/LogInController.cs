@@ -23,17 +23,33 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpPost("LogIn")]
-        [Authorize] // Requiere token de Azure AD
+        [Authorize(Policy = "AzureAdPolicy")] // Requiere token de Azure AD
         public IActionResult Authentication()
         {
             return Ok("Authenticado!");
         }
 
         [HttpPost("LogOut")]
-        [Authorize] // Requiere token de Azure AD
+        [Authorize(Policy = "AzureAdPolicy")] // Requiere token de Azure AD
         public IActionResult LogOut()
         {
             return Ok("Cerrar Sesion!");
         }
+
+        // Endpoint protegido por tu JWT interno
+        /*[Authorize(Policy = "InternalPolicy")]
+        [HttpPost("ProveInternalToken")]
+        public IActionResult ProveInternalToken()
+        {
+            return Ok("Acceso con token interno JWT ✅");
+        }*/
+
+        // (Opcional) Endpoint que acepta ambos tokens
+        /*[Authorize(Policy = "AnyAuthPolicy")]
+        [HttpPost("ProveAnyToken")]
+        public IActionResult ProveAnyToken()
+        {
+            return Ok("Accesible con Azure AD o JWT interno 🔄");
+        }*/
     }
 }
