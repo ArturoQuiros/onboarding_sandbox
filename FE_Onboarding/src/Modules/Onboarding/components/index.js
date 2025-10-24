@@ -12,3 +12,4 @@ export * from "./TaskCharts";
 export * from "./TaskChecklist";
 export * from "./TaskStatsCards";
 export * from "./TaskTable";
+export * from "./ChangePasswordModal";
