@@ -30,10 +30,11 @@ namespace WS_Onboarding.Controllers
         private readonly string? _recoverLinkEmail;
         private readonly string? _fromEmail;
         private readonly string? _fromPassword;
+        private readonly JwtService _jwtService;
         public UsuarioExteriorController(
             AuthService authService, ApplicatonDBContext context,
             ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient,
-            IEmailService emailService, IConfiguration config)
+            IEmailService emailService, IConfiguration config, JwtService jwtService)
         {
             _authService = authService;
             _context = context;
@@ -43,6 +44,7 @@ namespace WS_Onboarding.Controllers
             _recoverLinkEmail = config["AppValues:RecoverLinkEmail"];
             _fromEmail = config["SMTP:from"];
             _fromPassword = config["SMTP:password"];
+            _jwtService = jwtService;
         }
 
         [HttpGet]
@@ -525,9 +527,14 @@ namespace WS_Onboarding.Controllers
                 if (!_authService.VerifyPassword(LoginDto.Contrasena, UsuarioModel.Contrasena))
                     return Unauthorized("Credenciales inválidas");
 
-                return CreatedAtAction(nameof(GetUsuarioById),
-                    new { id = UsuarioModel.Id }, UsuarioModel.ToUsuarioExternoDto()
-                );
+                var token = _jwtService.GenerateToken(LoginDto.Email);
+                var loginData = new LoginDataDto
+                {
+                    Token = token,
+                    UsuariosExternos = UsuarioModel.ToUsuarioExternoDto()
+                };
+
+                return Ok(loginData );
             }
         }
     }
