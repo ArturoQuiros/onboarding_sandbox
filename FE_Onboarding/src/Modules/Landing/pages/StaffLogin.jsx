@@ -1,4 +1,3 @@
-// src/Modules/Admin/components/StaffLogin.jsx
 import React, { useState, useEffect } from "react";
 import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../Global/auth";
@@ -26,41 +25,39 @@ export const StaffLogin = () => {
 
           if (!email) {
             throw new Error(
-              "No se pudo obtener el correo electrónico del usuario."
+              "Unable to retrieve the email from your Microsoft account."
             );
           }
 
-          // Guardar token y email en sessionStorage para persistencia
+          // Save token and email in sessionStorage for persistence
           sessionStorage.setItem("accessToken", token);
           sessionStorage.setItem("userEmail", email);
           sessionStorage.setItem("userType", "staff");
 
-          // Login inicial con email (sin token de Authorization)
+          // Initial login with email (without Authorization token)
           const loginResponse = await axiosClient.post(
             "/User/Inside/LogIn",
             { email: email },
             {
               headers: {
-                Authorization: undefined, // Quitar el token para este endpoint
+                Authorization: undefined, // Remove token for this endpoint
               },
             }
           );
 
-          // El backend no devuelve token, mantenemos el de Microsoft
-          // que ya fue guardado arriba para futuras peticiones autenticadas
-
+          // Keep Microsoft token for future authenticated requests
           login(loginResponse.data);
           navigate("/admin");
         }
       } catch (error) {
         console.error(
-          "Error al procesar el redirect o al hacer login en API:",
+          "Error processing Microsoft login redirect or API login:",
           error
         );
         sessionStorage.removeItem("accessToken");
         sessionStorage.removeItem("userEmail");
         setErrorMsg(
-          "No se pudo iniciar sesión. Por favor, verifica tus credenciales e intenta nuevamente."
+          "Unable to sign in with Microsoft. Please verify your account and try again."
         );
       } finally {
         setLoading(false);
@@ -76,8 +73,8 @@ export const StaffLogin = () => {
     try {
       await instance.loginRedirect(loginRequest);
     } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      setErrorMsg("No se pudo iniciar sesión. Intenta nuevamente.");
+      console.error("Error initiating Microsoft login:", error);
+      setErrorMsg("Unable to sign in. Please try again.");
       setLoading(false);
     }
   };
@@ -85,7 +82,7 @@ export const StaffLogin = () => {
   return (
     <div className={styles.container}>
       <img src={logo} alt="BDO Logo" className={styles.logo} />
-      <h1 className={styles.title}>Inicio de Sesión (Staff)</h1>
+      <h1 className={styles.title}>Staff Login</h1>
       <button
         className={styles.msButton}
         onClick={handleLogin}
@@ -96,12 +93,12 @@ export const StaffLogin = () => {
           alt="Microsoft"
           className={styles.msLogo}
         />
-        {loading ? "Iniciando sesión..." : "Iniciar sesión con Microsoft"}
+        {loading ? "Signing in..." : "Sign in with Microsoft"}
       </button>
       {errorMsg && <p className={styles.errorMessage}>{errorMsg}</p>}
       <p className={styles.backLink}>
         <a onClick={() => navigate("/")} className={styles.backButton}>
-          Volver a la página principal
+          Back to Home
         </a>
       </p>
     </div>
