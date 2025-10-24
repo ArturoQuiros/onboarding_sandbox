@@ -52,10 +52,10 @@ export const CustomerLogin = () => {
     e.preventDefault();
     if (!validateLoginForm()) return;
 
-    try {
-      setLoading(true);
-      setErrors({});
+    setLoading(true);
+    setErrors({});
 
+    try {
       const response = await axiosClient.post("/User/Outside/Login", {
         email,
         contrasena: password,
@@ -66,33 +66,24 @@ export const CustomerLogin = () => {
         navigate("/client/contract/1", { replace: true });
       } else {
         setErrors({ general: "Unexpected server response" });
+        setLoading(false);
       }
     } catch (err) {
       console.error("Customer login error:", err);
-
-      // Si hay respuesta del servidor, interpretamos el mensaje
-      if (err.response && err.response.data) {
-        const serverMessage = err.response.data;
-
-        if (typeof serverMessage === "string") {
-          if (
-            serverMessage.toLowerCase().includes("no se ha encontrado usuario")
-          ) {
-            setErrors({ general: "Invalid email or password" });
-          } else {
-            setErrors({ general: serverMessage }); // cualquier otro mensaje en texto
-          }
-        } else {
-          setErrors({ general: "Server error. Please try again." });
-        }
-      } else {
-        // Error sin respuesta (problema de conexión)
-        setErrors({
-          general: "Unable to connect to server. Please try again.",
-        });
-      }
-    } finally {
       setLoading(false);
+
+      // Manejo de errores basado solo en códigos HTTP (no confiar en mensajes del BE)
+      if (err.response?.status === 401) {
+        setErrors({ general: "Invalid email or password" });
+      } else if (err.request) {
+        // Error de red - no hubo respuesta
+        setErrors({
+          general: "Unable to connect to server. Please check your connection.",
+        });
+      } else {
+        // Error en la configuración de la petición
+        setErrors({ general: "An error occurred. Please try again." });
+      }
     }
   };
 
@@ -101,23 +92,29 @@ export const CustomerLogin = () => {
     e.preventDefault();
     if (!validateResetForm()) return;
 
-    try {
-      setLoading(true);
-      setErrors({});
+    setLoading(true);
+    setErrors({});
 
+    try {
       await axiosClient.post(
         `/User/Outside/Password/Recover/${encodeURIComponent(resetEmail)}`
       );
 
-      alert(`A new password has been sent to ${resetEmail}`);
-      setShowReset(false);
+      // Mensaje de éxito genérico (no revela si el email existe o no)
+      setErrors({
+        resetEmail: `A new password has been sent to your email.`,
+        success: true,
+      });
       setResetEmail("");
     } catch (err) {
       console.error("Password reset error:", err);
+
+      // Mensaje genérico por seguridad (no revela si el email existe)
       setErrors({
-        resetEmail:
-          "Unable to send new password. Please check the email address.",
+        resetEmail: `A new password has been sent to your email.`,
+        success: true,
       });
+      setResetEmail("");
     } finally {
       setLoading(false);
     }
@@ -143,6 +140,7 @@ export const CustomerLogin = () => {
               id="email"
               value={email}
               placeholder="example@email.com"
+              autoComplete="email"
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
             />
@@ -158,6 +156,7 @@ export const CustomerLogin = () => {
               id="password"
               value={password}
               placeholder="********"
+              autoComplete="current-password"
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
             />
@@ -176,6 +175,11 @@ export const CustomerLogin = () => {
         </form>
       ) : (
         <form className={styles.form} onSubmit={handleResetPassword}>
+          <p className={styles.resetDescription}>
+            Enter your email address and we'll send you a new password if an
+            account exists.
+          </p>
+
           <div className={styles.inputGroup}>
             <label htmlFor="resetEmail">Email</label>
             <input
@@ -183,12 +187,18 @@ export const CustomerLogin = () => {
               id="resetEmail"
               value={resetEmail}
               placeholder="example@email.com"
-              autocomplete="current-password"
+              autoComplete="email"
               onChange={(e) => setResetEmail(e.target.value)}
               disabled={loading}
             />
             {errors.resetEmail && (
-              <p className={styles.errorMessage}>{errors.resetEmail}</p>
+              <p
+                className={
+                  errors.success ? styles.successMessage : styles.errorMessage
+                }
+              >
+                {errors.resetEmail}
+              </p>
             )}
           </div>
 
@@ -203,7 +213,10 @@ export const CustomerLogin = () => {
           <button
             type="button"
             className={`${styles.submitButton} ${styles.secondaryButton}`}
-            onClick={() => setShowReset(false)}
+            onClick={() => {
+              setShowReset(false);
+              setErrors({});
+            }}
             disabled={loading}
           >
             Back to Login
@@ -215,7 +228,10 @@ export const CustomerLogin = () => {
         <button
           type="button"
           className={styles.forgotPassword}
-          onClick={() => setShowReset(true)}
+          onClick={() => {
+            setShowReset(true);
+            setErrors({});
+          }}
           disabled={loading}
         >
           Forgot your password?
