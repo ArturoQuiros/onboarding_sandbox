@@ -69,7 +69,7 @@ CREATE TABLE UsuariosExternos (
 DROP TABLE IF EXISTS Servicios
 CREATE TABLE Servicios (
     Id INT PRIMARY KEY IDENTITY(1, 1),
-    Nombre VARCHAR(50) UNIQUE NOT NULL,
+    Nombre VARCHAR(50) NOT NULL,
     Id_Pais INT,
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME,
@@ -102,4 +102,40 @@ CREATE TABLE Contrato_Servicios (
     Fecha_Modificacion DATETIME
     CONSTRAINT FK_Contrato_Servicios_Clientes FOREIGN KEY (Id_Contrato) REFERENCES Contratos(Id),
     CONSTRAINT FK_Contrato_Servicios_Servicios FOREIGN KEY (Id_Servicio) REFERENCES Servicios(Id)
+);
+
+DROP TABLE IF EXISTS Tareas;
+CREATE TABLE Tareas (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Id_Servicio INT NOT NULL,
+    Nombre VARCHAR(100) NOT NULL,
+    Descripcion NVARCHAR(MAX) NOT NULL, -- Aquí va el JSON del formulario
+    EsInterno BIT NOT NULL, -- 1 = Interno, 0 = Externo
+    Fecha_Creacion DATETIME,
+    Fecha_Modificacion DATETIME,
+    CONSTRAINT FK_Tareas_Servicios FOREIGN KEY (Id_Servicio) REFERENCES Servicios(Id)
+);
+
+
+DROP TABLE IF EXISTS Estados_Tarea;
+CREATE TABLE Estados_Tarea (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Nombre VARCHAR(50) NOT NULL UNIQUE,
+    Fecha_Creacion DATETIME,
+    Fecha_Modificacion DATETIME
+);
+
+DROP TABLE IF EXISTS Tarea_Contrato;
+CREATE TABLE Tarea_Contrato (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Id_Contrato INT NOT NULL,
+    Id_Tarea INT NOT NULL,
+    Id_UsuarioResponsable INT NOT NULL,
+    Id_Estado INT NOT NULL,                  -- FK a Estados_Tarea
+    Json_Respuesta NVARCHAR(MAX),            -- JSON con datos completados
+    Observaciones NVARCHAR(MAX),             -- Comentarios del staff para el cliente
+    CONSTRAINT FK_TareaContrato_Contrato FOREIGN KEY (Id_Contrato) REFERENCES Contratos(Id),
+    CONSTRAINT FK_TareaContrato_Tarea FOREIGN KEY (Id_Tarea) REFERENCES Tareas(Id),
+    CONSTRAINT FK_TareaContrato_Usuario FOREIGN KEY (Id_UsuarioResponsable) REFERENCES UsuariosInternos(Id),
+    CONSTRAINT FK_TareaContrato_Estado FOREIGN KEY (Id_Estado) REFERENCES Estados_Tarea(Id)
 );

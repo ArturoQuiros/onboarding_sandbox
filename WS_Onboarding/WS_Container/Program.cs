@@ -44,7 +44,7 @@ builder.Services.AddAuthentication()
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"),
         jwtBearerScheme: "AzureAD")
     .EnableTokenAcquisitionToCallDownstreamApi()
-    .AddMicrosoftGraph(builder.Configuration.GetSection("Graph"))
+    .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
     .AddInMemoryTokenCaches();
 
 // 2️⃣ JWT Interno
@@ -95,7 +95,20 @@ builder.Services.AddAuthorization(options =>
 // ==========================
 // 🔧 SERVICIOS
 // ==========================
-builder.Services.AddScoped<IAuthenticationProvider, UserAccessTokenProvider>();
+//builder.Services.AddScoped<IAuthenticationProvider, AppAccessTokenProvider>();
+builder.Services.AddScoped<IAuthenticationProvider,UserAccessTokenProvider>();
+/*builder.Services.AddScoped<GraphServiceClient>(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var tenantId = config["AzureAd:TenantId"];
+    var clientId = config["AzureAd:ClientId"];
+    var clientSecret = config["AzureAd:ClientSecret"];
+    var scopes = new[] { "https://graph.microsoft.com/.default" };
+
+    var credential = new Azure.Identity.ClientSecretCredential(tenantId, clientId, clientSecret);
+    return new GraphServiceClient(credential, scopes);
+});*/
+builder.Services.AddScoped<IUsuariosService, UsuariosService>();
 builder.Services.AddScoped<AuthService>();
 
 // 🧾 Autorización (opcional, pero recomendable)

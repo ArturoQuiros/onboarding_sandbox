@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using WS_Onboarding.Data;
 using WS_Onboarding.Dtos;
 using WS_Onboarding.Mappers;
-using WS_Onboarding.Controllers;
 using Microsoft.EntityFrameworkCore;
 using WS_Onboarding.Functions;
+using WS_Onboarding.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WS_Onboarding.Controllers
 {
@@ -18,10 +19,12 @@ namespace WS_Onboarding.Controllers
     {
         private readonly ApplicatonDBContext _context;
         private readonly AuthService _authService;
-        public DefaultController(AuthService authService,ApplicatonDBContext context)
+        private readonly IUsuariosService _usuarioService;
+        public DefaultController(AuthService authService, ApplicatonDBContext context, IUsuariosService usuarioService)
         {
             _authService = authService;
             _context = context;
+            _usuarioService = usuarioService;
         }
 
         [HttpGet("GetAll")]
@@ -83,7 +86,8 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpPost("Seed")]
-        public IActionResult Create()
+        [Authorize(Policy = "AzureAdPolicy")]
+        public async Task<IActionResult> CreateAsync()
         {
             try
             {
@@ -222,8 +226,13 @@ namespace WS_Onboarding.Controllers
                 };
 
                 _context.UsuariosExternos.AddRange(usuarioExterno1, usuarioExterno2, usuarioExterno3);
+                _context.SaveChanges();
 
-                var UsuarioInterno1 = new Models.UsuarioInterno
+                //obtener usuario internos desde Azure AD
+                await _usuarioService.SyncUserADtoDBAsync();
+                
+                //await _usuarioInteriorController.GetAllSync();
+                /*var UsuarioInterno1 = new Models.UsuarioInterno
                 {
                     Nombre = "Luis Pérez",
                     Azure_AD_User_Id = "aad-luisp",
@@ -263,7 +272,7 @@ namespace WS_Onboarding.Controllers
                 };
 
                 _context.UsuariosInternos.AddRange(UsuarioInterno1, UsuarioInterno2, UsuarioInterno3);
-                _context.SaveChanges();
+                _context.SaveChanges();*/
 
                 var contrato1 = new Models.Contrato
                 {

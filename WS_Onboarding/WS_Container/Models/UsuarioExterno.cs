@@ -27,8 +27,8 @@ namespace WS_Onboarding.Models
 
         // Navigation
         [ForeignKey("Id_Rol")]
-        public Rol? Rol { get; set; }
+        public Rol Rol { get; set; } = null!;
         [ForeignKey("Id_Cliente")]
-        public Cliente? Cliente { get; set; }
+        public Cliente Cliente { get; set; } = null!;
     }
 }

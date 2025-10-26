@@ -27,6 +27,7 @@ namespace WS_Onboarding.Models
         public DateTime? Fecha_Modificacion { get; set; }
 
         // Navigation
-        public ICollection<Contrato>? Contratos { get; set; }
+        public ICollection<Contrato> Contratos { get; set; } = new List<Contrato>();
+        public ICollection<UsuarioExterno> UsuariosExternos  { get; set; } = new List<UsuarioExterno>();
     }
 }

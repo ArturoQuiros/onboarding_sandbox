@@ -19,8 +19,8 @@ namespace WS_Onboarding.Models
 
         // Navigation
         [ForeignKey("Id_Contrato")]
-        public Contrato? Contrato { get; set; }
+        public Contrato Contrato { get; set; } = null!;
         [ForeignKey("Id_Servicio")]
-        public Servicio? Servicio { get; set; }
+        public Servicio Servicio { get; set; } = null!;
     }
 }
