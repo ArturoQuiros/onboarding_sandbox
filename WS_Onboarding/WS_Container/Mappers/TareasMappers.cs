@@ -17,6 +17,7 @@ namespace WS_Onboarding.Mappers
                 Id_Servicio = TareaModel.Id_Servicio,
                 Nombre = TareaModel.Nombre,
                 Descripcion = TareaModel.Descripcion,
+                EsInterno = TareaModel.EsInterno,
                 Fecha_Creacion = TareaModel.Fecha_Creacion,
                 Fecha_Modificacion = TareaModel.Fecha_Modificacion,
             };
@@ -29,6 +30,7 @@ namespace WS_Onboarding.Mappers
                 Id_Servicio = TareaModel.Id_Servicio,
                 Nombre = TareaModel.Nombre,
                 Descripcion = TareaModel.Descripcion,
+                EsInterno = TareaModel.EsInterno,
                 Fecha_Creacion = DateTime.UtcNow,
                 Fecha_Modificacion = DateTime.UtcNow
             };

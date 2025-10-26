@@ -26,7 +26,7 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var EstadosTarea = _context.EstadosTarea.ToList()
+                var EstadosTarea = _context.Estados_Tarea.ToList()
                     .Select(c => c.ToEstadosTareaDto());
 
                 return Ok(EstadosTarea);
@@ -51,7 +51,7 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var EstadosTareaModel = _context.EstadosTarea.Find(id);
+                var EstadosTareaModel = _context.Estados_Tarea.Find(id);
 
                 if (EstadosTareaModel == null)
                 {
@@ -84,7 +84,7 @@ namespace WS_Onboarding.Controllers
             {
                 Models.EstadosTarea EstadosTareaModel = estadosTareaDto.ToEstadosTareaFromCreateDTO();
 
-                _context.EstadosTarea.Add(EstadosTareaModel);
+                _context.Estados_Tarea.Add(EstadosTareaModel);
                 _context.SaveChanges();
 
                 return CreatedAtAction(nameof(GetEstadosTareaById), new { id = EstadosTareaModel.Id }, EstadosTareaModel.ToEstadosTareaDto());
@@ -110,7 +110,7 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var EstadosTareaModel = _context.EstadosTarea.FirstOrDefault(c => c.Id == id);
+                var EstadosTareaModel = _context.Estados_Tarea.FirstOrDefault(c => c.Id == id);
 
                 if (EstadosTareaModel == null)
                 {
@@ -146,7 +146,7 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var EstadosTareaModel = _context.EstadosTarea.FirstOrDefault(c => c.Id == id);
+                var EstadosTareaModel = _context.Estados_Tarea.FirstOrDefault(c => c.Id == id);
 
                 if (EstadosTareaModel == null)
                 {
@@ -154,7 +154,7 @@ namespace WS_Onboarding.Controllers
                 }
                 else
                 {
-                    _context.EstadosTarea.Remove(EstadosTareaModel);
+                    _context.Estados_Tarea.Remove(EstadosTareaModel);
                     _context.SaveChanges();
 
                     return NoContent();

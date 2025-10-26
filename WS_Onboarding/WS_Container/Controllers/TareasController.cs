@@ -121,6 +121,7 @@ namespace WS_Onboarding.Controllers
                     TareaModel.Nombre = (tareaDto.Nombre == null) ? TareaModel.Nombre : tareaDto.Nombre;
                     TareaModel.Id_Servicio = (tareaDto.Id_Servicio == 0) ? TareaModel.Id_Servicio : tareaDto.Id_Servicio;
                     TareaModel.Descripcion = (tareaDto.Descripcion == null) ? TareaModel.Descripcion : tareaDto.Descripcion;
+                    TareaModel.EsInterno = tareaDto.EsInterno;
                     TareaModel.Fecha_Modificacion = DateTime.UtcNow;
                     _context.SaveChanges();
 

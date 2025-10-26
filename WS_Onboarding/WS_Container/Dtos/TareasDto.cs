@@ -13,6 +13,7 @@ namespace WS_Onboarding.Dtos
         public required int Id_Servicio { get; set; }
         public required string Nombre { get; set; }
         public required string Descripcion { get; set; }
+        public required bool EsInterno { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
     }
@@ -26,6 +27,8 @@ namespace WS_Onboarding.Dtos
         public required string Nombre { get; set; }
         [Required]
         public required string Descripcion { get; set; }
+        [Required]
+        public required bool EsInterno { get; set; }
     }
 
     public class UpdateTareasDto : CreateTareasDto

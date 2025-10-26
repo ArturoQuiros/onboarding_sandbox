@@ -15,5 +15,8 @@ namespace WS_Onboarding.Dtos
         public required IEnumerable<ClienteDto> Clientes { get; set; }
         public required IEnumerable<ContratoDto> Contratos { get; set; }
         public required IEnumerable<ContratoServicioDto> Contrato_Servicios { get; set; }
+        public required IEnumerable<EstadosTareaDto> EstadosTarea { get; set; }
+        public required IEnumerable<TareasDto> Tareas { get; set; }
+        public required IEnumerable<TareaContratoDto> TareaContrato { get; set; }
     }
 }
