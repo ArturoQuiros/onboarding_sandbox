@@ -24,7 +24,7 @@ namespace WS_Onboarding.Functions
             var scopes = new[] { "https://graph.microsoft.com/User.Read.All" };
 
             // Usa ITokenAcquisition para obtener el token real
-            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes);
+            var accessToken = await _tokenAcquisition.GetAccessTokenForUserAsync(scopes, authenticationScheme: "AzureAD");
 
             request.Headers["Authorization"] = new[] { $"Bearer {accessToken}" };
         }

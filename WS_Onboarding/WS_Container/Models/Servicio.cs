@@ -21,7 +21,7 @@ namespace WS_Onboarding.Models
 
         // Navigation
         [ForeignKey("Id_pais")]
-        public Pais? Pais { get; set; }
-        public ICollection<ContratoServicio>? ContratoServicios { get; set; }
+        public Pais Pais { get; set; } = null!;
+        public ICollection<ContratoServicio> ContratoServicios { get; set; } = new List<ContratoServicio>();
     }
 }

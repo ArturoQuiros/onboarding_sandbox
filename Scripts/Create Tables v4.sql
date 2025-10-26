@@ -69,7 +69,7 @@ CREATE TABLE UsuariosExternos (
 DROP TABLE IF EXISTS Servicios
 CREATE TABLE Servicios (
     Id INT PRIMARY KEY IDENTITY(1, 1),
-    Nombre VARCHAR(50) UNIQUE NOT NULL,
+    Nombre VARCHAR(50) NOT NULL,
     Id_Pais INT,
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME,
