@@ -19,7 +19,7 @@ import { Toaster } from "react-hot-toast";
 
 // 🎯 IMPORTACIONES DEL FLUJO DE TAREAS (Landing y Task Page)
 import {
-  OnboardingLanding,
+  ClientHome,
   ClientContractPage,
   StaffReviewPage,
 } from "./Modules/Onboarding/pages";
@@ -60,11 +60,14 @@ function App() {
 
         {/* 🎯 RUTAS CLIENTE */}
         <Route path="client/contract/:contractId" element={<TaskFlowLayout />}>
+          {/* Vista general del contrato: Dashboard de tareas */}
+          <Route index element={<ClientHome />} />
+
+          {/* Vista de una tarea específica dentro de un servicio */}
           <Route
             path="service/:serviceId/task/:taskId"
             element={<ClientContractPage />}
           />
-          <Route index element={<div>Resumen del Contrato</div>} />
         </Route>
 
         {/* 🎯 RUTAS STAFF */}
