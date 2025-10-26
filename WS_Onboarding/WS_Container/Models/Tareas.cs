@@ -21,6 +21,9 @@ namespace WS_Onboarding.Models
         [Required]
         public required string Descripcion { get; set; }
 
+        [Required]
+        public required bool EsInterno { get; set; }
+
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
 
