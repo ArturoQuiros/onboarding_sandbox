@@ -19,6 +19,6 @@ public class ApplicatonDBContext : DbContext
     public DbSet<Contrato> Contratos { get; set; }
     public DbSet<ContratoServicio> Contrato_Servicios { get; set; }
     public DbSet<Tareas> Tareas { get; set; }
-    public DbSet<EstadosTarea> EstadosTarea { get; set; }
-    public DbSet<TareaContrato> TareaContrato { get; set; }
+    public DbSet<EstadosTarea> Estados_Tarea { get; set; }
+    public DbSet<TareaContrato> Tarea_Contrato { get; set; }
 }

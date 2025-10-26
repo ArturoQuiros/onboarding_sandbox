@@ -21,6 +21,11 @@ namespace WS_Onboarding.Dtos
         public string? Json_Respuesta { get; set; }
         public string? Observaciones { get; set; }
     }
+
+    public class TareaContratoEsInternoDto : TareaContratoDto
+    {
+        public required bool EsInterno { get; set; }
+    }
     
     public class CreateTareaContratoDto
     {

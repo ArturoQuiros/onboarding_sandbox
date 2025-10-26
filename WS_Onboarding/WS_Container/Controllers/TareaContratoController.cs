@@ -21,15 +21,49 @@ namespace WS_Onboarding.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        //GetAll full y simple
+        [HttpGet("GetAllFull")]
+        public IActionResult GetAllFull()
         {
             try
             {
-                var TareasContratos = _context.TareaContrato.ToList()
-                    .Select(c => c.ToTareaContratoDto());
+                var resultado = _context.Tarea_Contrato
+                    .Select(tc => new
+                    {
+                        TareaContrato = tc.ToTareaContratoFullDto(),
+                        tc.Tarea.EsInterno
+                    }).ToList();
 
-                return Ok(TareasContratos);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+        
+        [HttpGet("GetAllSimple")]
+        public IActionResult GetAllSimple()
+        {
+            try
+            {
+                var resultado = _context.Tarea_Contrato
+                    .Select(tc => new 
+                    {
+                        TareaContrato = tc.ToTareaContratoSimpleDto(),
+                        tc.Tarea.EsInterno
+                    }).ToList();
+
+                return Ok(resultado);
             }
             catch (Exception ex)
             {
@@ -46,12 +80,19 @@ namespace WS_Onboarding.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetTareaContratoById([FromRoute] int id)
+        [HttpGet("GetByIdFull")]
+        public IActionResult GetByIdFull([FromQuery] int IdTarea)
         {
             try
             {
-                var TareaContratoModel = _context.TareaContrato.Find(id);
+                var TareaContratoModel = _context.Tarea_Contrato
+                    .Where(tc => tc.Id == IdTarea)
+                    .Select(tc => new
+                    {
+                        TareaContrato = tc.ToTareaContratoFullDto(),
+                        tc.Tarea.EsInterno
+                    })
+                    .FirstOrDefault();
 
                 if (TareaContratoModel == null)
                 {
@@ -59,7 +100,45 @@ namespace WS_Onboarding.Controllers
                 }
                 else
                 {
-                    return Ok(TareaContratoModel.ToTareaContratoDto());
+                    return Ok(TareaContratoModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpGet("GetByIdSimple")]
+        public IActionResult GetByIdSimple([FromQuery] int IdTarea)
+        {
+            try
+            {
+                var TareaContratoModel = _context.Tarea_Contrato
+                    .Where(tc => tc.Id == IdTarea)
+                    .Select(tc => new
+                    {
+                        TareaContrato = tc.ToTareaContratoSimpleDto(),
+                        tc.Tarea.EsInterno
+                    })
+                    .FirstOrDefault();
+
+                if (TareaContratoModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(TareaContratoModel);
                 }
             }
             catch (Exception ex)
@@ -84,10 +163,10 @@ namespace WS_Onboarding.Controllers
             {
                 Models.TareaContrato TareaContratoModel = tareaContratoDto.ToTareaContratoFromCreateDTO();
 
-                _context.TareaContrato.Add(TareaContratoModel);
+                _context.Tarea_Contrato.Add(TareaContratoModel);
                 _context.SaveChanges();
 
-                return CreatedAtAction(nameof(GetTareaContratoById), new { id = TareaContratoModel.Id }, TareaContratoModel.ToTareaContratoDto());
+                return CreatedAtAction(nameof(GetByIdFull), new { id = TareaContratoModel.Id }, TareaContratoModel.ToTareaContratoFullDto());
             }
             catch (Exception ex)
             {
@@ -110,7 +189,7 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var TareaContratoModel = _context.TareaContrato.FirstOrDefault(c => c.Id == id);
+                var TareaContratoModel = _context.Tarea_Contrato.FirstOrDefault(c => c.Id == id);
 
                 if (TareaContratoModel == null)
                 {
@@ -123,10 +202,10 @@ namespace WS_Onboarding.Controllers
                     TareaContratoModel.Id_UsuarioResponsable = (tareaContratoDto.Id_UsuarioResponsable == 0) ? TareaContratoModel.Id_UsuarioResponsable : tareaContratoDto.Id_UsuarioResponsable;
                     TareaContratoModel.Id_Estado = (tareaContratoDto.Id_Estado == 0) ? TareaContratoModel.Id_Estado : tareaContratoDto.Id_Estado;
                     TareaContratoModel.Json_Respuesta = (tareaContratoDto.Json_Respuesta == null) ? TareaContratoModel.Json_Respuesta : tareaContratoDto.Json_Respuesta;
-                    TareaContratoModel.Json_Respuesta = (tareaContratoDto.Json_Respuesta == null) ? TareaContratoModel.Json_Respuesta : tareaContratoDto.Json_Respuesta;
+                    TareaContratoModel.Observaciones = (tareaContratoDto.Observaciones == null) ? TareaContratoModel.Observaciones : tareaContratoDto.Observaciones;
                     _context.SaveChanges();
 
-                    return Ok(TareaContratoModel.ToTareaContratoDto());
+                    return Ok(TareaContratoModel.ToTareaContratoFullDto());
                 }
             }
             catch (Exception ex)
@@ -150,7 +229,7 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var TareaContratoModel = _context.TareaContrato.FirstOrDefault(c => c.Id == id);
+                var TareaContratoModel = _context.Tarea_Contrato.FirstOrDefault(c => c.Id == id);
 
                 if (TareaContratoModel == null)
                 {
@@ -158,7 +237,7 @@ namespace WS_Onboarding.Controllers
                 }
                 else
                 {
-                    _context.TareaContrato.Remove(TareaContratoModel);
+                    _context.Tarea_Contrato.Remove(TareaContratoModel);
                     _context.SaveChanges();
 
                     return NoContent();

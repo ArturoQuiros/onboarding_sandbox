@@ -56,6 +56,15 @@ namespace WS_Onboarding.Controllers
                 var Contrato_Servicios = _context.Contrato_Servicios.ToList()
                     .Select(c => c.ToContratoServicioDto());
 
+                var EstadosTarea = _context.Estados_Tarea.ToList()
+                    .Select(c => c.ToEstadosTareaDto());
+
+                var Tareas = _context.Tareas.ToList()
+                    .Select(c => c.ToTareaDto());
+
+                var TareaContrato = _context.Tarea_Contrato.ToList()
+                    .Select(c => c.ToTareaContratoFullDto());
+
                 var allData = new AllDataDto
                 {
                     Paises = Paises,
@@ -65,7 +74,10 @@ namespace WS_Onboarding.Controllers
                     Servicios = Servicios,
                     Clientes = Clientes,
                     Contratos = Contratos,
-                    Contrato_Servicios = Contrato_Servicios
+                    Contrato_Servicios = Contrato_Servicios,
+                    EstadosTarea = EstadosTarea,
+                    Tareas = Tareas,
+                    TareaContrato = TareaContrato
                 };
 
                 return Ok(allData);
@@ -311,11 +323,98 @@ namespace WS_Onboarding.Controllers
                     Id_Contrato = 2,
                     Id_Servicio = 2,
                     Fecha_Creacion = DateTime.UtcNow,
-                    Fecha_Modificacion = DateTime.Now,
+                    Fecha_Modificacion = DateTime.UtcNow,
                     Estado = false
                 };
 
                 _context.Contrato_Servicios.AddRange(contratoServicio1, contratoServicio2);
+                _context.SaveChanges();
+
+                var estadoTarea1 = new Models.EstadosTarea
+                {
+                    Nombre = "Pending",
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                var estadoTarea2 = new Models.EstadosTarea
+                {
+                    Nombre = "Completed",
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                var estadoTarea3 = new Models.EstadosTarea
+                {
+                    Nombre = "Returned",
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                var estadoTarea4 = new Models.EstadosTarea
+                {
+                    Nombre = "Accepted",
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                _context.Estados_Tarea.AddRange(estadoTarea1, estadoTarea2, estadoTarea3, estadoTarea4);
+                _context.SaveChanges();
+
+                var Tarea1 = new Models.Tareas
+                {
+                    Nombre = "Tarea 1",
+                    Id_Servicio = 1,
+                    Descripcion = "Prueba Tarea 1",
+                    EsInterno = true,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                var Tarea2 = new Models.Tareas
+                {
+                    Nombre = "Tarea 2",
+                    Id_Servicio = 2,
+                    Descripcion = "Prueba Tarea 2",
+                    EsInterno = false,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                var Tarea3 = new Models.Tareas
+                {
+                    Nombre = "Tarea 3",
+                    Id_Servicio = 3,
+                    Descripcion = "Prueba Tarea 3",
+                    EsInterno = false,
+                    Fecha_Creacion = DateTime.UtcNow,
+                    Fecha_Modificacion = DateTime.UtcNow,
+                };
+
+                _context.Tareas.AddRange(Tarea1, Tarea2, Tarea3);
+                _context.SaveChanges();
+
+                var TareaContrato1 = new Models.TareaContrato
+                {
+                    Id_Contrato = 1,
+                    Id_Tarea = 1,
+                    Id_UsuarioResponsable = 1,
+                    Id_Estado = 1,
+                    Json_Respuesta = "",
+                    Observaciones = "Prueba Tarea Contrato 1"
+                };
+
+                var TareaContrato2 = new Models.TareaContrato
+                {
+                    Id_Contrato = 2,
+                    Id_Tarea = 2,
+                    Id_UsuarioResponsable = 2,
+                    Id_Estado = 2,
+                    Json_Respuesta = "",
+                    Observaciones = "Prueba Tarea Contrato 2"
+                };
+                
+                _context.Tarea_Contrato.AddRange(TareaContrato1, TareaContrato2);
                 _context.SaveChanges();
 
                 return GetAll();
@@ -365,6 +464,15 @@ namespace WS_Onboarding.Controllers
                 var AllContrato_Servicios = _context.Contrato_Servicios.ToList();
                 _context.Contrato_Servicios.RemoveRange(AllContrato_Servicios);
 
+                var AllEstadosTarea = _context.Estados_Tarea.ToList();
+                _context.Estados_Tarea.RemoveRange(AllEstadosTarea);
+
+                var AllTareas = _context.Tareas.ToList();
+                _context.Tareas.RemoveRange(AllTareas);
+
+                var AllTareaContrato = _context.Tarea_Contrato.ToList();
+                _context.Tarea_Contrato.RemoveRange(AllTareaContrato);
+
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Paises', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Roles', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('UsuariosInternos', RESEED, 0);");
@@ -373,6 +481,9 @@ namespace WS_Onboarding.Controllers
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Clientes', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Contratos', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Contrato_Servicios', RESEED, 0);");
+                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Estados_Tarea', RESEED, 0);");
+                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Tareas', RESEED, 0);");
+                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Tarea_Contrato', RESEED, 0);");
 
                 _context.SaveChanges();
 
