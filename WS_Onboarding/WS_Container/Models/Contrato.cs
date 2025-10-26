@@ -25,11 +25,11 @@ namespace WS_Onboarding.Models
 
         // Navigation
         [ForeignKey("Id_Cliente")]
-        public Cliente? Cliente { get; set; }
+        public Cliente Cliente { get; set; } = null!;
         [ForeignKey("Id_Pais")]
-        public Pais? Pais { get; set; }
+        public Pais Pais { get; set; } = null!;
         [ForeignKey("Account_manager")]
-        public UsuarioInterno? UsuarioAccountManager { get; set; }
-        public ICollection<ContratoServicio>? ContratoServicios { get; set; }
+        public UsuarioInterno UsuarioAccountManager { get; set; } = null!;
+        public ICollection<ContratoServicio> ContratoServicios { get; set; } = new List<ContratoServicio>();
     }
 }

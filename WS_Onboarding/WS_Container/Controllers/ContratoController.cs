@@ -75,6 +75,42 @@ namespace WS_Onboarding.Controllers
             }
         }
 
+        //En desarrollo...
+        [HttpGet("ByUsuarioExterno")]
+        public IActionResult GetContratoByUsuarioExterno([FromQuery] int IdUsuarioExterno)
+        {
+            try
+            {
+                var ContratoModel = _context.Contratos
+                    .Where(co => co.Cliente.UsuariosExternos
+                    .Any(ue => ue.Id == IdUsuarioExterno))
+                    .Select(c => c.ToContratoDto());;
+
+                if (ContratoModel == null)
+                {
+                    return NotFound();
+                }
+                else
+
+                {
+                    return Ok(ContratoModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
         [HttpPost]
         public IActionResult Create([FromBody] CreateContratoDto ContratoDto)
         {

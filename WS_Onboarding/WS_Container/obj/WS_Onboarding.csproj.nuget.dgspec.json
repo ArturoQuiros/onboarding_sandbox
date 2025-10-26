@@ -92,11 +92,11 @@
             },
             "Microsoft.Identity.Web": {
               "target": "Package",
-              "version": "[3.14.1, )"
+              "version": "[4.0.1, )"
             },
             "Microsoft.Identity.Web.MicrosoftGraph": {
               "target": "Package",
-              "version": "[3.14.1, )"
+              "version": "[4.0.1, )"
             },
             "Scalar.AspNetCore": {
               "target": "Package",

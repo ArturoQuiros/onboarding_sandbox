@@ -118,7 +118,7 @@ namespace WS_Onboarding.Controllers
                 }
                 else
                 {
-                    RolModel.Nombre = RolDto.Nombre;
+                    RolModel.Nombre = (RolDto.Nombre == null) ? RolModel.Nombre : RolDto.Nombre;
                     RolModel.Fecha_Modificacion = DateTime.UtcNow;
                     _context.SaveChanges();
 

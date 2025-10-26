@@ -12,6 +12,7 @@ using System.Net.Http.Headers;
 using WS_Onboarding.Functions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Kiota.Abstractions.Authentication;
+using WS_Onboarding.Services;
 
 namespace WS_Onboarding.Controllers
 {
@@ -23,12 +24,17 @@ namespace WS_Onboarding.Controllers
         private readonly ITokenAcquisition _tokenAcquisition;
         private readonly GraphServiceClient _graphClient;
         private readonly AuthService _authService;
-        public UsuarioInteriorController(AuthService authService, ApplicatonDBContext context, ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient)
+        private readonly IUsuariosService _usuarioService;
+        public UsuarioInteriorController(
+            AuthService authService, ApplicatonDBContext context,
+            ITokenAcquisition tokenAcquisition, GraphServiceClient graphClient,
+            IUsuariosService usuarioService)
         {
             _authService = authService;
             _context = context;
             _tokenAcquisition = tokenAcquisition;
             _graphClient = graphClient;
+            _usuarioService = usuarioService;
         }
 
         [HttpGet]
@@ -363,6 +369,7 @@ namespace WS_Onboarding.Controllers
                     };
                     requestConfig.QueryParameters.Top = 10;
                 });
+                //var users = await _graphClient.Users.GetAsync();
 
                 return Ok(users?.Value?.ToList());
             }
@@ -387,81 +394,20 @@ namespace WS_Onboarding.Controllers
         {
             try
             {
-                var UsuariosInternos = _context.UsuariosInternos
-                    .Where(c => c.Estado == true).ToList()
-                    .Select(c => c.ToUsuarioInteriorDto());
+                int result = await _usuarioService.SyncUserADtoDBAsync();
 
-                var UsersAzureAD = await _graphClient.Users.GetAsync(requestConfig =>
+                if(result == 1)
                 {
-                    requestConfig.QueryParameters.Select = new[]
-                    {
-                        "id", "displayName", "mail","mailboxSettings", "userPrincipalName","jobTitle","country","employeeType"
-                    };
-                    requestConfig.QueryParameters.Top = 10;
-                });
-
-                var AzureIdFromUsuarios = UsuariosInternos
-                    .Select(u => u.Azure_AD_User_Id).ToHashSet();
-
-                if(UsersAzureAD != null && UsersAzureAD.Value != null)
-                {
-                    foreach (var User in UsersAzureAD.Value)
-                    {
-                        if (User.DisplayName != null && User.JobTitle != null &&
-                            User.Id != null && User.Mail != null && 
-                            User.Country != null && User.EmployeeType != null)
-                        {
-                            if (!AzureIdFromUsuarios.Contains(User.Id))
-                            {
-                                var UsuarioInterno = new Models.UsuarioInterno
-                                {
-                                    Nombre = User.DisplayName,
-                                    Azure_AD_User_Id = User.Id,
-                                    Email = User.Mail,
-                                    Id_Pais = int.TryParse(User.Country?.ToString(), out var country) ? country : null,
-                                    Id_Rol = int.TryParse(User.EmployeeType?.ToString(), out var employeeType) ? employeeType : null,
-                                    Puesto = User.JobTitle,
-                                    Estado = true,
-                                    Fecha_Creacion = DateTime.UtcNow,
-                                    Fecha_Modificacion = DateTime.UtcNow
-                                };
-
-                                _context.UsuariosInternos.Add(UsuarioInterno);
-                                _context.SaveChanges();
-                            }
-                            else
-                            {
-                                var UsuarioModel = _context.UsuariosInternos.FirstOrDefault(c => c.Azure_AD_User_Id == User.Id);
-
-                                if (UsuarioModel!=null)
-                                {
-                                    UsuarioModel.Nombre = User.DisplayName;
-                                    UsuarioModel.Email = User.Mail;
-                                    UsuarioModel.Puesto = User.JobTitle;
-                                    UsuarioModel.Estado = true;
-                                    UsuarioModel.Id_Rol = int.TryParse(User.EmployeeType?.ToString(), out var employeeType) ? employeeType : null;
-                                    UsuarioModel.Id_Pais = int.TryParse(User.Country?.ToString(), out var country) ? country : null;
-                                    UsuarioModel.Fecha_Modificacion = DateTime.UtcNow;
-                                    _context.SaveChanges();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Al usuario de azure le faltan datos");
-                        }
-                    }
+                    return StatusCode(500, $"Error al extraer datos de usuarios de azure\n");
                 }
                 else
                 {
-                    return StatusCode(500, $"Error al extraer datos de usuarios de azure:\n");
-                }
-                
-                var Usuarios = _context.UsuariosInternos
+                    var Usuarios = _context.UsuariosInternos
                     .Where(c => c.Estado == true).ToList()
                     .Select(c => c.ToUsuarioInteriorDto());
 
-                return Ok(Usuarios);
+                    return Ok(Usuarios);
+                }
             }
             catch (Exception ex)
             {

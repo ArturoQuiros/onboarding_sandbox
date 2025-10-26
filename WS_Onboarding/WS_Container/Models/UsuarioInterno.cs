@@ -30,9 +30,9 @@ namespace WS_Onboarding.Models
 
         // Navigation
         [ForeignKey("Id_Pais")]
-        public Pais? Pais { get; set; }
+        public Pais Pais { get; set; } = null!;
         [ForeignKey("Id_Rol")]
-        public Rol? Rol { get; set; }
-        public ICollection<Contrato>? ContratosGestionados { get; set; }
+        public Rol Rol { get; set; } = null!;
+        public ICollection<Contrato> ContratosGestionados { get; set; } = new List<Contrato>();
     }
 }

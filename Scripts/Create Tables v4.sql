@@ -69,7 +69,7 @@ CREATE TABLE UsuariosExternos (
 DROP TABLE IF EXISTS Servicios
 CREATE TABLE Servicios (
     Id INT PRIMARY KEY IDENTITY(1, 1),
-    Nombre VARCHAR(50) UNIQUE NOT NULL,
+    Nombre VARCHAR(50) NOT NULL,
     Id_Pais INT,
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME,
@@ -110,6 +110,7 @@ CREATE TABLE Tareas (
     Id_Servicio INT NOT NULL,
     Nombre VARCHAR(100) NOT NULL,
     Descripcion NVARCHAR(MAX) NOT NULL, -- Aquí va el JSON del formulario
+    EsInterno BIT NOT NULL, -- 1 = Interno, 0 = Externo
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME,
     CONSTRAINT FK_Tareas_Servicios FOREIGN KEY (Id_Servicio) REFERENCES Servicios(Id)
@@ -133,9 +134,6 @@ CREATE TABLE Tarea_Contrato (
     Id_Estado INT NOT NULL,                  -- FK a Estados_Tarea
     Json_Respuesta NVARCHAR(MAX),            -- JSON con datos completados
     Observaciones NVARCHAR(MAX),             -- Comentarios del staff para el cliente
-    Fecha_Asignacion DATETIME,
-    Fecha_Modificacion DATETIME,
-    Fecha_Envio DATETIME,
     CONSTRAINT FK_TareaContrato_Contrato FOREIGN KEY (Id_Contrato) REFERENCES Contratos(Id),
     CONSTRAINT FK_TareaContrato_Tarea FOREIGN KEY (Id_Tarea) REFERENCES Tareas(Id),
     CONSTRAINT FK_TareaContrato_Usuario FOREIGN KEY (Id_UsuarioResponsable) REFERENCES UsuariosInternos(Id),
