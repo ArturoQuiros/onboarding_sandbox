@@ -153,5 +153,16 @@
     "loading": "Cargando...",
     "savingChanges": "Guardando cambios...",
     "errorSavingChanges": "Error al guardar los cambios."
-  }
+  },
+  "charts": {
+    "by_status": "Tareas por Estado",
+    "by_assignee": "Tareas por Encargado"
+  },
+  "statuses": {
+    "Pendiente": "Pendiente",
+    "Pendiente de revisión": "Pendiente de revisión",
+    "Aceptada": "Aceptada",
+    "Devuelta": "Devuelta"
+  },
+  "no_assignee": "No asignado"
 }

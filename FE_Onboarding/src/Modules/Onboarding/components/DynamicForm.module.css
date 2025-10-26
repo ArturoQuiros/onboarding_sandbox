@@ -351,3 +351,10 @@
   background-color: var(--bdo-slate);
   border-color: var(--bdo-slate);
 }
+
+/* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
+.homeButton {
+  /* Derivado de .formButton */
+  background-color: #0077b3 !important;
+  width: 100%;
+}
