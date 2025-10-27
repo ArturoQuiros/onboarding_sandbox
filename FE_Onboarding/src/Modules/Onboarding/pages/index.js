@@ -2,4 +2,4 @@ export * from "./OnboardingLanding";
 export * from "./StaffReviewPage";
 export * from "./ClientContractPage";
 export * from "./ClientHome";
-export * from "./ClienteContract";
+export * from "./ClientContractManteinance";

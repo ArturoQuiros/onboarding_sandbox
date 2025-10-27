@@ -48,6 +48,7 @@ export const CustomerLogin = () => {
   };
 
   // 🔹 LOGIN
+  // 🔹 LOGIN
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!validateLoginForm()) return;
@@ -56,34 +57,63 @@ export const CustomerLogin = () => {
     setErrors({});
 
     try {
-      const response = await axiosClient.post("/User/Outside/Login", {
+      // 1. Petición de Login
+      const loginResponse = await axiosClient.post("/User/Outside/Login", {
         email,
         contrasena: password,
       });
+      if (loginResponse.data && loginResponse.data.token) {
+        const userData = loginResponse.data;
+        login(userData, userData.token);
 
-      if (response.data && response.data.token) {
-        login(response.data, response.data.token);
-        navigate("/client/contract/1", { replace: true });
+        // ASUNCION: El ID del usuario externo está en la propiedad 'idUsuario' (ajustar si es diferente)
+        const idUsuarioExterno = userData.usuariosExternos.id;
+
+        if (idUsuarioExterno) {
+          // 2. OBTENER EL/LOS CONTRATO(S) ASOCIADO(S)
+          const contractsResponse = await axiosClient.get(
+            `/Contrato/ByUsuarioExterno?IdUsuarioExterno=${idUsuarioExterno}`
+          );
+
+          if (contractsResponse.data && contractsResponse.data.length > 0) {
+            // 3. Tomar el ID del primer contrato (asumiendo que el cliente solo tiene uno o queremos el primero)
+            const contractId = contractsResponse.data[0].id;
+
+            // 4. Navegar a ese contrato específico
+            navigate(`/client/contract/${contractId}`, { replace: true });
+
+            // ¡TODO COMPLETADO!
+            return; // Salir de la función después de la navegación exitosa
+          } else {
+            // Caso: Usuario loggeado, pero sin contratos encontrados.
+            setErrors({ general: "Login successful, but no contracts found." });
+            // Puedes decidir navegar a una página de "Sin contratos" o mantener al usuario en el login.
+          }
+        } else {
+          setErrors({
+            general:
+              "No contracts available for this user, contact your Account Manager.",
+          });
+        }
       } else {
-        setErrors({ general: "Unexpected server response" });
-        setLoading(false);
+        setErrors({ general: "Unexpected server response or missing token" });
       }
     } catch (err) {
       console.error("Customer login error:", err);
-      setLoading(false);
 
-      // Manejo de errores basado solo en códigos HTTP (no confiar en mensajes del BE)
       if (err.response?.status === 401) {
         setErrors({ general: "Invalid email or password" });
       } else if (err.request) {
-        // Error de red - no hubo respuesta
         setErrors({
           general: "Unable to connect to server. Please check your connection.",
         });
       } else {
-        // Error en la configuración de la petición
         setErrors({ general: "An error occurred. Please try again." });
       }
+    } finally {
+      // Solo deshabilitar la carga si no hubo una navegación exitosa.
+      // Si la navegación fue exitosa (dentro del if(contractsResponse...)), la carga se mantiene en true hasta el redirect.
+      setLoading(false);
     }
   };
 
