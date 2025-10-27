@@ -1,173 +1,144 @@
 // src/Modules/Admin/pages/Tasks.jsx
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useCallback } from "react";
+import { useParams } from "react-router-dom";
 import { CrudDashboard } from "../components";
 import { UIContext } from "../../../Global/Context";
-import { FaTasks } from "react-icons/fa"; // Ícono para Tareas
+import { FaTasks } from "react-icons/fa";
+import { useTasksQuery } from "../hooks/useTasksQuery";
+import { useTranslation } from "react-i18next";
 
-// ----------------------------------------------------------------------
-// 1. DATOS DE PRUEBA (MOCK DATA)
-// ----------------------------------------------------------------------
-const MOCK_TASKS = [
-  {
-    id: 1,
-    name: "Registro de Usuario",
-    form: {
-      type: "user_signup",
-      fields: [
-        { key: "username", label: "Nombre de Usuario", type: "text" },
-        { key: "email", label: "Correo Electrónico", type: "email" },
-        { key: "password", label: "Contraseña", type: "password" },
-      ],
-    },
-  },
-  {
-    id: 2,
-    name: "Solicitud de Vacaciones",
-    form: {
-      type: "vacation_request",
-      fields: [
-        { key: "start_date", label: "Fecha de Inicio", type: "date" },
-        { key: "end_date", label: "Fecha de Fin", type: "date" },
-        { key: "reason", label: "Motivo", type: "textarea" },
-      ],
-    },
-  },
-];
-
-// ----------------------------------------------------------------------
-// 2. CUSTOM HOOK SIMULADO (SIMULA REACT QUERY PARA CRUD)
-// ----------------------------------------------------------------------
-const useTasksQueryMock = (mockData) => {
-  const [data, setData] = useState(mockData);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const getTasks = () => ({
-    isLoading,
-    isError,
-    data,
-  });
-
-  const createItem = {
-    mutateAsync: async (newItem) => {
-      const newId = Math.max(...data.map((t) => t.id), 0) + 1;
-      // Parsea el JSON string del formulario antes de guardar en el estado
-      const taskWithId = {
-        ...newItem,
-        id: newId,
-        form: JSON.parse(newItem.form),
-      };
-      setData((prev) => [...prev, taskWithId]);
-      return taskWithId;
-    },
-  };
-
-  const updateItem = {
-    mutateAsync: async (updatedItem) => {
-      // Parsea el JSON string del formulario antes de actualizar en el estado
-      const parsedItem = { ...updatedItem, form: JSON.parse(updatedItem.form) };
-      setData((prev) =>
-        prev.map((t) => (t.id === updatedItem.id ? parsedItem : t))
-      );
-      return parsedItem;
-    },
-  };
-
-  const deleteItem = {
-    mutateAsync: async (itemId) => {
-      setData((prev) => prev.filter((t) => t.id !== itemId));
-      return itemId;
-    },
-  };
-
-  return {
-    tasksQuery: getTasks(),
-    createTask: createItem,
-    updateTask: updateItem,
-    deleteTask: deleteItem,
-  };
-};
-
-// ----------------------------------------------------------------------
-// 3. COMPONENTE PRINCIPAL
-// ----------------------------------------------------------------------
 const Tasks = () => {
+  const { t } = useTranslation("global");
   const { setEntityIcon } = useContext(UIContext);
+  const { serviceId } = useParams();
+  const numericServiceId = Number(serviceId);
+
+  if (!numericServiceId) {
+    return (
+      <div className="flex items-center justify-center h-64 text-center">
+        <p className="text-red-600 font-semibold mb-2">
+          Error: no se encontró el ID del servicio en la URL
+        </p>
+      </div>
+    );
+  }
 
   const { tasksQuery, createTask, updateTask, deleteTask } =
-    useTasksQueryMock(MOCK_TASKS);
+    useTasksQuery(numericServiceId);
 
+  // Establece el ícono en el sidebar
   useEffect(() => {
     setEntityIcon(<FaTasks />);
   }, [setEntityIcon]);
 
-  // ✅ Definición de campos con useMemo
+  // Campos del formulario y tabla
   const taskFields = useMemo(
     () => [
-      { key: "id", labelKey: "tasks.table.id", type: "text", editable: false },
-      { key: "name", labelKey: "tasks.table.name", type: "text" },
       {
-        key: "form",
-        labelKey: "tasks.table.form_json",
+        key: "id",
+        labelKey: "tasks.table.id",
+        type: "text",
+        isReadOnly: true,
+      },
+      {
+        key: "name",
+        labelKey: "tasks.table.name",
+        type: "text",
+        validation: { required: true },
+      },
+      {
+        key: "description",
+        labelKey: "tasks.table.description",
         type: "textarea",
-        // 🔧 Convierte objeto a string formateado para edición
-        // Debe retornar un objeto con TODAS las propiedades
-        transformForEdit: (item) => ({
-          id: item.id,
-          name: item.name,
-          form: JSON.stringify(item.form, null, 2),
-        }),
-        // ✅ Oculta esta columna en la tabla (no se muestra)
-        isHidden: true,
+        isTableVisible: false,
+        validation: { required: true },
+        rows: 10,
+      },
+      {
+        key: "isInternal",
+        labelKey: "tasks.table.is_internal",
+        type: "radio",
+        options: [
+          { label: t("common.yes"), value: true },
+          { label: t("common.no"), value: false },
+        ],
+        defaultValue: false,
+        transformForDisplay: (value) =>
+          value ? t("common.yes") : t("common.no"),
       },
     ],
-    []
+    [t]
   );
 
-  // ✅ Reglas de validación con useMemo
+  // Validaciones
   const taskValidations = useMemo(
     () => ({
       name: (value) => {
-        if (!value) return "El nombre de la tarea es obligatorio";
-        if (value.length < 5) return "Debe tener al menos 5 caracteres";
+        if (!value) return t("validations.name_required");
+        if (value.length < 3)
+          return t("validations.name_min_length", { min: 3 });
+        if (value.length > 100)
+          return t("validations.name_max_length", { max: 100 });
         return null;
       },
-      form: (value) => {
-        if (!value) return "El JSON del formulario es obligatorio";
+      description: (value) => {
+        if (!value) return t("validations.description_required");
         try {
-          JSON.parse(value); // Valida el formato JSON
-        } catch (e) {
-          return "Debe ser un formato JSON válido";
+          JSON.parse(value);
+        } catch {
+          return t("validations.json_invalid");
         }
         return null;
       },
     }),
-    []
+    [t]
   );
 
-  // ✅ Returns condicionales
-  if (tasksQuery.isLoading) return <p>Cargando tareas...</p>;
-  if (tasksQuery.isError) return <p>Error cargando tareas</p>;
+  // Wrapper para crear/actualizar
+  const handleMutation = useCallback(
+    async (task) => {
+      const payload = {
+        id: task.id,
+        id_Servicio: numericServiceId,
+        nombre: task.name,
+        descripcion: task.description || "{}",
+        esInterno: !!task.isInternal,
+      };
 
-  // ✅ Renderizado del CrudDashboard
+      if (task.id) {
+        return updateTask.mutateAsync(payload);
+      } else {
+        return createTask.mutateAsync(payload);
+      }
+    },
+    [createTask, updateTask, numericServiceId]
+  );
+
+  // Estados condicionales
+  if (tasksQuery.isLoading) return <div>{t("common.loading")}</div>;
+
+  if (tasksQuery.isError)
+    return (
+      <div>
+        {t("common.loadError")}
+        {tasksQuery.error && <p>{tasksQuery.error.message}</p>}
+      </div>
+    );
+
   return (
     <CrudDashboard
       entityName="tasks"
       fields={taskFields}
-      // ✅ Pasa los datos originales sin modificar
       getItems={() => tasksQuery.data ?? []}
-      createItem={createTask.mutateAsync}
-      updateItem={updateTask.mutateAsync}
+      createItem={handleMutation}
+      updateItem={handleMutation}
       deleteItem={deleteTask.mutateAsync}
       validations={taskValidations}
+      initialFormValues={{
+        name: "",
+        description: "{}",
+        isInternal: false,
+      }}
     />
   );
 };

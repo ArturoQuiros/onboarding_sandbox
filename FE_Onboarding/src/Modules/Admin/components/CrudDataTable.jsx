@@ -14,7 +14,7 @@ export const CrudDataTable = ({
   fields,
   onEdit,
   onDelete,
-  extraActionRenderer, // <-- nuevo
+  extraActionRenderer,
   currentPage,
   itemsPerPage,
   filteredCount,
@@ -72,7 +72,9 @@ export const CrudDataTable = ({
                 <tr key={item.id} className={styles.tableRow}>
                   {visibleFields.map((field) => (
                     <td key={field.key} className={styles.tableCell}>
-                      {item[field.key]}
+                      {field.transformForDisplay
+                        ? field.transformForDisplay(item[field.key], item)
+                        : item[field.key]}
                     </td>
                   ))}
                   <td className={`${styles.tableCell} ${styles.actionsCell}`}>
