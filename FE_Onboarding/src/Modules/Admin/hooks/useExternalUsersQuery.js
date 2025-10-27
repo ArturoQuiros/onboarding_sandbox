@@ -82,9 +82,11 @@ export const useExternalUsersQuery = () => {
         nombre: user.name,
         email: user.email,
         id_Rol: user.id_Rol,
-        contrasena: user.password === undefined ? "" : user.password,
       };
 
+      if (user.password) {
+        payload.contrasena = user.password;
+      }
       const { data } = await axiosClient.put(
         `/User/Outside/${user.id}`,
         payload

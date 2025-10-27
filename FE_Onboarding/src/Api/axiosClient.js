@@ -21,7 +21,21 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) handle401Error();
+    if (error.response?.status === 401) {
+      const currentPath = window.location.pathname;
+
+      // Lista de rutas donde NO queremos ejecutar handle401Error
+      const loginPaths = ["/staff-login", "/client-login"];
+
+      // Solo ejecutar handle401Error si NO estamos en una página de login
+      const isLoginPage = loginPaths.some((path) =>
+        currentPath.toLowerCase().includes(path.toLowerCase())
+      );
+
+      if (!isLoginPage) {
+        handle401Error();
+      }
+    }
     return Promise.reject(error);
   }
 );

@@ -1,23 +1,52 @@
-import React, { useContext } from "react";
-import { BsTranslate } from "react-icons/bs";
+import React, { useState, useRef, useEffect } from "react";
 import { FiLogOut } from "react-icons/fi";
-import { LanguageContext } from "../../../Global/Context";
+import { FaUserCircle, FaKey } from "react-icons/fa";
+import { useStaffAuth, useCustomerAuth } from "../../../Global/Context";
 import styles from "./Navbar.module.css";
-import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../Global/hooks";
+import toast from "react-hot-toast";
+import { ChangePasswordModal } from "./ChangePasswordModal";
 
 export const Navbar = () => {
-  const { t, i18n } = useTranslation("global");
-  const { setLanguage } = useContext(LanguageContext);
-  const { logout } = useAuth(); // ✅ Solo se llama una vez
+  const dropdownRef = useRef(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleLanguageToggle = () => {
-    setLanguage(i18n.language === "es" ? "en" : "es");
-  };
+  const userType = sessionStorage.getItem("userType");
+  const staffAuth = useStaffAuth();
+  const customerAuth = useCustomerAuth();
+
+  const auth =
+    userType === "staff"
+      ? staffAuth
+      : userType === "client"
+      ? customerAuth
+      : null;
+
+  const userName = auth?.user?.nombre || "User";
+
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   const handleLogOut = () => {
-    logout(); // Llama al logout del AuthContext
+    auth?.logout?.();
+    setIsDropdownOpen(false);
   };
+
+  const handleChangePassword = () => {
+    setIsModalOpen(true);
+    setIsDropdownOpen(false);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className={styles.navbar}>
@@ -27,17 +56,48 @@ export const Navbar = () => {
         className={styles.logo}
       />
       <h1 className={styles.title}>Costa Rica</h1>
-      <div className={styles.menu}>
-        <button className={styles.langButton} onClick={handleLanguageToggle}>
-          <BsTranslate className={styles.translateIcon} />
-          <span>{i18n.language === "es" ? "ES" : "EN"}</span>
-        </button>
 
-        <button className={styles.logoutButton} onClick={handleLogOut}>
-          <FiLogOut className={styles.logoutIcon} />
-          <span>{t("common.logout")}</span>
-        </button>
+      <div className={styles.menu}>
+        <div className={styles.userDropdownContainer} ref={dropdownRef}>
+          <div className={styles.userButton} onClick={toggleDropdown}>
+            <FaUserCircle className={styles.userIcon} />
+            <span className={styles.userName}>{userName}</span>
+          </div>
+
+          {isDropdownOpen && (
+            <div className={styles.dropdownMenu}>
+              {userType === "client" && (
+                <div
+                  className={styles.dropdownItem}
+                  onClick={handleChangePassword}
+                >
+                  <FaKey className={styles.dropdownIcon} />
+                  Change Password
+                </div>
+              )}
+              <div
+                className={`${styles.dropdownItem} ${styles.logoutItem}`}
+                onClick={handleLogOut}
+              >
+                <FiLogOut className={styles.dropdownIcon} />
+                Log Out
+              </div>
+            </div>
+          )}
+        </div>
       </div>
+
+      {isModalOpen && (
+        <ChangePasswordModal
+          email={auth?.user?.email}
+          onClose={closeModal}
+          onSuccess={() => {
+            toast.success("Password changed successfully!");
+            closeModal();
+          }}
+          onError={(msg) => toast.error(msg)}
+        />
+      )}
     </nav>
   );
 };

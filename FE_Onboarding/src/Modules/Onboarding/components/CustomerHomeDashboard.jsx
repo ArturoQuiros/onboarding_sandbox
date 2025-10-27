@@ -9,58 +9,58 @@ export const CustomerHomeDashboard = () => {
   const [tasks, setTasks] = useState([
     {
       id: 1,
-      name: "Revisión de documentos legales",
-      status: "Aceptada",
+      name: "Legal Document Review",
+      status: "Accepted",
       assignedTo: "María Gómez",
       observation: "",
       serviceId: 1,
     },
     {
       id: 2,
-      name: "Configuración inicial del sistema",
-      status: "Pendiente de revisión",
+      name: "Initial System Setup",
+      status: "Pending Review",
       assignedTo: "José Rojas",
-      observation: "Falta completar datos de acceso.",
+      observation: "Missing access credentials.",
       serviceId: 2,
     },
     {
       id: 3,
-      name: "Validación del contrato",
-      status: "Pendiente",
+      name: "Contract Validation",
+      status: "Pending",
       assignedTo: "",
       observation: "",
       serviceId: 1,
     },
     {
       id: 4,
-      name: "Carga de anexos técnicos",
-      status: "Devuelta",
+      name: "Technical Annex Upload",
+      status: "Returned",
       assignedTo: "Carlos Méndez",
-      observation: "Revisar anexos incompletos",
+      observation: "Review incomplete annexes.",
       serviceId: 3,
     },
     {
       id: 5,
-      name: "Aprobación final y firma",
-      status: "Pendiente de revisión",
+      name: "Final Approval and Signature",
+      status: "Pending Review",
       assignedTo: "María Gómez",
-      observation: "En espera de confirmación del cliente.",
+      observation: "Awaiting customer confirmation.",
       serviceId: 2,
     },
     {
       id: 6,
-      name: "Revisión de políticas internas",
-      status: "Aceptada",
+      name: "Internal Policy Review",
+      status: "Accepted",
       assignedTo: "Andrea Vargas",
       observation: "",
       serviceId: 4,
     },
     {
       id: 7,
-      name: "Verificación de cuentas bancarias",
-      status: "Pendiente",
+      name: "Bank Account Verification",
+      status: "Pending",
       assignedTo: "Luis Soto",
-      observation: "Documento bancario incompleto.",
+      observation: "Incomplete bank document.",
       serviceId: 2,
     },
   ]);
@@ -75,9 +75,8 @@ export const CustomerHomeDashboard = () => {
   ];
   const contractId = 1;
 
-  const [activeTab, setActiveTab] = useState("Todas");
+  const [activeTab, setActiveTab] = useState("All"); // Migrado "Todas" a "All"
   const [searchTerm, setSearchTerm] = useState("");
-  // ✅ Inicialización como Número
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -89,18 +88,18 @@ export const CustomerHomeDashboard = () => {
 
   const totals = useMemo(() => {
     const total = tasks.length;
-    const completed = tasks.filter((t) => t.status === "Aceptada").length;
+    const completed = tasks.filter((t) => t.status === "Accepted").length; // Actualizado "Aceptada"
     const inReview = tasks.filter(
-      (t) => t.status === "Pendiente de revisión"
+      (t) => t.status === "Pending Review" // Actualizado "Pendiente de revisión"
     ).length;
-    const pending = tasks.filter((t) => t.status === "Pendiente").length;
-    const returned = tasks.filter((t) => t.status === "Devuelta").length;
+    const pending = tasks.filter((t) => t.status === "Pending").length; // Actualizado "Pendiente"
+    const returned = tasks.filter((t) => t.status === "Returned").length; // Actualizado "Devuelta"
     return { total, completed, inReview, pending, returned };
   }, [tasks]);
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((t) => {
-      const matchesTab = activeTab === "Todas" || t.status === activeTab;
+      const matchesTab = activeTab === "All" || t.status === activeTab;
       const matchesSearch = t.name
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -108,10 +107,8 @@ export const CustomerHomeDashboard = () => {
     });
   }, [tasks, activeTab, searchTerm]);
 
-  // Asegura que totalPages se calcule correctamente con el número de itemsPerPage
   const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
 
-  // ✅ Lógica de paginación para obtener solo las tareas de la página actual
   const paginatedTasks = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -120,20 +117,17 @@ export const CustomerHomeDashboard = () => {
 
   return (
     <div className={styles.dashboardContainer}>
-      {/* <TaskStatsCards totals={totals} /> */}
-
-      {/* GRAFICOS */}
+      {/* <TaskStatsCards totals={totals} /> */} {/* CHARTS */}
       <TaskCharts tasks={filteredTasks} />
-
-      {/* FILTROS: tabs + búsqueda + selector de registros */}
+      {/* FILTERS: tabs + search + records selector */}
       <div className={styles.controlsRow}>
         <div className={styles.tabs}>
           {[
-            "Todas",
-            "Pendiente",
-            "Pendiente de revisión",
-            "Aceptada",
-            "Devuelta",
+            "All", // Actualizado
+            "Pending", // Actualizado
+            "Pending Review", // Actualizado
+            "Accepted", // Actualizado
+            "Returned", // Actualizado
           ].map((tab) => (
             <button
               key={tab}
@@ -153,26 +147,24 @@ export const CustomerHomeDashboard = () => {
         <div className={styles.rightControls}>
           <input
             className={styles.searchInput}
-            placeholder="Buscar tarea..."
+            placeholder="Search task..." // Actualizado
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setCurrentPage(1);
             }}
           />
-          {/* ✅ ItemsPerPageSelector corregido en su archivo para pasar Number */}
+
           <ItemsPerPageSelector
             itemsPerPage={itemsPerPage}
             onItemsPerPageChange={(value) => {
-              // 'value' ya es un número gracias al cambio en ItemsPerPageSelector
               setItemsPerPage(value);
               setCurrentPage(1);
             }}
           />
         </div>
       </div>
-
-      {/* TABLA: Recibe solo las tareas paginadas */}
+      {/* TABLE: Receives only the paginated tasks */}
       <TaskTable
         tasks={paginatedTasks}
         staffOptions={staffOptions}
@@ -182,7 +174,6 @@ export const CustomerHomeDashboard = () => {
         totalPages={totalPages}
         itemsPerPage={itemsPerPage}
         onPageChange={setCurrentPage}
-        // Se puede añadir el total de registros filtrados para la visualización del footer
         filteredCount={filteredTasks.length}
       />
     </div>

@@ -5,7 +5,7 @@
   gap: 30px;
   background-color: white;
   width: 100%;
-  max-width: none;
+  max-width: none; /* ⬅️ MODIFICACIÓN: Elimina la limitación de ancho */
   border-radius: 0;
   box-shadow: none;
   margin: 0;
@@ -29,10 +29,10 @@
   text-align: left;
 }
 
-/* Grid de campos - DOS COLUMNAS */
+/* Grid de campos - UNA SOLA COLUMNA */
 .formFieldsGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr; /* ⬅️ MODIFICACIÓN CLAVE: Cambiado de repeat(2, 1fr) a 1fr */
   gap: 30px 40px;
   width: 100%;
   margin: 0;
@@ -275,8 +275,10 @@
 
 /* Responsividad */
 @media (max-width: 768px) {
+  /* Eliminamos la modificación que hacía que el grid volviera a 1fr,
+     ya que ahora es 1fr por defecto. */
   .formFieldsGrid {
-    grid-template-columns: 1fr;
+    /* grid-template-columns: 1fr; <--- Esta línea ya no es necesaria */
     gap: 20px;
   }
 
@@ -357,4 +359,86 @@
   /* Derivado de .formButton */
   background-color: #0077b3 !important;
   width: 100%;
+}
+
+/* 🚀 NUEVOS ESTILOS */
+
+/* Estilo para la descripción de campo (el texto que faltaba) */
+.fieldDescription {
+  font-size: 0.85rem;
+  color: var(--bdo-slate);
+  margin-top: -5px;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+/* Estilo para los detalles de la opción de radio (ej: "(con cargo anual adicional)") */
+.optionDetails {
+  font-size: 0.85rem;
+  color: var(--bdo-ocean);
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+/* ... (Todo tu CSS anterior) ... */
+
+/* 🚀 NUEVOS ESTILOS */
+
+/* Estilo para la descripción de campo (el texto que faltaba) */
+.fieldDescription {
+  font-size: 0.85rem;
+  color: var(--bdo-slate);
+  margin-top: -5px;
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+
+/* Estilo para los detalles de la opción de radio (ej: "(con cargo anual adicional)") */
+.optionDetails {
+  font-size: 0.85rem;
+  color: var(--bdo-ocean);
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+/* 💬 Estilos para el BOTÓN FLOTANTE */
+.floatingButton {
+  position: fixed; /* ⬅️ Clave para que flote sobre el contenido */
+  bottom: 30px; /* Distancia desde la parte inferior */
+  right: 30px; /* Distancia desde la parte derecha */
+  background-color: var(--bdo-ocean); /* Usa el color azul/océano de BDO */
+  color: white;
+  border: none;
+  border-radius: 50%; /* Forma circular */
+  width: 40px; /* Tamaño del círculo */
+  height: 60px; /* Tamaño del círculo */
+  font-size: 28px; /* Tamaño del ícono/emoji */
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25); /* Sombra para que se destaque */
+  z-index: 1000; /* Asegura que esté por encima de otros elementos */
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floatingButton:hover {
+  background-color: #0077b3; /* Un tono más oscuro de azul al pasar el ratón */
+  transform: scale(1.05);
+}
+
+.floatingButton:active {
+  transform: scale(0.95);
+}
+
+/* Responsividad para el botón flotante en móviles */
+@media (max-width: 600px) {
+  .floatingButton {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    font-size: 22px;
+  }
 }

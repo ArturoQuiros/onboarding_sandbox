@@ -1,64 +1,48 @@
-/* Contenedor de la tabla */
+/* src/Modules/Admin/components/StaffTable.module.css */
+
+/* ------------------------------------------- */
+/* 💡 Estilos de la tabla (Copia de CrudDataTable) */
+/* ------------------------------------------- */
+
 .staffTable_tableContainer {
-  overflow-x: auto; /* Esencial para el responsive horizontal */
+  overflow-x: auto;
   margin-top: 20px;
 }
 
-/* Tabla */
 .staffTable_table {
   width: 100%;
   border-collapse: collapse;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  table-layout: fixed; /* Mantenemos fixed para un control de ancho preciso */
-  border-radius: 8px; /* Aplicar el radio al contenedor de la tabla */
-  overflow: hidden; /* Para que el radio se aplique al thead */
 }
 
-/* Encabezado */
 .staffTable_tableHeader {
   background-color: var(--bdo-red);
   color: white;
-  /* overflow: hidden ya no es necesario aquí */
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  overflow: hidden; /* Para redondear las esquinas de los th */
 }
 
-/* Celdas del Encabezado (TH) */
 .staffTable_tableHeaderCell {
   padding: 16px 20px;
   text-align: left;
   font-weight: bold;
   border-right: 1px solid rgba(255, 255, 255, 0.2);
-  cursor: pointer;
+  cursor: pointer; /* Cursor de puntero para indicar que es clickeable (ordenación) */
 }
 
-/* 🚨 APLICAMOS ANCHOS FIJOS PARA MEJORAR EL RESPONSIVE Y LA LECTURA 🚨 */
-.staffTable_tableHeaderCell:nth-child(1) {
-  width: 5%; /* ID */
+.staffTable_tableHeaderCell:first-child {
+  border-top-left-radius: 8px;
 }
-.staffTable_tableHeaderCell:nth-child(2) {
-  width: 20%; /* Nombre */
-}
-.staffTable_tableHeaderCell:nth-child(3) {
-  width: 25%; /* Email */
-}
-.staffTable_tableHeaderCell:nth-child(4) {
-  width: 15%; /* Puesto */
-}
-.staffTable_tableHeaderCell:nth-child(5) {
-  width: 10%; /* País */
-}
-.staffTable_tableHeaderCell:nth-child(6) {
-  width: 10%; /* Habilitado */
-  text-align: center; /* Centrar para el Toggle */
-}
-.staffTable_tableHeaderCell:nth-child(7) {
-  width: 15%; /* Rol */
-  text-align: center; /* Centrar para el Selector */
+
+.staffTable_tableHeaderCell:last-child {
   border-right: none;
+  text-align: center; /* Centrar las columnas de acción/estado/rol */
   cursor: default;
+  border-top-right-radius: 8px;
 }
-/* REMOVIDO: border-radius en first-child/last-child ya que está en .staffTable_table */
 
-/* Filas */
+/* Filas de la tabla */
 .staffTable_tableRow {
   background-color: #ffffff;
   transition: background-color 0.2s ease-in-out;
@@ -72,39 +56,26 @@
   background-color: #e0e0e0;
 }
 
-/* Celdas del Cuerpo (TD) */
 .staffTable_tableCell {
   padding: 12px 20px;
   border-right: 1px solid var(--bdo-pale-charcoal);
   border-bottom: 1px solid var(--bdo-pale-charcoal);
   color: var(--bdo-charcoal);
-  /* Se asegura que el texto no se rompa de forma incómoda */
-  word-wrap: break-word;
-}
-
-/* Centrar contenido de acción en las celdas del cuerpo */
-.staffTable_tableCell:nth-child(6),
-.staffTable_tableCell:nth-child(7) {
-  text-align: center;
 }
 
 .staffTable_tableCell:last-child {
   border-right: none;
 }
 
-/* Opcional: Eliminar el borde inferior de la última fila */
-.staffTable_tableRow:last-child .staffTable_tableCell {
-  border-bottom: none;
-}
+/* ------------------------------------------- */
+/* Estilos de Acciones (Toggle/RoleSelector) */
+/* ------------------------------------------- */
 
-/* Contenedor para la acción (el div dentro del td) */
 .staffTable_actionCellWrapper {
-  /* Ya estabas correcto: ocupa todo el espacio y centra */
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  /* Esto es específico para centrar Toggle y RoleSelector */
 }
 
 /* Mensaje de tabla vacía */
@@ -112,4 +83,57 @@
   text-align: center;
   padding: 20px;
   color: var(--bdo-slate);
+}
+
+/* Icono de ordenación */
+.sortIcon {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* ------------------------------------------- */
+/* Footer y Paginación */
+/* ------------------------------------------- */
+
+.tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background-color: #f7fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.recordsInfo {
+  font-size: 0.9rem;
+  font-weight: 1000;
+  color: var(--bdo-charcoal);
+}
+
+.paginationControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--bdo-charcoal);
+  background-color: transparent;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.paginationButton:hover:not(:disabled) {
+  background-color: #e2e8f0;
+}
+
+.paginationButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
