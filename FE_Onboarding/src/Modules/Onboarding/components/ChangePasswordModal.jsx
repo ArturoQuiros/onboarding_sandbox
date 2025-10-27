@@ -33,14 +33,11 @@ export const ChangePasswordModal = ({ email, onClose }) => {
 
     setLoading(true);
     try {
-      await axiosClient.post(
-        `/WS_Onboarding/User/Outside/Password/Change/${email}`,
-        {
-          contrasenaVieja: oldPassword,
-          contrasenaNueva: newPassword,
-        }
-      );
-      toast.success("✅ Password changed successfully");
+      await axiosClient.post(`/User/Outside/Password/Change/${email}`, {
+        contrasenaVieja: oldPassword,
+        contrasenaNueva: newPassword,
+      });
+      toast.success("Password changed successfully");
       resetForm();
       onClose();
     } catch (error) {
