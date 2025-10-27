@@ -18,7 +18,7 @@ export const useTasksQuery = (serviceId) => {
   const queryClient = useQueryClient();
   const numericServiceId = Number(serviceId);
 
-  // 🔹 GET: Obtener tareas filtradas por serviceId
+  // 🔹 GET
   const tasksQuery = useQuery({
     queryKey: ["tasks", numericServiceId],
     queryFn: async () => {
@@ -27,10 +27,10 @@ export const useTasksQuery = (serviceId) => {
         .filter((t) => t.id_Servicio === numericServiceId)
         .map((t) => ({
           id: t.id,
-          id_Servicio: t.id_Servicio,
+          id_Service: t.id_Servicio,
           name: t.nombre,
           description: t.descripcion,
-          esInterno: t.esInterno,
+          isInternal: t.esInterno,
           createdAt: t.fecha_Creacion,
           updatedAt: t.fecha_Modificacion,
         }));
@@ -43,20 +43,15 @@ export const useTasksQuery = (serviceId) => {
     mutationFn: async (task) => {
       const payload = {
         id_Servicio: numericServiceId,
-        nombre: task.name,
-        descripcion: stringifyIfObject(task.description),
-        esInterno: task.isInternal,
+        nombre: task.name ?? task.nombre ?? "",
+        descripcion: stringifyIfObject(
+          task.description ?? task.descripcion ?? ""
+        ),
+        esInterno: task.isInternal ?? task.esInterno ?? false,
       };
+      console.log("📤 POST payload:", payload);
       const { data } = await axiosClient.post("/Tareas", payload);
-      return {
-        id: data.id,
-        id_Servicio: data.id_Servicio,
-        name: data.nombre,
-        description: data.descripcion,
-        esInterno: data.esInterno,
-        createdAt: data.fecha_Creacion,
-        updatedAt: data.fecha_Modificacion,
-      };
+      return data;
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),
@@ -66,22 +61,16 @@ export const useTasksQuery = (serviceId) => {
   const updateTask = useMutation({
     mutationFn: async (task) => {
       const payload = {
-        id: task.id,
         id_Servicio: numericServiceId,
-        nombre: task.name,
-        descripcion: stringifyIfObject(task.description),
-        esInterno: task.isInternal,
+        nombre: task.name ?? task.nombre ?? "",
+        descripcion: stringifyIfObject(
+          task.description ?? task.descripcion ?? ""
+        ),
+        esInterno: task.isInternal ?? task.esInterno ?? false,
       };
+      console.log("📤 PUT payload:", payload);
       const { data } = await axiosClient.put(`/Tareas/${task.id}`, payload);
-      return {
-        id: data.id,
-        id_Servicio: data.id_Servicio,
-        name: data.nombre,
-        description: data.descripcion,
-        esInterno: data.esInterno,
-        createdAt: data.fecha_Creacion,
-        updatedAt: data.fecha_Modificacion,
-      };
+      return data;
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),
