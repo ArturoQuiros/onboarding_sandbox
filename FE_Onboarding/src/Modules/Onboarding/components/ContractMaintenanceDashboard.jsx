@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext, useEffect } from "react";
+import React, { useState, useMemo, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
@@ -8,7 +8,7 @@ import {
   SearchBar,
   ItemsPerPageSelector,
 } from "../../Admin/components";
-import styles from "./ContractServicesDashboard.module.css";
+import styles from "./ContractMaintenanceDashboard.module.css";
 import { UIContext } from "../../../Global/Context";
 import {
   useCountriesQuery,
@@ -20,7 +20,7 @@ export const ContractMaintenanceDashboard = () => {
   const { entityIcon } = useContext(UIContext);
   const { t } = useTranslation("global");
 
-  // 🔹 Hooks del Admin
+  // 🔹 Reutilizamos el mismo hook (ya trae datos de servicios)
   const {
     contractDetailQuery,
     availableServicesQuery,
@@ -32,16 +32,7 @@ export const ContractMaintenanceDashboard = () => {
   const { countriesQuery, countryMap } = useCountriesQuery();
 
   const allServices = availableServicesQuery.data ?? [];
-
-  // 🔹 Estado local para reflejar cambios inmediatamente en UI
-  const [localAssignedServiceIds, setLocalAssignedServiceIds] = useState(
-    new Map(assignedRelationsQuery.data ?? [])
-  );
-
-  useEffect(() => {
-    // Mantener sincronizado con los datos del query cuando cambian
-    setLocalAssignedServiceIds(new Map(assignedRelationsQuery.data ?? []));
-  }, [assignedRelationsQuery.data]);
+  const assignedServiceIds = assignedRelationsQuery.data ?? new Map();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,7 +47,7 @@ export const ContractMaintenanceDashboard = () => {
     return countryMap[idPais] || `ID: ${idPais} (Desconocido)`;
   }, [countryMap, idPais]);
 
-  // 🔹 Ordenamiento
+  // 🔹 Filtrado y ordenamiento igual que en el dashboard original
   const sortedItems = useMemo(() => {
     if (!sortKey) return allServices;
     return [...allServices].sort((a, b) => {
@@ -68,7 +59,6 @@ export const ContractMaintenanceDashboard = () => {
     });
   }, [allServices, sortKey, sortDirection]);
 
-  // 🔹 Filtrado
   const filteredItems = useMemo(() => {
     if (!searchTerm) return sortedItems;
     return sortedItems.filter(
@@ -78,7 +68,6 @@ export const ContractMaintenanceDashboard = () => {
     );
   }, [sortedItems, searchTerm]);
 
-  // 🔹 Paginación
   const paginatedItems = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return filteredItems.slice(startIndex, startIndex + itemsPerPage);
@@ -86,47 +75,9 @@ export const ContractMaintenanceDashboard = () => {
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
-  // 🔹 Toggle con backend + UI inmediata
+  // 🔹 En este dashboard no se asignan servicios, solo se "ejecutan" o "revisan"
   const handleMaintenanceAction = (serviceId) => {
-    const isAssigned = !localAssignedServiceIds.has(serviceId);
-
-    // 1️⃣ Cambiar estado local inmediatamente
-    setLocalAssignedServiceIds((prev) => {
-      const newMap = new Map(prev);
-      if (isAssigned) {
-        newMap.set(serviceId, true);
-      } else {
-        newMap.delete(serviceId);
-      }
-      return newMap;
-    });
-
-    // 2️⃣ Llamada al API
-    toggleAssignmentMutation.mutate(
-      { serviceId, isAssigned },
-      {
-        onSuccess: (result) => {
-          const messageKey =
-            result.action === "ASSIGNED"
-              ? "maintenance.serviceAssigned"
-              : "maintenance.serviceUnassigned";
-          toast.success(t(messageKey));
-        },
-        onError: () => {
-          toast.error(t("common.errorSavingChanges"));
-          // 🔄 Revertir cambio local en caso de error
-          setLocalAssignedServiceIds((prev) => {
-            const newMap = new Map(prev);
-            if (isAssigned) {
-              newMap.delete(serviceId);
-            } else {
-              newMap.set(serviceId, true);
-            }
-            return newMap;
-          });
-        },
-      }
-    );
+    toast.success(`${t("maintenance.actionExecuted")} (ID: ${serviceId})`);
   };
 
   const handleSort = (key) => {
@@ -180,18 +131,23 @@ export const ContractMaintenanceDashboard = () => {
 
       {allServices.length > 0 && (
         <div className={styles.controlsBar}>
-          <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-          <ItemsPerPageSelector
-            itemsPerPage={itemsPerPage}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <div className={styles.searchBarContainer}>
+            <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          </div>
+          <div className={styles.itemsPerPageSelector}>
+            <ItemsPerPageSelector
+              itemsPerPage={itemsPerPage}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
+          </div>
         </div>
       )}
 
+      {/* 🔹 Reutilizamos la misma tabla de servicios */}
       <ContractServicesTable
         services={paginatedItems}
-        assignedServiceIds={localAssignedServiceIds}
-        isSaving={toggleAssignmentMutation.isLoading}
+        assignedServiceIds={assignedServiceIds}
+        isSaving={false}
         onToggle={handleMaintenanceAction}
         onSort={handleSort}
         sortKey={sortKey}
