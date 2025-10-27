@@ -40,11 +40,23 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
     navigate(`${basePath}/contract/${contractId}`); // Navega a la vista principal del contrato
   };
 
+  const handleGoContracMaintenance = () => {
+    const basePath = "/client"; // Solo existe para Clientes, el Staff ya tiene su pantalla para esto. Aunque podria habilitarselas
+    navigate(`${basePath}/contract/${contractId}/maintenance`); // Navega a la vista principal del contrato
+  };
+
   return (
     <div className={styles.accordion}>
       {/* 🏠 Botón de Home agregado y estilizado */}
       <button className={styles.homeButton} onClick={handleGoHome}>
-        <span>Inicio</span>
+        <span>Home</span>
+      </button>
+
+      <button
+        className={styles.contractButton}
+        onClick={handleGoContracMaintenance}
+      >
+        <span>Your Contract</span>
       </button>
 
       <button
