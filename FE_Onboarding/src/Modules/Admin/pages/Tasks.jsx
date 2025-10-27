@@ -26,7 +26,6 @@ const Tasks = () => {
   const { tasksQuery, createTask, updateTask, deleteTask } =
     useTasksQuery(numericServiceId);
 
-  // Establece el ícono en el sidebar
   useEffect(() => {
     setEntityIcon(<FaTasks />);
   }, [setEntityIcon]);
@@ -114,7 +113,6 @@ const Tasks = () => {
     [createTask, updateTask, numericServiceId]
   );
 
-  // Estados condicionales
   if (tasksQuery.isLoading) return <div>{t("common.loading")}</div>;
 
   if (tasksQuery.isError)
@@ -125,11 +123,17 @@ const Tasks = () => {
       </div>
     );
 
+  // Transformar datos para mostrar en tabla
+  const formattedTasks = (tasksQuery.data ?? []).map((t) => ({
+    ...t,
+    isInternal: t.esInterno, // booleano
+  }));
+
   return (
     <CrudDashboard
       entityName="tasks"
       fields={taskFields}
-      getItems={() => tasksQuery.data ?? []}
+      getItems={() => formattedTasks}
       createItem={handleMutation}
       updateItem={handleMutation}
       deleteItem={deleteTask.mutateAsync}

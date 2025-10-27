@@ -14,6 +14,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState({});
 
+  // 🔹 Inicializa formData
   useEffect(() => {
     if (item) {
       const initialData = {};
@@ -31,6 +32,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
       fields.forEach((field) => {
         const key = getFormKey(field);
         if (key !== "id") initialData[key] = "";
+        else initialData[key] = item?.[key] ?? "";
       });
       setFormData(initialData);
     }
@@ -38,11 +40,16 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   }, [item, fields]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    const newValue = type === "checkbox" ? checked : value;
+
+    setFormData((prev) => ({ ...prev, [name]: newValue }));
 
     if (validations && validations[name]) {
-      const error = validations[name](value, { ...formData, [name]: value });
+      const error = validations[name](newValue, {
+        ...formData,
+        [name]: newValue,
+      });
       setFormErrors((prev) => ({ ...prev, [name]: error }));
     }
   };
@@ -63,9 +70,9 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    let dataToSave = { ...formData };
 
-    let dataToSave = formData;
-
+    // Validaciones
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
@@ -76,6 +83,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
       if (Object.keys(newErrors).length > 0) return;
     }
 
+    // Transformaciones
     fields.forEach((field) => {
       if (field.transformForSave) {
         dataToSave = field.transformForSave(dataToSave);
@@ -95,24 +103,43 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
       </div>
 
       {fields.map((field) => {
-        if (!item && field.key === "id") return null;
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
-
         const isFieldReadOnly =
           isIdField ||
           (typeof field.isReadOnly === "function"
             ? field.isReadOnly(item)
             : field.isReadOnly);
 
+        // Valor actual
+        const formDataValue = formData[nameKey];
+
+        // 🔹 Renderizar según tipo
         return (
           <div key={field.key} className={styles.formGroup}>
             <label className={styles.label}>{t(field.labelKey)}</label>
 
-            {field.type === "select" ? (
+            {/* Radio */}
+            {field.type === "radio" ? (
+              <div className={styles.radioGroup}>
+                {field.options?.map((opt) => (
+                  <label key={opt.value} className={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name={nameKey}
+                      value={opt.value}
+                      checked={formDataValue === opt.value}
+                      onChange={handleChange}
+                      disabled={isFieldReadOnly}
+                    />
+                    {opt.label}
+                  </label>
+                ))}
+              </div>
+            ) : field.type === "select" ? (
               <select
                 name={nameKey}
-                value={formData[nameKey] || ""}
+                value={formDataValue || ""}
                 onChange={handleChange}
                 disabled={isFieldReadOnly}
                 className={`${styles.input} ${
@@ -129,10 +156,10 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
             ) : field.type === "textarea" ? (
               <textarea
                 name={nameKey}
-                value={formData[nameKey] || ""}
+                value={formDataValue || ""}
                 onChange={handleChange}
                 readOnly={isFieldReadOnly}
-                rows={20}
+                rows={field.rows || 5}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}
@@ -142,15 +169,13 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 <input
                   type={showPassword[nameKey] ? "text" : "password"}
                   name={nameKey}
-                  value={formData[nameKey] || ""}
+                  value={formDataValue || ""}
                   onChange={handleChange}
                   readOnly={isFieldReadOnly}
                   className={`${styles.input} ${
                     formErrors[nameKey] ? styles.inputError : ""
                   }`}
                 />
-
-                {/* Botón mostrar/ocultar */}
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility(nameKey)}
@@ -159,8 +184,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 >
                   {showPassword[nameKey] ? <FiEyeOff /> : <FiEye />}
                 </button>
-
-                {/* Botón generar contraseña */}
                 <button
                   type="button"
                   onClick={() => {
@@ -177,7 +200,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
               <input
                 type={field.type || "text"}
                 name={nameKey}
-                value={formData[nameKey] || ""}
+                value={formDataValue || ""}
                 onChange={handleChange}
                 readOnly={isFieldReadOnly}
                 className={`${styles.input} ${

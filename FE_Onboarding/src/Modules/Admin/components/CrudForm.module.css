@@ -4,7 +4,7 @@
   padding: 2.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  max-width: 800px; /* 🛑 AUMENTADO EL ANCHO MÁXIMO */
+  max-width: 800px;
   margin: 2rem auto;
   box-sizing: border-box;
 }
@@ -81,6 +81,26 @@ select:focus {
   margin-top: 0.25rem;
 }
 
+/* Radios */
+.radioGroup {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--bdo-charcoal);
+}
+
+.radioLabel input[type="radio"] {
+  accent-color: var(--bdo-red);
+}
+
+/* Botones */
 .buttonGroup {
   display: flex;
   justify-content: flex-end;
