@@ -18,7 +18,7 @@ export const useTasksQuery = (serviceId) => {
   const queryClient = useQueryClient();
   const numericServiceId = Number(serviceId);
 
-  // 🔹 GET: Obtener todas las tareas y filtrar por serviceId
+  // 🔹 GET: Obtener tareas filtradas por serviceId
   const tasksQuery = useQuery({
     queryKey: ["tasks", numericServiceId],
     queryFn: async () => {
@@ -27,10 +27,10 @@ export const useTasksQuery = (serviceId) => {
         .filter((t) => t.id_Servicio === numericServiceId)
         .map((t) => ({
           id: t.id,
-          id_Service: t.id_Servicio,
+          id_Servicio: t.id_Servicio,
           name: t.nombre,
           description: t.descripcion,
-          isInternal: t.esInterno,
+          esInterno: t.esInterno,
           createdAt: t.fecha_Creacion,
           updatedAt: t.fecha_Modificacion,
         }));
@@ -48,7 +48,15 @@ export const useTasksQuery = (serviceId) => {
         esInterno: task.isInternal,
       };
       const { data } = await axiosClient.post("/Tareas", payload);
-      return data;
+      return {
+        id: data.id,
+        id_Servicio: data.id_Servicio,
+        name: data.nombre,
+        description: data.descripcion,
+        esInterno: data.esInterno,
+        createdAt: data.fecha_Creacion,
+        updatedAt: data.fecha_Modificacion,
+      };
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),
@@ -58,13 +66,22 @@ export const useTasksQuery = (serviceId) => {
   const updateTask = useMutation({
     mutationFn: async (task) => {
       const payload = {
+        id: task.id,
         id_Servicio: numericServiceId,
         nombre: task.name,
         descripcion: stringifyIfObject(task.description),
         esInterno: task.isInternal,
       };
       const { data } = await axiosClient.put(`/Tareas/${task.id}`, payload);
-      return data;
+      return {
+        id: data.id,
+        id_Servicio: data.id_Servicio,
+        name: data.nombre,
+        description: data.descripcion,
+        esInterno: data.esInterno,
+        createdAt: data.fecha_Creacion,
+        updatedAt: data.fecha_Modificacion,
+      };
     },
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),

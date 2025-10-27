@@ -14,42 +14,32 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const [formErrors, setFormErrors] = useState({});
   const [showPassword, setShowPassword] = useState({});
 
-  // 🔹 Inicializa formData
   useEffect(() => {
-    if (item) {
-      const initialData = {};
-      fields.forEach((field) => {
-        const key = getFormKey(field);
+    const initialData = {};
+    fields.forEach((field) => {
+      const key = getFormKey(field);
+      if (item) {
         if (field.transformForEdit) {
           Object.assign(initialData, field.transformForEdit(item));
         } else {
           initialData[key] = item[key];
         }
-      });
-      setFormData(initialData);
-    } else {
-      const initialData = {};
-      fields.forEach((field) => {
-        const key = getFormKey(field);
+      } else {
         if (key !== "id") initialData[key] = "";
         else initialData[key] = item?.[key] ?? "";
-      });
-      setFormData(initialData);
-    }
+      }
+    });
+    setFormData(initialData);
     setFormErrors({});
   }, [item, fields]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    const newValue = type === "checkbox" ? checked : value;
-
-    setFormData((prev) => ({ ...prev, [name]: newValue }));
+    const val = type === "radio" ? value === "true" : value;
+    setFormData((prev) => ({ ...prev, [name]: val }));
 
     if (validations && validations[name]) {
-      const error = validations[name](newValue, {
-        ...formData,
-        [name]: newValue,
-      });
+      const error = validations[name](val, { ...formData, [name]: val });
       setFormErrors((prev) => ({ ...prev, [name]: error }));
     }
   };
@@ -70,9 +60,9 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let dataToSave = { ...formData };
 
-    // Validaciones
+    let dataToSave = formData;
+
     if (validations) {
       const newErrors = {};
       for (const key in validations) {
@@ -83,7 +73,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
       if (Object.keys(newErrors).length > 0) return;
     }
 
-    // Transformaciones
     fields.forEach((field) => {
       if (field.transformForSave) {
         dataToSave = field.transformForSave(dataToSave);
@@ -103,40 +92,24 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
       </div>
 
       {fields.map((field) => {
+        if (!item && field.key === "id") return null;
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
+
         const isFieldReadOnly =
           isIdField ||
           (typeof field.isReadOnly === "function"
             ? field.isReadOnly(item)
             : field.isReadOnly);
 
-        // Valor actual
         const formDataValue = formData[nameKey];
 
-        // 🔹 Renderizar según tipo
+        // Render de cada tipo de campo
         return (
           <div key={field.key} className={styles.formGroup}>
             <label className={styles.label}>{t(field.labelKey)}</label>
 
-            {/* Radio */}
-            {field.type === "radio" ? (
-              <div className={styles.radioGroup}>
-                {field.options?.map((opt) => (
-                  <label key={opt.value} className={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name={nameKey}
-                      value={opt.value}
-                      checked={formDataValue === opt.value}
-                      onChange={handleChange}
-                      disabled={isFieldReadOnly}
-                    />
-                    {opt.label}
-                  </label>
-                ))}
-              </div>
-            ) : field.type === "select" ? (
+            {field.type === "select" ? (
               <select
                 name={nameKey}
                 value={formDataValue || ""}
@@ -195,6 +168,22 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 >
                   <FiRefreshCcw />
                 </button>
+              </div>
+            ) : field.type === "radio" ? (
+              <div className={styles.radioGroup}>
+                {field.options?.map((opt) => (
+                  <label key={opt.value} className={styles.radioLabel}>
+                    <input
+                      type="radio"
+                      name={nameKey}
+                      value={opt.value}
+                      checked={formDataValue === opt.value}
+                      onChange={handleChange}
+                      disabled={isFieldReadOnly}
+                    />
+                    {opt.label}
+                  </label>
+                ))}
               </div>
             ) : (
               <input
