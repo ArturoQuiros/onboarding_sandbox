@@ -5,14 +5,12 @@ export const useContractServicesQuery = (contractId) => {
   const queryClient = useQueryClient();
 
   // Debug: ver contractId
-  console.log("[useContractServicesQuery] contractId:", contractId);
 
   // 1. Obtener detalle del contrato
   const contractDetailQuery = useQuery({
     queryKey: ["contractDetail", contractId],
     queryFn: async () => {
       const { data } = await axiosClient.get(`/Contrato/${contractId}`);
-      console.log("[contractDetailQuery] data:", data);
       return { id_Contrato: data.id, idPais: data.id_Pais };
     },
     enabled: !!contractId,
@@ -29,7 +27,6 @@ export const useContractServicesQuery = (contractId) => {
       const { data } = await axiosClient.get(
         `/Servicio/ByIdPais?IdPais=${idPais}`
       );
-      console.log("[availableServicesQuery] data:", data);
       return data.map((s) => ({ id: s.id, nombre: s.nombre }));
     },
     enabled: contractDetailQuery.isSuccess && !!idPais,
@@ -41,10 +38,6 @@ export const useContractServicesQuery = (contractId) => {
     queryFn: async () => {
       const { data: relationships } = await axiosClient.get(
         `/ContratoServicio/ByContrato?idContrato=${contractId}`
-      );
-      console.log(
-        "[assignedRelationsQuery] relationships data:",
-        relationships
       );
 
       // 🔑 CORRECCIÓN CLAVE: El mapa solo debe incluir los servicios donde 'estado' es TRUE.
