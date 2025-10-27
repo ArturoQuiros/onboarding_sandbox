@@ -93,9 +93,6 @@ export const useADSyncMutation = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["insideUsers"] });
-      console.log(
-        "Sincronización con AD completada y lista de usuarios invalidada."
-      );
     },
     onError: (error) => {
       console.error("Error durante la sincronización con AD:", error);

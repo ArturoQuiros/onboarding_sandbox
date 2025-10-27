@@ -114,7 +114,6 @@ export const useExternalUsersQuery = () => {
       const payload = {
         estado: newStatus,
       };
-      console.log(payload);
 
       const { data } = await axiosClient.patch(
         `/User/Outside/${userId}`,
