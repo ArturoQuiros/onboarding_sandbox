@@ -18,15 +18,28 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
     const initialData = {};
     fields.forEach((field) => {
       const key = getFormKey(field);
+
       if (item) {
         if (field.transformForEdit) {
           Object.assign(initialData, field.transformForEdit(item));
         } else {
-          initialData[key] = item[key];
+          // 🔹 Ajuste para isInternal
+          if (field.key === "isInternal" && "esInterno" in item) {
+            initialData[key] = !!item.esInterno;
+          } else {
+            initialData[key] = item[key];
+          }
         }
       } else {
-        if (key !== "id") initialData[key] = "";
-        else initialData[key] = item?.[key] ?? "";
+        initialData[key] = key !== "id" ? "" : item?.[key] ?? "";
+      }
+
+      // 🔹 Normaliza valores booleanos representados como strings
+      if (
+        typeof initialData[key] === "string" &&
+        (initialData[key] === "true" || initialData[key] === "false")
+      ) {
+        initialData[key] = initialData[key] === "true";
       }
     });
     setFormData(initialData);
@@ -34,8 +47,13 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   }, [item, fields]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    const val = type === "radio" ? value === "true" : value;
+    const { name, value, type } = e.target;
+    let val = value;
+
+    if (type === "radio") {
+      val = value === "true" ? true : value === "false" ? false : value;
+    }
+
     setFormData((prev) => ({ ...prev, [name]: val }));
 
     if (validations && validations[name]) {
@@ -60,7 +78,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     let dataToSave = formData;
 
     if (validations) {
@@ -95,7 +112,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         if (!item && field.key === "id") return null;
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
-
         const isFieldReadOnly =
           isIdField ||
           (typeof field.isReadOnly === "function"
@@ -104,7 +120,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
         const formDataValue = formData[nameKey];
 
-        // Render de cada tipo de campo
         return (
           <div key={field.key} className={styles.formGroup}>
             <label className={styles.label}>{t(field.labelKey)}</label>
@@ -171,19 +186,35 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
               </div>
             ) : field.type === "radio" ? (
               <div className={styles.radioGroup}>
-                {field.options?.map((opt) => (
-                  <label key={opt.value} className={styles.radioLabel}>
-                    <input
-                      type="radio"
-                      name={nameKey}
-                      value={opt.value}
-                      checked={formDataValue === opt.value}
-                      onChange={handleChange}
-                      disabled={isFieldReadOnly}
-                    />
-                    {opt.label}
-                  </label>
-                ))}
+                {field.options?.map((opt) => {
+                  // Normalizar ambos valores a booleanos si es necesario
+                  const optValue =
+                    opt.value === "true"
+                      ? true
+                      : opt.value === "false"
+                      ? false
+                      : opt.value;
+                  const currentValue =
+                    formDataValue === "true"
+                      ? true
+                      : formDataValue === "false"
+                      ? false
+                      : formDataValue;
+
+                  return (
+                    <label key={opt.value} className={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name={nameKey}
+                        value={opt.value}
+                        checked={currentValue === optValue}
+                        onChange={handleChange}
+                        disabled={isFieldReadOnly}
+                      />
+                      {opt.label}
+                    </label>
+                  );
+                })}
               </div>
             ) : (
               <input

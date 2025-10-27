@@ -58,12 +58,15 @@ const Tasks = () => {
         labelKey: "tasks.table.is_internal",
         type: "radio",
         options: [
-          { label: t("common.yes"), value: true },
-          { label: t("common.no"), value: false },
+          { label: t("common.yes"), value: "true" },
+          { label: t("common.no"), value: "false" },
         ],
         defaultValue: false,
-        transformForDisplay: (value) =>
-          value ? t("common.yes") : t("common.no"),
+        transformForDisplay: (value) => {
+          // Normalizar el valor a booleano
+          const boolValue = value === true || value === "true" || value === 1;
+          return boolValue ? t("common.yes") : t("common.no");
+        },
       },
     ],
     [t]
@@ -93,24 +96,17 @@ const Tasks = () => {
     [t]
   );
 
-  // Wrapper para crear/actualizar
+  // Wrapper para crear/actualizar - simplificado
   const handleMutation = useCallback(
     async (task) => {
-      const payload = {
-        id: task.id,
-        id_Servicio: numericServiceId,
-        nombre: task.name,
-        descripcion: task.description || "{}",
-        esInterno: !!task.isInternal,
-      };
-
+      // El hook useTasksQuery ya maneja toda la transformación
       if (task.id) {
-        return updateTask.mutateAsync(payload);
+        return updateTask.mutateAsync(task);
       } else {
-        return createTask.mutateAsync(payload);
+        return createTask.mutateAsync(task);
       }
     },
-    [createTask, updateTask, numericServiceId]
+    [createTask, updateTask]
   );
 
   if (tasksQuery.isLoading) return <div>{t("common.loading")}</div>;
@@ -123,17 +119,12 @@ const Tasks = () => {
       </div>
     );
 
-  // Transformar datos para mostrar en tabla
-  const formattedTasks = (tasksQuery.data ?? []).map((t) => ({
-    ...t,
-    isInternal: t.esInterno, // booleano
-  }));
-
+  // Los datos ya vienen transformados de useTasksQuery
   return (
     <CrudDashboard
       entityName="tasks"
       fields={taskFields}
-      getItems={() => formattedTasks}
+      getItems={() => tasksQuery.data ?? []}
       createItem={handleMutation}
       updateItem={handleMutation}
       deleteItem={deleteTask.mutateAsync}
