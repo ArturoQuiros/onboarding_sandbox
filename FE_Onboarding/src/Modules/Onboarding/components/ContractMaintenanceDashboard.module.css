@@ -9,8 +9,10 @@
 .title {
   display: flex;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 600;
+  color: var(--bdo-red);
+  margin: 0%;
 }
 
 .icon {

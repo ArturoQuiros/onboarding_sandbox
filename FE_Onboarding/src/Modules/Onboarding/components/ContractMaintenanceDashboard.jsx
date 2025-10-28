@@ -9,7 +9,6 @@ import {
   ItemsPerPageSelector,
 } from "../../Admin/components";
 import styles from "./ContractMaintenanceDashboard.module.css";
-import { UIContext } from "../../../Global/Context";
 import {
   useCountriesQuery,
   useContractServicesQuery,
@@ -17,7 +16,6 @@ import {
 
 export const ContractMaintenanceDashboard = () => {
   const { contractId } = useParams();
-  const { entityIcon } = useContext(UIContext);
   const { t } = useTranslation("global");
 
   // 🔹 Reutilizamos el mismo hook (ya trae datos de servicios)
@@ -39,8 +37,6 @@ export const ContractMaintenanceDashboard = () => {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
-
-  const displayIcon = useMemo(() => entityIcon ?? <FaTools />, [entityIcon]);
 
   const countryName = useMemo(() => {
     if (!countryMap || !idPais) return `ID: ${idPais}`;
@@ -117,11 +113,7 @@ export const ContractMaintenanceDashboard = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h1 className={styles.title}>
-          <span className={styles.icon}>{displayIcon}</span>
-          {t("maintenance.title")}
-          {contractId && <span className={styles.contractIdLabel}></span>}
-        </h1>
+        <h1 className={styles.title}>{"Hired Services"}</h1>
       </div>
       <div className={styles.infoSection}>
         <div className={styles.infoGrid}>
@@ -142,7 +134,7 @@ export const ContractMaintenanceDashboard = () => {
       </div>
 
       <div className={styles.warningBox}>
-        Modifying this contract may have some implications. Please consult your
+        Modifying your contract may have some implications. Please consult your
         Account Manager before making any changes.
       </div>
 
