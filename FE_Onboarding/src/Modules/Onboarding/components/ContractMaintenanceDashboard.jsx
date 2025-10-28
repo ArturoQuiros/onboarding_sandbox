@@ -72,8 +72,23 @@ export const ContractMaintenanceDashboard = () => {
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
   // 🔹 En este dashboard no se asignan servicios, solo se "ejecutan" o "revisan"
-  const handleMaintenanceAction = (serviceId) => {
-    toast.success(`${t("maintenance.actionExecuted")} (ID: ${serviceId})`);
+  const handleToggleAssignment = (serviceId) => {
+    const isAssigned = assignedServiceIds.has(serviceId);
+    toggleAssignmentMutation.mutate(
+      { serviceId, isAssigned: !isAssigned },
+      {
+        onSuccess: () => {
+          toast.success(
+            !isAssigned
+              ? `Service assigned successfully (ID: ${serviceId})`
+              : `Service unassigned successfully (ID: ${serviceId})`
+          );
+        },
+        onError: () => {
+          toast.error("Error updating service assignment");
+        },
+      }
+    );
   };
 
   const handleSort = (key) => {
@@ -156,8 +171,8 @@ export const ContractMaintenanceDashboard = () => {
       <ContractServicesTable
         services={paginatedItems}
         assignedServiceIds={assignedServiceIds}
-        isSaving={false}
-        onToggle={handleMaintenanceAction}
+        isSaving={toggleAssignmentMutation.isLoading} // <-- muestra loading
+        onToggle={handleToggleAssignment}
         onSort={handleSort}
         sortKey={sortKey}
         sortDirection={sortDirection}
