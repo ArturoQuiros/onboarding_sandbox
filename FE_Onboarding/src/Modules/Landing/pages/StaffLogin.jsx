@@ -81,8 +81,11 @@ export const StaffLogin = () => {
 
   return (
     <div className={styles.container}>
-      <img src={logo} alt="BDO Logo" className={styles.logo} />
-      <h1 className={styles.title}>Staff Login</h1>
+      <img
+        className={styles.logo}
+        src="/onboarding_logo_black.png"
+        alt="BDO Black Logo"
+      />
       <button
         className={styles.msButton}
         onClick={handleLogin}
