@@ -89,10 +89,13 @@ export const useADSyncMutation = () => {
 
   const adSyncMutation = useMutation({
     mutationFn: async () => {
-      return axiosClient.get("/WS_Onboarding/User/Inside/Inside/GetAllSync");
+      return axiosClient.get("/User/Inside/Inside/GetAllSync");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["insideUsers"] });
+      console.log(
+        "Sincronización con AD completada y lista de usuarios invalidada."
+      );
     },
     onError: (error) => {
       console.error("Error durante la sincronización con AD:", error);

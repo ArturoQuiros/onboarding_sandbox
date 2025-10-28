@@ -117,16 +117,33 @@ export const ContractMaintenanceDashboard = () => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h2 className={styles.title}>
+        <h1 className={styles.title}>
           <span className={styles.icon}>{displayIcon}</span>
           {t("maintenance.title")}
-          {contractId && (
-            <span className={styles.contractIdLabel}>
-              {" "}
-              (ID: {contractId} | País: {countryName})
-            </span>
-          )}
-        </h2>
+          {contractId && <span className={styles.contractIdLabel}></span>}
+        </h1>
+      </div>
+      <div className={styles.infoSection}>
+        <div className={styles.infoGrid}>
+          <div className={styles.infoBlock}>
+            <h3 className={styles.infoTitle}>Customer</h3>
+            <p className={styles.infoText}>XXXXXXXXXXXX</p>
+          </div>
+
+          <div className={styles.infoBlock}>
+            <h3 className={styles.infoTitle}>Account Manager</h3>
+            <p className={styles.infoText}>Name: PENDIENTE</p>
+            <p className={styles.infoText}>Position: PENDIENTE</p>
+            <p className={styles.infoText}>
+              Contact: email@example.com / +506 8888 8888
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.warningBox}>
+        Modifying this contract may have some implications. Please consult your
+        Account Manager before making any changes.
       </div>
 
       {allServices.length > 0 && (
