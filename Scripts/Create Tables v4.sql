@@ -106,10 +106,10 @@ CREATE TABLE Contrato_Servicios (
 
 DROP TABLE IF EXISTS Tareas;
 CREATE TABLE Tareas (
-    Id INT PRIMARY KEY IDENTITY(1,1),
+    Id INT PRIMARY KEY IDENTITY(1,1), 
     Id_Servicio INT NOT NULL,
     Nombre VARCHAR(100) NOT NULL,
-    Descripcion NVARCHAR(MAX) NOT NULL, -- Aquí va el JSON del formulario
+    Descripcion NVARCHAR(MAX) NOT NULL, -- Todo: Devolver este JSON en el GetTareaByIDFull 
     EsInterno BIT NOT NULL, -- 1 = Interno, 0 = Externo
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME,
@@ -119,7 +119,7 @@ CREATE TABLE Tareas (
 
 DROP TABLE IF EXISTS Estados_Tarea;
 CREATE TABLE Estados_Tarea (
-    Id INT PRIMARY KEY IDENTITY(1,1),
+    Id INT PRIMARY KEY IDENTITY(1,1), -- TODO: Cambiar a que no sea Identity
     Nombre VARCHAR(50) NOT NULL UNIQUE,
     Fecha_Creacion DATETIME,
     Fecha_Modificacion DATETIME
@@ -130,10 +130,10 @@ CREATE TABLE Tarea_Contrato (
     Id INT PRIMARY KEY IDENTITY(1,1),
     Id_Contrato INT NOT NULL,
     Id_Tarea INT NOT NULL,
-    Id_UsuarioResponsable INT NOT NULL,
-    Id_Estado INT NOT NULL,                  -- FK a Estados_Tarea
-    Json_Respuesta NVARCHAR(MAX),            -- JSON con datos completados
-    Observaciones NVARCHAR(MAX),             -- Comentarios del staff para el cliente
+    Id_UsuarioResponsable INT NOT NULL, -- TODO: Permita nulos y que el  default sea null
+    Id_Estado INT NOT NULL,                  -- TODO: Default sea el estado pendiente. ID Estado 1 
+    Json_Respuesta NVARCHAR(MAX),            
+    Observaciones NVARCHAR(MAX),             
     CONSTRAINT FK_TareaContrato_Contrato FOREIGN KEY (Id_Contrato) REFERENCES Contratos(Id),
     CONSTRAINT FK_TareaContrato_Tarea FOREIGN KEY (Id_Tarea) REFERENCES Tareas(Id),
     CONSTRAINT FK_TareaContrato_Usuario FOREIGN KEY (Id_UsuarioResponsable) REFERENCES UsuariosInternos(Id),
