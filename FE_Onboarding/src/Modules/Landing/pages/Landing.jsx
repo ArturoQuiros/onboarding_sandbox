@@ -10,15 +10,15 @@ export const Landing = () => {
       <img src={logo} alt="Onboarding Logo" className={styles.logo} />
       <div className={styles.buttonRow}>
         <div className={styles.buttonContainer}>
-          <p className={styles.buttonText}>¿Eres parte del STAFF?</p>
+          <p className={styles.buttonText}>Are you a member of the Staff?</p>
           <Link to="/staff-login" className={styles.button}>
-            Iniciar Sesión
+            Access Portal
           </Link>
         </div>
         <div className={styles.buttonContainer}>
-          <p className={styles.buttonText}>¿Eres Cliente?</p>
+          <p className={styles.buttonText}>Are you a Client?</p>
           <Link to="/client-login" className={styles.button}>
-            Iniciar Sesión
+            Access Portal
           </Link>
         </div>
       </div>

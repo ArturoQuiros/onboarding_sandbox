@@ -89,7 +89,7 @@ export const useADSyncMutation = () => {
 
   const adSyncMutation = useMutation({
     mutationFn: async () => {
-      return axiosClient.get("/WS_Onboarding/User/Inside/Inside/GetAllSync");
+      return axiosClient.get("/User/Inside/Inside/GetAllSync");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["insideUsers"] });

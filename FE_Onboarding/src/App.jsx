@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import AdminLayout from "./Modules/Admin/layouts/AdminLayout";
 import { LandingLayout } from "./Modules/Landing/layouts/";
 import {
@@ -20,6 +20,7 @@ import { AuthGuard } from "./Global/auth";
 import {
   ClientHome,
   ClientContractPage,
+  ClientContractMaintenance, // 👈 NUEVO COMPONENTE
   StaffReviewPage,
 } from "./Modules/Onboarding/pages";
 
@@ -98,7 +99,16 @@ function App() {
             </AuthGuard>
           }
         >
-          <Route index element={<ClientHome />} />
+          {/* 🔸 Redirección automática del index -> /home */}
+          <Route index element={<Navigate to="home" replace />} />
+
+          {/* 🔹 Página principal del cliente */}
+          <Route path="home" element={<ClientHome />} />
+
+          {/* 🔹 Nueva ruta de mantenimiento */}
+          <Route path="maintenance" element={<ClientContractMaintenance />} />
+
+          {/* 🔹 Página de tareas por servicio */}
           <Route
             path="service/:serviceId/task/:taskId"
             element={<ClientContractPage />}

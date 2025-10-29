@@ -49,7 +49,6 @@ export const useTasksQuery = (serviceId) => {
         ),
         esInterno: task.isInternal ?? task.esInterno ?? false,
       };
-      console.log("📤 POST payload:", payload);
       const { data } = await axiosClient.post("/Tareas", payload);
       return data;
     },
@@ -68,7 +67,6 @@ export const useTasksQuery = (serviceId) => {
         ),
         esInterno: task.isInternal ?? task.esInterno ?? false,
       };
-      console.log("📤 PUT payload:", payload);
       const { data } = await axiosClient.put(`/Tareas/${task.id}`, payload);
       return data;
     },
