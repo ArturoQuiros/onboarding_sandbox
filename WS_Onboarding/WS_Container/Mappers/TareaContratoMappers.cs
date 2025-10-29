@@ -18,6 +18,7 @@ namespace WS_Onboarding.Mappers
                 Id_Tarea = TareaContratoModel.Id_Tarea,
                 Id_UsuarioResponsable = TareaContratoModel.Id_UsuarioResponsable,
                 Id_Estado = TareaContratoModel.Id_Estado,
+                Estado = TareaContratoModel.Estado,
                 Json_Respuesta = TareaContratoModel.Json_Respuesta,
                 Observaciones = TareaContratoModel.Observaciones,
             };
@@ -32,6 +33,7 @@ namespace WS_Onboarding.Mappers
                 Id_Tarea = TareaContratoModel.Id_Tarea,
                 Id_UsuarioResponsable = TareaContratoModel.Id_UsuarioResponsable,
                 Id_Estado = TareaContratoModel.Id_Estado,
+                Estado = TareaContratoModel.Estado,
                 Json_Respuesta = null,
                 Observaciones = TareaContratoModel.Observaciones,
             };
@@ -45,6 +47,7 @@ namespace WS_Onboarding.Mappers
                 Id_Tarea = TareaContratoModel.Id_Tarea,
                 Id_UsuarioResponsable = TareaContratoModel.Id_UsuarioResponsable,
                 Id_Estado = TareaContratoModel.Id_Estado,
+                Estado = TareaContratoModel.Estado,
                 Json_Respuesta = TareaContratoModel.Json_Respuesta,
                 Observaciones = TareaContratoModel.Observaciones,
             };

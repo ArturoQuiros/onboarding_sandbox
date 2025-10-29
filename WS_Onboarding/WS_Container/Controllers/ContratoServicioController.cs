@@ -255,6 +255,8 @@ namespace WS_Onboarding.Controllers
                 Estado = ContratoServicioDto.Estado
             };
 
+            var ListaTareas = _context.Tareas.Where(t => t.Id_Servicio == ContratoServicioDto.Id_Servicio).ToList();
+
             var ContratoServicioModel = _context.Contrato_Servicios
             .Where(c => c.Id_Contrato == ContratoServicioDto.Id_Contrato && c.Id_Servicio == ContratoServicioDto.Id_Servicio)
             .FirstOrDefault();
@@ -268,6 +270,26 @@ namespace WS_Onboarding.Controllers
                     Estado = (ContratoServicioDto.Estado == null) ? false : ContratoServicioDto.Estado
                 };
                 Create(crearContratoServicio);
+
+                if(ListaTareas != null)
+                {
+                    foreach (var Tarea in ListaTareas)
+                    {
+                        var tareaContrato = new Models.TareaContrato
+                        {
+                            Id_Contrato = ContratoServicioDto.Id_Contrato,
+                            Id_Tarea = Tarea.Id,
+                            Id_UsuarioResponsable = null,
+                            Id_Estado = 1,
+                            Estado = true,
+                            Json_Respuesta = "",
+                            Observaciones = ""
+                        };
+
+                        _context.Tarea_Contrato.AddRange(tareaContrato);
+                        _context.SaveChanges();
+                    }
+                }
                 
                 return CreatedAtAction(nameof(GetContratoServicioByIdContratoAndIdServicio),
                 new { ContratoServicioDto.Id_Contrato, ContratoServicioDto.Id_Servicio },
@@ -282,6 +304,17 @@ namespace WS_Onboarding.Controllers
                     Estado = (ContratoServicioDto.Estado == null) ? ContratoServicioModel.Estado : ContratoServicioDto.Estado
                 };
                 Update(ContratoServicioModel.Id, actualizarContratoServicio);
+
+                foreach (var Tarea in ListaTareas)
+                {
+                    var TareaContratoModel = _context.Tarea_Contrato
+                    .FirstOrDefault(tc => tc.Id_Tarea == Tarea.Id && tc.Id_Contrato == ContratoServicioDto.Id_Contrato);
+
+                    if (TareaContratoModel != null)
+                        TareaContratoModel.Estado = (ContratoServicioDto.Estado == null) ? TareaContratoModel.Estado : ContratoServicioDto.Estado;
+
+                    _context.SaveChanges();
+                }
 
                 return CreatedAtAction(nameof(GetContratoServicioByIdContratoAndIdServicio),
                 new { ContratoServicioDto.Id_Contrato, ContratoServicioDto.Id_Servicio },

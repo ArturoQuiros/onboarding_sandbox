@@ -1,28 +1,40 @@
-# Use the official .NET SDK image to build the app
+# =========================
+# Etapa 1: Build
+# =========================
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
-# Set working directory inside the container
+WORKDIR /src
+
+# Copiar los archivos de proyecto primero (mejor caché)
+COPY WS_Onboarding/WS_Container/WS_Onboarding.sln ./WS_Container/
+COPY WS_Onboarding/WS_Container/WS_Onboarding.csproj ./WS_Container/
+
+# Restaurar dependencias
+RUN dotnet restore ./WS_Container/WS_Onboarding.sln
+
+# Copiar el resto del código fuente
+COPY WS_Onboarding/WS_Container/ ./WS_Container/
+
+# Compilar el proyecto en modo Release
+WORKDIR /src/WS_Container
+RUN dotnet publish -c Release -o /app/publish
+
+# =========================
+# Etapa 2: Runtime
+# =========================
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+
 WORKDIR /app
 
-# Copy the project file from root
-COPY WS_Container/WS_Onboarding.csproj ./WS_Container/
-RUN dotnet restore ./WS_Container/WS_Onboarding.csproj
+# Copiar los archivos compilados desde la etapa de build
+COPY --from=build /app/publish .
 
-# Copy the source code from src folder
-COPY WS_Container/ ./WS_Container/
+# Exponer el puerto donde escucha la aplicación
+EXPOSE 5005
 
-# Build and publish the app
-RUN dotnet publish ./WS_Container/WS_Onboarding.csproj -c Release -o /publish
+# Configurar entorno de producción
+ENV ASPNETCORE_URLS=http://+:5005
+ENV ASPNETCORE_ENVIRONMENT=Production
 
-# Use the ASP.NET runtime image to run the app
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-WORKDIR /app
-
-# Copia los archivos publicados desde la etapa de build
-COPY --from=build /publish .
-
-# Expose the port your app listens on
-EXPOSE 80
-
-# Start the app
+# Comando de inicio
 ENTRYPOINT ["dotnet", "WS_Onboarding.dll"]

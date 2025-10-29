@@ -332,6 +332,7 @@ namespace WS_Onboarding.Controllers
 
                 var estadoTarea1 = new Models.EstadosTarea
                 {
+                    Id = 1,
                     Nombre = "Pending",
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow,
@@ -339,6 +340,7 @@ namespace WS_Onboarding.Controllers
 
                 var estadoTarea2 = new Models.EstadosTarea
                 {
+                    Id = 2,
                     Nombre = "Completed",
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow,
@@ -346,6 +348,7 @@ namespace WS_Onboarding.Controllers
 
                 var estadoTarea3 = new Models.EstadosTarea
                 {
+                    Id = 3,
                     Nombre = "Returned",
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow,
@@ -353,6 +356,7 @@ namespace WS_Onboarding.Controllers
 
                 var estadoTarea4 = new Models.EstadosTarea
                 {
+                    Id = 4,
                     Nombre = "Accepted",
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow,
@@ -400,6 +404,7 @@ namespace WS_Onboarding.Controllers
                     Id_Tarea = 1,
                     Id_UsuarioResponsable = 1,
                     Id_Estado = 1,
+                    Estado = true,
                     Json_Respuesta = "",
                     Observaciones = "Prueba Tarea Contrato 1"
                 };
@@ -410,6 +415,7 @@ namespace WS_Onboarding.Controllers
                     Id_Tarea = 2,
                     Id_UsuarioResponsable = 2,
                     Id_Estado = 2,
+                    Estado = true,
                     Json_Respuesta = "",
                     Observaciones = "Prueba Tarea Contrato 2"
                 };

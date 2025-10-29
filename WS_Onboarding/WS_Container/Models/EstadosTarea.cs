@@ -9,7 +9,7 @@ namespace WS_Onboarding.Models
 {
     public class EstadosTarea
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public required string Nombre { get; set; }

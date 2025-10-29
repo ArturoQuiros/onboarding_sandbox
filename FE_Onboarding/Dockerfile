@@ -1,24 +1,30 @@
-# Etapa 1: Build de la aplicación
+# =========================
+# Etapa 1: Build
+# =========================
 FROM node:23-alpine AS build
 
 WORKDIR /app
 
+# Copiar dependencias y restaurar
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
+# Copiar el código fuente
 COPY . .
+
+# Construir la aplicación
 RUN npm run build
 
-# Etapa 2: Servir la app con un servidor web (nginx o similar)
-FROM nginx:stable-alpine
+# =========================
+# Etapa 2: Servidor estático
+# =========================
+FROM nginx:stable-alpine AS production
 
-# Elimina archivos por defecto de nginx y copia tu build
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/build /usr/share/nginx/html
+# Copiar los archivos estáticos generados al contenedor Nginx
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Copia config opcional si la tienes
-# COPY nginx.conf /etc/nginx/nginx.conf
-
+# Exponer el puerto (Nginx por defecto usa 80)
 EXPOSE 80
 
+# Iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]

@@ -8,7 +8,7 @@ namespace WS_Onboarding.Dtos
 {
     public class EstadosTareaDto
     {
-        public int Id { get; set; }
+        public required int Id { get; set; }
         public required string Nombre { get; set; }
         public DateTime? Fecha_Creacion { get; set; }
         public DateTime? Fecha_Modificacion { get; set; }
@@ -16,6 +16,8 @@ namespace WS_Onboarding.Dtos
 
     public class CreateEstadosTareaDto
     {
+        [Required]
+        public required int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public required string Nombre { get; set; }
