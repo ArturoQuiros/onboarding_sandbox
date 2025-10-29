@@ -24,6 +24,7 @@ namespace WS_Onboarding.Mappers
         {
             return new EstadosTarea
             {
+                Id = EstadosTareaModel.Id,
                 Nombre = EstadosTareaModel.Nombre,
                 Fecha_Creacion = DateTime.UtcNow,
                 Fecha_Modificacion = DateTime.UtcNow

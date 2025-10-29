@@ -118,6 +118,7 @@ namespace WS_Onboarding.Controllers
                 }
                 else
                 {
+                    EstadosTareaModel.Id = estadosTareaDto.Id;
                     EstadosTareaModel.Nombre = (estadosTareaDto.Nombre == null) ? EstadosTareaModel.Nombre : estadosTareaDto.Nombre;
                     EstadosTareaModel.Fecha_Modificacion = DateTime.UtcNow;
                     _context.SaveChanges();

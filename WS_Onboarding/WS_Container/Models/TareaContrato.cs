@@ -17,11 +17,12 @@ namespace WS_Onboarding.Models
         [Required]
         public int Id_Tarea { get; set; }
 
-        [Required]
-        public int Id_UsuarioResponsable { get; set; }
+        public int? Id_UsuarioResponsable { get; set; }
 
         [Required]
         public int Id_Estado { get; set; }
+
+        public bool? Estado { get; set; }
 
         public string? Json_Respuesta { get; set; }
         public string? Observaciones { get; set; }
