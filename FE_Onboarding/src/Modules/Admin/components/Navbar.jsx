@@ -1,15 +1,14 @@
 import React, { useContext } from "react";
 import { BsTranslate } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
-import { LanguageContext } from "../../../Global/Context";
+import { LanguageContext, useStaffAuth } from "../../../Global/Context";
 import styles from "./Navbar.module.css";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../../Global/hooks";
 
 export const Navbar = () => {
   const { t, i18n } = useTranslation("global");
   const { setLanguage } = useContext(LanguageContext);
-  const { logout } = useAuth(); // ✅ Solo se llama una vez
+  const { logout } = useStaffAuth(); // ✅ Solo se llama una vez
 
   const handleLanguageToggle = () => {
     setLanguage(i18n.language === "es" ? "en" : "es");

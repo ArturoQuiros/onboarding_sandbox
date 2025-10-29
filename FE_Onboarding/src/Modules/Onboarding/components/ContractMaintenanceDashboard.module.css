@@ -1,0 +1,201 @@
+.container {
+  background-color: #fff;
+}
+
+.header {
+  margin-bottom: 1rem;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--bdo-red);
+  margin: 0%;
+}
+
+.icon {
+  margin-right: 0.5rem;
+}
+
+.contractIdLabel {
+  font-weight: 400;
+  font-size: 1rem;
+  color: #555;
+}
+
+.controlsBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap; /* para responsivo */
+}
+
+.searchBarContainer {
+  flex: 1 1 300px; /* mínimo 300px, ocupa espacio disponible */
+}
+
+.itemsPerPageSelector {
+  flex: 0 0 auto; /* ancho automático */
+}
+
+.loadingMessage {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: #f5f5f5;
+}
+
+.tableHeaderCell {
+  padding: 0.5rem 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.tableHeaderCellLast {
+  text-align: center;
+}
+
+.tableRow:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.tableCell {
+  padding: 0.5rem 1rem;
+}
+
+.tableCellLast {
+  text-align: center;
+}
+
+.checkbox {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tableFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.paginationControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.paginationButton {
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.emptyTableMessage {
+  padding: 1rem;
+  text-align: center;
+  color: #777;
+}
+
+.sortIcon {
+  margin-left: 0.2rem;
+}
+
+.contractInfo {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.5;
+}
+
+.tooltipWrapper {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+.tooltipIcon {
+  color: #666;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.tooltipIcon:hover {
+  color: #222;
+}
+
+/* ==== SECCIÓN DE INFORMACIÓN DEL CLIENTE Y ACCOUNT MANAGER ==== */
+/* ==== SECCIÓN INFO SIMPLE ==== */
+.infoSection {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding-left: 1rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+}
+
+.infoTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 0.3rem;
+}
+
+.infoText {
+  color: #475569;
+  font-size: 0.95rem;
+  line-height: 0.25;
+}
+
+/* ==== ADVERTENCIA ==== */
+.warningBox {
+  background-color: #fff8e1;
+  border-left: 4px solid #fbbf24;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+  color: #78350f;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.warningBox::before {
+  content: "⚠️";
+  font-size: 1.2rem;
+}

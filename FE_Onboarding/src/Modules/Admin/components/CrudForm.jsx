@@ -15,34 +15,49 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
   const [showPassword, setShowPassword] = useState({});
 
   useEffect(() => {
-    if (item) {
-      const initialData = {};
-      fields.forEach((field) => {
-        const key = getFormKey(field);
+    const initialData = {};
+    fields.forEach((field) => {
+      const key = getFormKey(field);
+
+      if (item) {
         if (field.transformForEdit) {
           Object.assign(initialData, field.transformForEdit(item));
         } else {
-          initialData[key] = item[key];
+          // 🔹 Ajuste para isInternal
+          if (field.key === "isInternal" && "esInterno" in item) {
+            initialData[key] = !!item.esInterno;
+          } else {
+            initialData[key] = item[key];
+          }
         }
-      });
-      setFormData(initialData);
-    } else {
-      const initialData = {};
-      fields.forEach((field) => {
-        const key = getFormKey(field);
-        if (key !== "id") initialData[key] = "";
-      });
-      setFormData(initialData);
-    }
+      } else {
+        initialData[key] = key !== "id" ? "" : item?.[key] ?? "";
+      }
+
+      // 🔹 Normaliza valores booleanos representados como strings
+      if (
+        typeof initialData[key] === "string" &&
+        (initialData[key] === "true" || initialData[key] === "false")
+      ) {
+        initialData[key] = initialData[key] === "true";
+      }
+    });
+    setFormData(initialData);
     setFormErrors({});
   }, [item, fields]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    let val = value;
+
+    if (type === "radio") {
+      val = value === "true" ? true : value === "false" ? false : value;
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: val }));
 
     if (validations && validations[name]) {
-      const error = validations[name](value, { ...formData, [name]: value });
+      const error = validations[name](val, { ...formData, [name]: val });
       setFormErrors((prev) => ({ ...prev, [name]: error }));
     }
   };
@@ -63,7 +78,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     let dataToSave = formData;
 
     if (validations) {
@@ -98,12 +112,13 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
         if (!item && field.key === "id") return null;
         const isIdField = field.key === "id";
         const nameKey = getFormKey(field);
-
         const isFieldReadOnly =
           isIdField ||
           (typeof field.isReadOnly === "function"
             ? field.isReadOnly(item)
             : field.isReadOnly);
+
+        const formDataValue = formData[nameKey];
 
         return (
           <div key={field.key} className={styles.formGroup}>
@@ -112,7 +127,7 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
             {field.type === "select" ? (
               <select
                 name={nameKey}
-                value={formData[nameKey] || ""}
+                value={formDataValue || ""}
                 onChange={handleChange}
                 disabled={isFieldReadOnly}
                 className={`${styles.input} ${
@@ -129,10 +144,10 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
             ) : field.type === "textarea" ? (
               <textarea
                 name={nameKey}
-                value={formData[nameKey] || ""}
+                value={formDataValue || ""}
                 onChange={handleChange}
                 readOnly={isFieldReadOnly}
-                rows={20}
+                rows={field.rows || 5}
                 className={`${styles.input} ${
                   formErrors[nameKey] ? styles.inputError : ""
                 }`}
@@ -142,15 +157,13 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 <input
                   type={showPassword[nameKey] ? "text" : "password"}
                   name={nameKey}
-                  value={formData[nameKey] || ""}
+                  value={formDataValue || ""}
                   onChange={handleChange}
                   readOnly={isFieldReadOnly}
                   className={`${styles.input} ${
                     formErrors[nameKey] ? styles.inputError : ""
                   }`}
                 />
-
-                {/* Botón mostrar/ocultar */}
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility(nameKey)}
@@ -159,8 +172,6 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                 >
                   {showPassword[nameKey] ? <FiEyeOff /> : <FiEye />}
                 </button>
-
-                {/* Botón generar contraseña */}
                 <button
                   type="button"
                   onClick={() => {
@@ -173,11 +184,43 @@ export const CrudForm = ({ fields, item, onSave, onCancel, validations }) => {
                   <FiRefreshCcw />
                 </button>
               </div>
+            ) : field.type === "radio" ? (
+              <div className={styles.radioGroup}>
+                {field.options?.map((opt) => {
+                  // Normalizar ambos valores a booleanos si es necesario
+                  const optValue =
+                    opt.value === "true"
+                      ? true
+                      : opt.value === "false"
+                      ? false
+                      : opt.value;
+                  const currentValue =
+                    formDataValue === "true"
+                      ? true
+                      : formDataValue === "false"
+                      ? false
+                      : formDataValue;
+
+                  return (
+                    <label key={opt.value} className={styles.radioLabel}>
+                      <input
+                        type="radio"
+                        name={nameKey}
+                        value={opt.value}
+                        checked={currentValue === optValue}
+                        onChange={handleChange}
+                        disabled={isFieldReadOnly}
+                      />
+                      {opt.label}
+                    </label>
+                  );
+                })}
+              </div>
             ) : (
               <input
                 type={field.type || "text"}
                 name={nameKey}
-                value={formData[nameKey] || ""}
+                value={formDataValue || ""}
                 onChange={handleChange}
                 readOnly={isFieldReadOnly}
                 className={`${styles.input} ${

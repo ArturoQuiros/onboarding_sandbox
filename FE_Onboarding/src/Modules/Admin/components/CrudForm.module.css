@@ -4,12 +4,11 @@
   padding: 2.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  max-width: 800px; /* 🛑 AUMENTADO EL ANCHO MÁXIMO */
+  max-width: 800px;
   margin: 2rem auto;
   box-sizing: border-box;
 }
 
-/* Encabezado con ícono + título */
 .formHeader {
   display: flex;
   flex-direction: column;
@@ -17,14 +16,12 @@
   margin-bottom: 2rem;
 }
 
-/* Ícono de la entidad */
 .entityIcon {
   font-size: 3rem;
   color: var(--bdo-charcoal);
   margin-bottom: 0.5rem;
 }
 
-/* Título del formulario */
 .formTitle {
   font-size: 1.8rem;
   font-weight: 700;
@@ -45,7 +42,6 @@
   margin-bottom: 0.5rem;
 }
 
-/* Inputs y Selects uniformes */
 .input,
 select {
   width: 100%;
@@ -69,12 +65,10 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.5);
 }
 
-/* Input con error */
 .inputError {
   border-color: #e53e3e;
 }
 
-/* Mensaje de error */
 .errorMessage {
   color: #e53e3e;
   font-size: 0.85rem;
@@ -138,24 +132,43 @@ select:focus {
   align-items: center;
   justify-content: center;
   padding: 0;
-  background-color: none !important;
 }
 
 .showPasswordButton {
   right: 0.75rem;
 }
 
-.showPasswordButton:hover,
-.generatePasswordButton:hover {
-  color: #3182ce;
-  background: none;
-}
-
 .generatePasswordButton {
   right: 2.75rem;
 }
 
-/* Espacio extra para input password para que no se solape */
+.showPasswordButton:hover,
+.generatePasswordButton:hover {
+  color: #3182ce;
+}
+
 .passwordWrapper .input {
   padding-right: 4.5rem;
+}
+
+/* RADIO BUTTONS */
+.radioGroup {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--bdo-charcoal);
+  cursor: pointer;
+}
+
+.radioLabel input[type="radio"] {
+  margin-right: 0.5rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--bdo-red);
 }

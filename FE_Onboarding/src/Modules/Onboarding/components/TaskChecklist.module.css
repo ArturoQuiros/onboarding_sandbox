@@ -26,15 +26,15 @@
 }
 
 .accordionHeader:hover {
-  background-color: #4b6277;
+  background-color: color-mix(in srgb, var(--bdo-slate) 80%, black 20%);
 }
 
 .accordionHeaderActive {
-  background-color: var(--bdo-red);
+  background-color: var(--bdo-slate);
 }
 
 .accordionHeaderActive:hover {
-  background-color: var(--bdo-burgundy);
+  background-color: color-mix(in srgb, var(--bdo-slate) 80%, black 20%);
 }
 
 .arrowDown,
@@ -154,7 +154,8 @@
 }
 
 /* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
-.homeButton {
+.homeButton,
+.contractButton {
   /* Derivado de .formButton */
   width: 100%;
   padding: 15px 20px;
@@ -168,11 +169,23 @@
   font-weight: 600;
   color: #fff;
   margin-bottom: 10px;
-  background-color: var(--bdo-ocean);
+}
+
+.homeButton {
+  background-color: var(--bdo-burgundy);
+}
+
+.contractButton {
+  background-color: var(--bdo-red);
 }
 
 /* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
 .homeButton:hover {
   /* Derivado de .formButton */
-  background-color: color-mix(in srgb, var(--bdo-ocean) 80%, black 20%);
+  background-color: color-mix(in srgb, var(--bdo-burgundy) 80%, black 20%);
+}
+
+.contractButton:hover {
+  /* Derivado de .formButton */
+  background-color: color-mix(in srgb, var(--bdo-red) 90%, black 10%);
 }

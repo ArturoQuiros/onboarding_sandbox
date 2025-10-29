@@ -6,3 +6,6 @@ export * from "./useExternalUsersQuery";
 export * from "./useInternalUsersQuery";
 export * from "./useContractsQuery";
 export * from "./useContractServicesQuery";
+export * from "./useTasksQuery";
+export * from "./useTaskStatesQuery";
+export * from "./useTaskContractsQuery";

@@ -332,8 +332,7 @@ namespace WS_Onboarding.Controllers
 
                 var estadoTarea1 = new Models.EstadosTarea
                 {
-                    Id = 1,
-                    Nombre = "Pending",
+                    Nombre = "Pending", // ID = 1
                     Fecha_Creacion = DateTime.UtcNow,
                     Fecha_Modificacion = DateTime.UtcNow,
                 };

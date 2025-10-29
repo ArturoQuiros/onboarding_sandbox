@@ -10,76 +10,123 @@
   }
 }
 
-.logo {
-  width: 60vw;
-  max-width: 600px;
-  min-width: 120px;
-  height: auto;
-  animation: zoomIn 1s ease-in-out forwards;
+:root {
+  --transition-fast: 0.25s ease-in-out;
 }
 
+body {
+  background-color: #0c0c0c; /* Fondo oscuro sobrio, opcional */
+}
+
+/* -------- LOGO -------- */
+.logo {
+  width: 70vw;
+  max-width: 800px;
+  height: auto;
+  display: block;
+  animation: zoomIn 1s ease-in-out forwards;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  transition: transform var(--transition-fast);
+}
+
+.logo:hover {
+  transform: scale(1.03);
+}
+
+/* -------- BUTTONS ROW -------- */
 .buttonRow {
   display: flex;
   justify-content: center;
-  gap: 40px;
-  /* Establecer opacidad inicial y escala para evitar el parpadeo */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 3rem;
   opacity: 0;
   transform: scale(0.9);
   animation: zoomIn 1s ease-in-out forwards;
   animation-delay: 0.5s;
+  margin-bottom: 3rem;
 }
 
+/* -------- BUTTON CONTAINER -------- */
 .buttonContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0.5rem;
+  text-align: center;
 }
 
+/* -------- TEXT -------- */
 .buttonText {
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 500;
-  margin-bottom: 5px;
-  white-space: nowrap;
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.5px;
 }
 
+/* -------- BUTTON -------- */
 .button {
   background-color: var(--bdo-red);
   color: white;
-  padding: 0.6em 1.2em;
-  border-radius: 8px;
+  padding: 0.75em 1.5em;
+  border-radius: 10px;
   border: 1px solid transparent;
-  min-width: 200px;
+  min-width: 220px;
   text-align: center;
   text-decoration: none;
-  transition: background-color 0.25s, border-color 0.25s;
-  cursor: pointer;
   font-family: "Trebuchet MS", sans-serif;
-  font-weight: 500;
-  font-size: 1em;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .button:hover {
   background-color: var(--bdo-burgundy);
   border-color: var(--bdo-burgundy);
-  color: white; /* Asegura que el color de texto se mantenga blanco en hover */
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .button:focus,
 .button:focus-visible {
-  outline: 4px auto var(--bdo-gold);
+  outline: 3px solid var(--bdo-gold);
+  outline-offset: 2px;
 }
 
+/* -------- RESPONSIVE -------- */
 @media (max-width: 768px) {
+  .logo {
+    width: 70vw;
+    margin-top: 2rem;
+  }
+
   .buttonRow {
     flex-direction: column;
-    gap: 20px;
+    gap: 1.5rem;
   }
+
   .buttonText {
     font-size: 1rem;
   }
+
   .button {
-    padding: 8px 16px;
-    font-size: 0.9rem;
+    padding: 0.6em 1.2em;
+    font-size: 0.95rem;
+    min-width: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
   }
 }
