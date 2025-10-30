@@ -31,7 +31,8 @@ namespace WS_Onboarding.Controllers
                     .Select(tc => new
                     {
                         TareaContrato = tc.ToTareaContratoFullDto(),
-                        tc.Tarea.EsInterno
+                        tc.Tarea.EsInterno,
+                        tc.Tarea.Descripcion
                     }).ToList();
 
                 return Ok(resultado);
@@ -81,16 +82,17 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpGet("GetByIdFull")]
-        public IActionResult GetByIdFull([FromQuery] int IdTarea)
+        public IActionResult GetByIdFull([FromQuery] int Id_TareaContrato)
         {
             try
             {
                 var TareaContratoModel = _context.Tarea_Contrato
-                    .Where(tc => tc.Id == IdTarea)
+                    .Where(tc => tc.Id == Id_TareaContrato)
                     .Select(tc => new
                     {
                         TareaContrato = tc.ToTareaContratoFullDto(),
-                        tc.Tarea.EsInterno
+                        tc.Tarea.EsInterno,
+                        tc.Tarea.Descripcion
                     })
                     .FirstOrDefault();
 
@@ -119,12 +121,50 @@ namespace WS_Onboarding.Controllers
         }
 
         [HttpGet("GetByIdSimple")]
-        public IActionResult GetByIdSimple([FromQuery] int IdTarea)
+        public IActionResult GetByIdSimple([FromQuery] int Id_TareaContrato)
         {
             try
             {
                 var TareaContratoModel = _context.Tarea_Contrato
-                    .Where(tc => tc.Id == IdTarea)
+                    .Where(tc => tc.Id == Id_TareaContrato)
+                    .Select(tc => new
+                    {
+                        TareaContrato = tc.ToTareaContratoSimpleDto(),
+                        tc.Tarea.EsInterno
+                    })
+                    .FirstOrDefault();
+
+                if (TareaContratoModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(TareaContratoModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
+        [HttpGet("GetByContratoSimple")]
+        public IActionResult GetByContratoSimple([FromQuery] int Id_Contrato)
+        {
+            try
+            {
+                var TareaContratoModel = _context.Tarea_Contrato
+                    .Where(tc => tc.Id_Contrato == Id_Contrato)
                     .Select(tc => new
                     {
                         TareaContrato = tc.ToTareaContratoSimpleDto(),
