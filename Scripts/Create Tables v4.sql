@@ -116,7 +116,6 @@ CREATE TABLE Tareas (
     CONSTRAINT FK_Tareas_Servicios FOREIGN KEY (Id_Servicio) REFERENCES Servicios(Id)
 );
 
-
 DROP TABLE IF EXISTS Estados_Tarea;
 CREATE TABLE Estados_Tarea (
     Id INT PRIMARY KEY IDENTITY(1,1), -- TODO: Cambiar a que no sea Identity
@@ -139,3 +138,5 @@ CREATE TABLE Tarea_Contrato (
     CONSTRAINT FK_TareaContrato_Usuario FOREIGN KEY (Id_UsuarioResponsable) REFERENCES UsuariosInternos(Id),
     CONSTRAINT FK_TareaContrato_Estado FOREIGN KEY (Id_Estado) REFERENCES Estados_Tarea(Id)
 );
+
+--TODO: Cuando se crea la relación de ContratoServicio, se deben generar las ContratoTareas correspondientes, usando los valores default. Si se eliminan, solo se cambia el estado. 
