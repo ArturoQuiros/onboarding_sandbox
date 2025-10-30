@@ -1,4 +1,11 @@
-/* src/Modules/Admin/components/ContractServicesDashboard.module.css */
+/* ============================================ */
+/* ContractServicesDashboard.module.css        */
+/* Dashboard para gestión de servicios         */
+/* ============================================ */
+
+/* ========================= */
+/* Container principal       */
+/* ========================= */
 
 .container {
   width: 90%;
@@ -9,13 +16,63 @@
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  margin: 0 auto; /* Centrar contenedor */
+  margin: 0 auto;
 }
 
-/* Asegura que los elementos hijos ocupen todo el ancho */
-.container > * {
-  width: 100%;
+/* ========================= */
+/* Breadcrumbs               */
+/* ========================= */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 0.9rem;
 }
+
+.breadcrumbButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--bdo-red);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.breadcrumbButton:hover {
+  background: var(--bdo-red);
+  color: #fff;
+}
+
+.breadcrumbButton svg {
+  font-size: 0.85rem;
+}
+
+.breadcrumbButton span {
+  font-weight: 500;
+}
+
+.breadcrumbSeparator {
+  color: #999;
+  font-weight: 300;
+}
+
+.breadcrumbCurrent {
+  color: var(--bdo-charcoal);
+  font-weight: 600;
+}
+
+/* ========================= */
+/* Header                    */
+/* ========================= */
 
 .header {
   display: flex;
@@ -31,14 +88,24 @@
   font-size: 2.2em;
   font-weight: 700;
   letter-spacing: 0.03em;
-  margin-bottom: 0.5em;
-  margin-top: 1;
+  margin: 0;
   display: flex;
-  align-items: center; /* Centra el icono y el texto verticalmente */
+  align-items: center;
   flex-grow: 1;
 }
 
-/* Estilo para la barra de búsqueda y selector de items por página */
+/* Etiqueta del ID de contrato y país */
+.contractIdLabel {
+  font-size: 0.5em;
+  font-weight: 400;
+  color: #666;
+  margin-left: 0.5rem;
+}
+
+/* ========================= */
+/* Barra de controles        */
+/* ========================= */
+
 .controlsBar {
   display: flex;
   justify-content: space-between;
@@ -47,39 +114,22 @@
   flex-shrink: 0;
 }
 
-.description {
-  color: #666;
-  margin-bottom: 20px;
-  font-size: 1rem;
-}
-
 /* ========================= */
-/* ÍCONOS (Unificados)      */
+/* Íconos                    */
 /* ========================= */
 
-/* Estilo general para íconos (FaLayerGroup, entityIcon si se usan fuera del título) */
 .icon {
-  font-size: 1.2em;
+  font-size: 1.5em;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--bdo-ocean);
   line-height: 1;
-  /* 📌 Ajuste: usar padding-right si 'ContractServiceDashboard' usa esa convención */
-  padding-right: 10px;
-}
-
-/* Variante para íconos dentro del H2 (.title) */
-.title .icon {
-  font-size: 1.5em;
   margin-right: 0.5rem;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
 }
 
 /* ========================= */
-/* Mensajes de estado */
+/* Mensajes de estado        */
 /* ========================= */
 
 .loadingMessage,

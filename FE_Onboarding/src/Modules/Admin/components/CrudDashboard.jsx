@@ -10,8 +10,9 @@ import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import styles from "./CrudDashboard.module.css";
 import { ConfirmModal } from "./ConfirmModal";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaArrowLeft } from "react-icons/fa";
 import { UIContext } from "../../../Global/Context";
+import { useNavigate } from "react-router-dom";
 
 export const CrudDashboard = ({
   entityName,
@@ -25,6 +26,7 @@ export const CrudDashboard = ({
 }) => {
   const { t } = useTranslation("global");
   const { entityIcon } = useContext(UIContext);
+  const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -38,7 +40,6 @@ export const CrudDashboard = ({
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
-  // 🔹 Carga inicial de items
   const reloadItems = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -123,7 +124,6 @@ export const CrudDashboard = ({
         success: t(`${entityName}.deleteSuccess`),
         error: t(`${entityName}.deleteError`),
       });
-      // Actualizar tabla eliminando el item directamente
       setItems((prev) => prev.filter((i) => i.id !== itemIdToDelete));
     } catch (error) {
       console.error(error);
@@ -146,14 +146,11 @@ export const CrudDashboard = ({
         }
       );
 
-      // Actualizar tabla localmente
-      setItems((prev) => {
-        if (isEditing) {
-          return prev.map((i) => (i.id === savedItem.id ? savedItem : i));
-        } else {
-          return [savedItem, ...prev]; // agregar al inicio
-        }
-      });
+      setItems((prev) =>
+        isEditing
+          ? prev.map((i) => (i.id === savedItem.id ? savedItem : i))
+          : [savedItem, ...prev]
+      );
 
       setIsFormOpen(false);
       setSelectedItem(null);
@@ -162,13 +159,34 @@ export const CrudDashboard = ({
     }
   };
 
+  const handleGoBack = () => {
+    navigate(-1);
+  };
+
   return (
     <div className={styles.container}>
+      {/* 🔹 Breadcrumbs */}
+      <nav className={styles.breadcrumb}>
+        <button
+          className={styles.breadcrumbButton}
+          onClick={handleGoBack}
+          aria-label={t("common.goBack")}
+        >
+          <FaArrowLeft />
+          <span>{t("common.back")}</span>
+        </button>
+        <span className={styles.breadcrumbSeparator}>/</span>
+        <span className={styles.breadcrumbCurrent}>
+          {t(`${entityName}.title`)}
+        </span>
+      </nav>
+
       <div className={styles.header}>
         <h2 className={styles.title}>
           {entityIcon && <span className={styles.icon}>{entityIcon}</span>}
           {t(`${entityName}.title`)}
         </h2>
+
         <button className={styles.createButton} onClick={handleCreate}>
           <FaPlus /> {t(`${entityName}.createButton`)}
         </button>
