@@ -168,9 +168,9 @@ namespace WS_Onboarding.Controllers
                     .Select(tc => new
                     {
                         TareaContrato = tc.ToTareaContratoSimpleDto(),
-                        tc.Tarea.EsInterno
+                        tc.Tarea.Id_Servicio
                     })
-                    .FirstOrDefault();
+                    .ToList();
 
                 if (TareaContratoModel == null)
                 {
@@ -178,7 +178,15 @@ namespace WS_Onboarding.Controllers
                 }
                 else
                 {
-                    return Ok(TareaContratoModel);
+                    var result = TareaContratoModel
+                    .GroupBy(tc => tc.Id_Servicio)
+                    .Select(tc => new
+                    {
+                        id_Servicio = tc.Key,
+                        tasks = tc.Select(x => x.TareaContrato).ToList()
+                    })
+                    .ToList();
+                    return Ok(result);
                 }
             }
             catch (Exception ex)
