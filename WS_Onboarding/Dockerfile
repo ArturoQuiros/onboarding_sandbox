@@ -5,15 +5,16 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
-# Copiar los archivos de proyecto primero (mejor caché)
-COPY WS_Onboarding/WS_Container/WS_Onboarding.sln ./WS_Container/
-COPY WS_Onboarding/WS_Container/WS_Onboarding.csproj ./WS_Container/
+# Copiar archivos del proyecto (para aprovechar la caché de dependencias)
+COPY WS_Container/*.csproj ./WS_Container/
+# Si tienes un .sln fuera del proyecto, cópialo también
+COPY WS_Container/*.sln ./WS_Container/
 
 # Restaurar dependencias
 RUN dotnet restore ./WS_Container/WS_Onboarding.sln
 
 # Copiar el resto del código fuente
-COPY WS_Onboarding/WS_Container/ ./WS_Container/
+COPY WS_Container/. ./WS_Container/
 
 # Compilar el proyecto en modo Release
 WORKDIR /src/WS_Container
