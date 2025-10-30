@@ -13,3 +13,4 @@ export * from "./RoleSelector";
 export * from "./ContractServicesTable";
 export * from "./ContractServicesDashboard";
 export * from "./Tooltip";
+export * from "./Spinner";

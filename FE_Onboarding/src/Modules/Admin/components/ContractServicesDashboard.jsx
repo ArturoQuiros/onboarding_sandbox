@@ -6,7 +6,7 @@ import { FaLayerGroup, FaArrowLeft } from "react-icons/fa";
 import { ContractServicesTable } from "./ContractServicesTable";
 import styles from "./ContractServicesDashboard.module.css";
 import { UIContext } from "../../../Global/Context";
-import { SearchBar, ItemsPerPageSelector } from "./";
+import { SearchBar, ItemsPerPageSelector, Spinner } from "./";
 import { useContractServicesQuery } from "../hooks/useContractServicesQuery";
 import { useCountriesQuery } from "../hooks/useCountriesQuery";
 
@@ -166,9 +166,11 @@ export const ContractServiceDashboard = () => {
   // Validación: ID de contrato requerido
   if (!contractId) {
     return (
-      <p className={styles.loadingMessage}>
-        ⚠️ {t("contractServices.missingContractId")}
-      </p>
+      <div className={styles.container}>
+        <p className={styles.loadingMessage}>
+          ⚠️ {t("contractServices.missingContractId")}
+        </p>
+      </div>
     );
   }
 
@@ -186,12 +188,20 @@ export const ContractServiceDashboard = () => {
       errorMessage = t("contractServices.errorCountries");
     }
 
-    return <p className={styles.loadingMessage}>❌ {errorMessage}</p>;
+    return (
+      <div className={styles.container}>
+        <p className={styles.loadingMessage}>❌ {errorMessage}</p>
+      </div>
+    );
   }
 
   // Estado de carga
   if (isLoading) {
-    return <p className={styles.loadingMessage}>{t("common.loading")}</p>;
+    return (
+      <div className={styles.container}>
+        <Spinner size="large" message={t("common.loading")} />
+      </div>
+    );
   }
 
   // ============================================

@@ -1,0 +1,113 @@
+/* Spinner.module.css */
+
+/* ========================= */
+/* Container                 */
+/* ========================= */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+}
+
+.fullScreenContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 9999;
+}
+
+/* ========================= */
+/* Spinner Animation         */
+/* ========================= */
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.spinner > div {
+  background-color: var(--bdo-ocean);
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+/* ========================= */
+/* Tamaños                   */
+/* ========================= */
+
+.small > div {
+  width: 8px;
+  height: 8px;
+}
+
+.medium > div {
+  width: 12px;
+  height: 12px;
+}
+
+.large > div {
+  width: 16px;
+  height: 16px;
+}
+
+/* ========================= */
+/* Delays de animación       */
+/* ========================= */
+
+.bounce1 {
+  animation-delay: -0.32s !important;
+}
+
+.bounce2 {
+  animation-delay: -0.16s !important;
+}
+
+/* ========================= */
+/* Keyframes                 */
+/* ========================= */
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ========================= */
+/* Mensaje                   */
+/* ========================= */
+
+.message {
+  margin-top: 1rem;
+  color: var(--bdo-charcoal);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ========================= */
+/* Variante con color rojo   */
+/* ========================= */
+
+.spinner.error > div {
+  background-color: var(--bdo-red);
+}

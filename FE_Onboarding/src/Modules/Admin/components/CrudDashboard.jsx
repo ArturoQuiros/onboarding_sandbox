@@ -5,15 +5,26 @@ import React, {
   useCallback,
   useContext,
 } from "react";
-import { CrudDataTable, CrudForm, SearchBar, ItemsPerPageSelector } from "./";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
+import { FaPlus, FaArrowLeft } from "react-icons/fa";
+import {
+  CrudDataTable,
+  CrudForm,
+  SearchBar,
+  ItemsPerPageSelector,
+  Spinner,
+} from "./";
 import styles from "./CrudDashboard.module.css";
 import { ConfirmModal } from "./ConfirmModal";
-import { FaPlus, FaArrowLeft } from "react-icons/fa";
 import { UIContext } from "../../../Global/Context";
-import { useNavigate } from "react-router-dom";
 
+/**
+ * Dashboard CRUD genérico y reutilizable
+ * Proporciona funcionalidad completa de Create, Read, Update, Delete
+ * con búsqueda, paginación y ordenamiento
+ */
 export const CrudDashboard = ({
   entityName,
   fields,
@@ -28,6 +39,10 @@ export const CrudDashboard = ({
   const { entityIcon } = useContext(UIContext);
   const navigate = useNavigate();
 
+  // ============================================
+  // 🎛️ ESTADOS
+  // ============================================
+
   const [items, setItems] = useState([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -40,6 +55,13 @@ export const CrudDashboard = ({
   const [sortKey, setSortKey] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
 
+  // ============================================
+  // 📊 CARGA DE DATOS
+  // ============================================
+
+  /**
+   * Recarga todos los items desde el servidor
+   */
   const reloadItems = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -56,16 +78,9 @@ export const CrudDashboard = ({
     reloadItems();
   }, [reloadItems]);
 
-  const handleSort = (key) => {
-    setSortKey(key);
-    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    setCurrentPage(1);
-  };
-
-  const handleItemsPerPageChange = (event) => {
-    setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1);
-  };
+  // ============================================
+  // 🧮 COMPUTED VALUES - Ordenamiento, filtrado, paginación
+  // ============================================
 
   const sortedItems = useMemo(() => {
     if (!sortKey) return items;
@@ -96,26 +111,45 @@ export const CrudDashboard = ({
 
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
 
+  // ============================================
+  // 🎬 HANDLERS - Eventos
+  // ============================================
+
+  /**
+   * Abre el formulario para crear un nuevo item
+   */
   const handleCreate = () => {
     setSelectedItem(null);
     setIsFormOpen(true);
   };
 
+  /**
+   * Abre el formulario para editar un item existente
+   */
   const handleEdit = (item) => {
     setSelectedItem(item);
     setIsFormOpen(true);
   };
 
+  /**
+   * Cancela la edición/creación y cierra el formulario
+   */
   const handleCancel = () => {
     setIsFormOpen(false);
     setSelectedItem(null);
   };
 
+  /**
+   * Solicita confirmación para eliminar un item
+   */
   const handleDelete = (id) => {
     setItemIdToDelete(id);
     setIsConfirmModalOpen(true);
   };
 
+  /**
+   * Confirma y ejecuta la eliminación del item
+   */
   const handleConfirmDelete = async () => {
     setIsConfirmModalOpen(false);
     try {
@@ -132,6 +166,9 @@ export const CrudDashboard = ({
     }
   };
 
+  /**
+   * Guarda un item (crea o actualiza según el contexto)
+   */
   const handleSave = async (item) => {
     const isEditing = Boolean(selectedItem);
     try {
@@ -159,13 +196,37 @@ export const CrudDashboard = ({
     }
   };
 
+  /**
+   * Cambia el ordenamiento de la tabla
+   */
+  const handleSort = (key) => {
+    setSortKey(key);
+    setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+    setCurrentPage(1);
+  };
+
+  /**
+   * Cambia la cantidad de items por página
+   */
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(Number(event.target.value));
+    setCurrentPage(1);
+  };
+
+  /**
+   * Navega hacia atrás
+   */
   const handleGoBack = () => {
     navigate(-1);
   };
 
+  // ============================================
+  // 🎨 RENDER
+  // ============================================
+
   return (
     <div className={styles.container}>
-      {/* 🔹 Breadcrumbs */}
+      {/* Breadcrumbs */}
       <nav className={styles.breadcrumb}>
         <button
           className={styles.breadcrumbButton}
@@ -181,6 +242,7 @@ export const CrudDashboard = ({
         </span>
       </nav>
 
+      {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.title}>
           {entityIcon && <span className={styles.icon}>{entityIcon}</span>}
@@ -192,6 +254,7 @@ export const CrudDashboard = ({
         </button>
       </div>
 
+      {/* Contenido principal */}
       {isFormOpen ? (
         <CrudForm
           fields={fields}
@@ -216,7 +279,7 @@ export const CrudDashboard = ({
           )}
 
           {isLoading ? (
-            <p className={styles.loadingMessage}>{t("common.loading")}</p>
+            <Spinner size="large" message={t("common.loading")} />
           ) : (
             <CrudDataTable
               data={paginatedItems}
@@ -237,6 +300,7 @@ export const CrudDashboard = ({
         </>
       )}
 
+      {/* Modal de confirmación */}
       <ConfirmModal
         isOpen={isConfirmModalOpen}
         onConfirm={handleConfirmDelete}

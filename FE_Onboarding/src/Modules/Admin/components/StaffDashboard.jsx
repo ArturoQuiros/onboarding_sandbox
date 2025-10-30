@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { FaSync, FaUsers, FaArrowLeft } from "react-icons/fa";
 import styles from "./StaffDashboard.module.css";
 import { StaffTable } from "./StaffTable";
-import { SearchBar, ItemsPerPageSelector } from "./";
+import { SearchBar, ItemsPerPageSelector, Spinner } from "./";
 import { useInternalUsersQuery } from "../hooks";
 
 /**
@@ -134,16 +134,22 @@ export const StaffDashboard = ({ fields }) => {
   // ============================================
 
   if (isLoading || isLoadingRoles) {
-    return <p className={styles.loadingMessage}>{t("common.loading")}</p>;
+    return (
+      <div className={styles.container}>
+        <Spinner size="large" message={t("common.loading")} />
+      </div>
+    );
   }
 
   if (isError) {
     return (
-      <div className={styles.errorMessage}>
-        <p>{t("common.genericError")}</p>
-        <button onClick={() => refetch()} className={styles.retryButton}>
-          <FaSync /> {t("common.retry")}
-        </button>
+      <div className={styles.container}>
+        <div className={styles.errorMessage}>
+          <p>{t("common.genericError")}</p>
+          <button onClick={() => refetch()} className={styles.retryButton}>
+            <FaSync /> {t("common.retry")}
+          </button>
+        </div>
       </div>
     );
   }
