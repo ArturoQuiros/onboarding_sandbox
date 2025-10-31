@@ -10,18 +10,16 @@ const getOptionDetails = (opt) => {
 };
 
 // 🆕 Botón Flotante de Contacto
-const FloatingContactButton = ({ onClick }) => {
-  return (
-    <button
-      type="button"
-      className={styles.floatingButton}
-      onClick={onClick}
-      title="Contactar al Account Manager"
-    >
-      💬
-    </button>
-  );
-};
+const FloatingContactButton = ({ onClick }) => (
+  <button
+    type="button"
+    className={styles.floatingButton}
+    onClick={onClick}
+    title="Contactar al Account Manager"
+  >
+    💬
+  </button>
+);
 
 export const DynamicForm = ({
   formData,
@@ -33,13 +31,20 @@ export const DynamicForm = ({
     formData.sections ? formData.sections.map(() => [{}]) : [[]]
   );
 
-  // 🔁 Resetea sectionEntries cada vez que cambia formData
+  // 🔁 Resetea sectionEntries solo si realmente cambió formData
   useEffect(() => {
-    if (formData.sections) {
-      setSectionEntries(formData.sections.map(() => [{}]));
-    } else {
-      setSectionEntries([[]]);
+    const newEntries = formData.sections
+      ? formData.sections.map(() => [{}])
+      : [[]];
+
+    const isDifferent =
+      sectionEntries.length !== newEntries.length ||
+      sectionEntries.some((sec, i) => sec.length !== newEntries[i].length);
+
+    if (isDifferent) {
+      setSectionEntries(newEntries);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]);
 
   const handleAdd = (sectionIndex) => {

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react"; // 💡 Importamos useMemo
 import { useParams } from "react-router-dom";
 import { useContractFlow } from "../../../Global/Context";
 import { DynamicForm } from "../components";
-import styles from "./ClientContractPage.module.css"; // Asegúrate de tener los estilos
+import styles from "./ClientContractPage.module.css";
 
 export const ClientContractPage = () => {
   const { serviceId, taskId } = useParams();
@@ -14,21 +14,37 @@ export const ClientContractPage = () => {
     refetch,
   } = useContractFlow();
 
-  const [taskForm, setTaskForm] = useState(null);
+  // 1. Unificamos el estado, ya que taskForm es solo un campo de currentTask
   const [currentTask, setCurrentTask] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    if (!services || services.length === 0) return;
+
     const service = services.find((s) => s.serviceId === Number(serviceId));
     const task = service?.tasks.find((t) => t.taskId === Number(taskId));
 
-    if (service && task) {
+    if (!service || !task) return;
+
+    // Solo actualizar si IDs difieren
+    if (currentTask?.taskId !== task.taskId) {
       setActiveService(service);
       setActiveTask(task);
-      setTaskForm(task.form); // Form parseado del API
-      setCurrentTask(task); // Guardamos toda la info de la tarea
+      setCurrentTask(task);
     }
-  }, [serviceId, taskId, services, setActiveService, setActiveTask]);
+  }, [
+    serviceId,
+    taskId,
+    services,
+    setActiveService,
+    setActiveTask,
+    currentTask?.taskId,
+  ]);
+  // 2. 💡 CORRECCIÓN CRÍTICA: Estabilizamos taskForm con useMemo.
+  // La referencia de `taskForm` solo se actualizará cuando `currentTask` cambie.
+  const taskForm = useMemo(() => {
+    return currentTask?.form || null;
+  }, [currentTask]);
 
   const handleSubmit = async (formData) => {
     if (!currentTask) return;
@@ -54,11 +70,11 @@ export const ClientContractPage = () => {
     }
   };
 
-  // 🔹 Estados de la tarea
+  // 🔹 Estados de la tarea (simplificamos usando currentTask)
   const isTaskAccepted = currentTask?.status === 4; // Accepted
   const isTaskReturned = currentTask?.status === 3; // Returned
   const isTaskCompleted = currentTask?.status === 2; // Completed (en revisión)
-  const isTaskPending = currentTask?.status === 1; // Pending
+  // const isTaskPending = currentTask?.status === 1; // Pending (no usado en el return)
 
   if (!taskForm) {
     return (
@@ -115,7 +131,7 @@ export const ClientContractPage = () => {
 
       {/* Formulario dinámico */}
       <DynamicForm
-        formData={taskForm}
+        formData={taskForm} // Propiedad estable gracias a useMemo
         onSubmit={handleSubmit}
         initialData={currentTask?.savedData} // Pre-llenar con datos guardados
         disabled={isSubmitting || isTaskAccepted} // Deshabilitar si está enviando o aceptada

@@ -1,6 +1,7 @@
 // src/Modules/Client/hooks/useContractTasksQuery.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosClient from "../../../Api/axiosClient";
+import { useServicesQuery } from "../../Admin/hooks/useServicesQuery";
 
 // 🔹 Helper: Parsear descripción de tarea a formulario
 const parseTaskForm = (descripcion) => {
@@ -34,6 +35,9 @@ const parseJSON = (jsonString) => {
 export const useContractTasksQuery = (contractId) => {
   const queryClient = useQueryClient();
 
+  // 🔹 Usar el hook de servicios existente
+  const { servicesQuery } = useServicesQuery();
+
   // 🔹 GET: Obtener tareas del contrato agrupadas por servicio
   const contractTasksQuery = useQuery({
     queryKey: ["contractTasks", contractId],
@@ -65,12 +69,20 @@ export const useContractTasksQuery = (contractId) => {
       return acc;
     }, {}) || {};
 
-  // 🔹 Combinar datos: Tareas del contrato + Definiciones
+  // 🔹 Crear mapa de servicios por ID desde el hook
+  const servicesMap =
+    servicesQuery.data?.reduce((acc, service) => {
+      acc[service.id] = service.name; // ← Usar 'name' porque el hook ya mapea 'nombre' a 'name'
+      return acc;
+    }, {}) || {};
+
+  // 🔹 Combinar datos: Tareas del contrato + Definiciones + Servicios
   const services =
     contractTasksQuery.data?.map((service) => {
       return {
         serviceId: service.id_Servicio,
-        title: `Service ${service.id_Servicio}`, // Nombre genérico (mejorará con API de servicios)
+        title:
+          servicesMap[service.id_Servicio] || `Service ${service.id_Servicio}`,
         tasks: service.tasks
           .filter((taskContract) => taskContract.estado) // Solo tareas activas
           .map((taskContract) => {
@@ -142,8 +154,14 @@ export const useContractTasksQuery = (contractId) => {
 
   // 🔹 Estados de carga y error
   const isLoading =
-    contractTasksQuery.isLoading || tasksDefinitionsQuery.isLoading;
-  const error = contractTasksQuery.error || tasksDefinitionsQuery.error;
+    contractTasksQuery.isLoading ||
+    tasksDefinitionsQuery.isLoading ||
+    servicesQuery.isLoading;
+
+  const error =
+    contractTasksQuery.error ||
+    tasksDefinitionsQuery.error ||
+    servicesQuery.error;
 
   return {
     services,
@@ -153,6 +171,7 @@ export const useContractTasksQuery = (contractId) => {
     refetch: () => {
       contractTasksQuery.refetch();
       tasksDefinitionsQuery.refetch();
+      servicesQuery.refetch();
     },
   };
 };

@@ -35,30 +35,32 @@ export const ContractFlowProvider = ({ children }) => {
   useEffect(() => {
     if (!services || services.length === 0) return;
 
-    if (routeServiceId) {
-      const service = services.find(
-        (s) => s.serviceId === Number(routeServiceId)
-      );
-      if (service) {
-        setActiveService(service);
+    let service = services.find((s) => s.serviceId === Number(routeServiceId));
 
-        // Si existe taskId en URL, seleccionamos esa tarea
-        const task =
-          service.tasks.find((t) => t.taskId === Number(routeTaskId)) ||
-          service.tasks.find((t) => t.status === 2) ||
-          service.tasks.find((t) => t.status === 3) ||
-          service.tasks.find((t) => t.status === 1) ||
-          service.tasks[0];
+    if (!service) service = services[0]; // fallback al primero
 
-        setActiveTask(task);
-      }
-    } else if (!activeService && services.length > 0) {
-      // Si no hay servicio en URL, seleccionar el primero
-      setActiveService(services[0]);
-      const firstTask = services[0].tasks[0];
-      setActiveTask(firstTask);
+    let task =
+      service.tasks.find((t) => t.taskId === Number(routeTaskId)) ||
+      service.tasks.find((t) => t.status === 2) ||
+      service.tasks.find((t) => t.status === 3) ||
+      service.tasks.find((t) => t.status === 1) ||
+      service.tasks[0];
+
+    // 🔹 Solo actualizar si difiere del estado actual
+    if (activeService?.serviceId !== service.serviceId) {
+      setActiveService(service);
     }
-  }, [routeServiceId, routeTaskId, services]);
+
+    if (activeTask?.taskId !== task.taskId) {
+      setActiveTask(task);
+    }
+  }, [
+    routeServiceId,
+    routeTaskId,
+    services,
+    activeService?.serviceId,
+    activeTask?.taskId,
+  ]);
 
   // Función para seleccionar un servicio
   const handleSelectService = (serviceId) => {
