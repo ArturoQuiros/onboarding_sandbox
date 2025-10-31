@@ -1,20 +1,19 @@
 import React from "react";
 import { ChecklistItem } from "./ChecklistItem";
 import { useContractFlow } from "../../../Global/Context";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./TaskChecklist.module.css";
 
-/**
- * Componente Acordeón para un Servicio.
- * Solo maneja la apertura/cierre y la lista de tareas
- */
 export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
-  const { activeTask, activeService, setActiveService, setActiveTask } =
+  const { activeTask, activeService, setActiveService, setActiveTask, role } =
     useContractFlow();
+
+  const navigate = useNavigate();
+  const { contractId } = useParams();
 
   const headerClass = isOpen
     ? styles.accordionHeaderActive
     : styles.accordionHeader;
-
   const arrowClass = isOpen ? styles.arrowUp : styles.arrowDown;
 
   const handleTaskClick = (task) => {
@@ -24,7 +23,12 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
     if (activeService?.serviceId !== service.serviceId) {
       setActiveService(service);
     }
-    // Navegación a la ruta de la tarea (mantener según tu app)
+
+    // 🔹 Navegar a la ruta de la tarea
+    const basePath = role === "staff" ? "/staff" : "/client";
+    navigate(
+      `${basePath}/contract/${contractId}/service/${service.serviceId}/task/${task.taskId}`
+    );
   };
 
   return (
