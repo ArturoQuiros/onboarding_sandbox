@@ -38,6 +38,8 @@ export const TaskChecklist = () => {
   return (
     <div className={styles.checklistContainer}>
       {/* Botones generales */}
+      <h4>-------BASE-------</h4>
+
       <div className={styles.buttonsContainer}>
         <button className={styles.homeButton} onClick={handleGoHome}>
           Home
@@ -49,6 +51,8 @@ export const TaskChecklist = () => {
           Your Contract
         </button>
       </div>
+
+      <h4>-------TAREAS-------</h4>
 
       {/* Acordeones de servicios */}
       {services.map((service) => (
