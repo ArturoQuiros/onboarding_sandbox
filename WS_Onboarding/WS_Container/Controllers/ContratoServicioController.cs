@@ -271,7 +271,7 @@ namespace WS_Onboarding.Controllers
                 };
                 Create(crearContratoServicio);
 
-                if(ListaTareas != null)
+                if (ListaTareas != null)
                 {
                     foreach (var Tarea in ListaTareas)
                     {
@@ -311,9 +311,26 @@ namespace WS_Onboarding.Controllers
                     .FirstOrDefault(tc => tc.Id_Tarea == Tarea.Id && tc.Id_Contrato == ContratoServicioDto.Id_Contrato);
 
                     if (TareaContratoModel != null)
+                    {
                         TareaContratoModel.Estado = (ContratoServicioDto.Estado == null) ? TareaContratoModel.Estado : ContratoServicioDto.Estado;
+                        _context.SaveChanges();
+                    }
+                    else
+                    {
+                        var tareaContrato = new Models.TareaContrato
+                        {
+                            Id_Contrato = ContratoServicioDto.Id_Contrato,
+                            Id_Tarea = Tarea.Id,
+                            Id_UsuarioResponsable = null,
+                            Id_Estado = 1,
+                            Estado = (ContratoServicioDto.Estado == null) ? false : ContratoServicioDto.Estado,
+                            Json_Respuesta = "",
+                            Observaciones = ""
+                        };
 
-                    _context.SaveChanges();
+                        _context.Tarea_Contrato.AddRange(tareaContrato);
+                        _context.SaveChanges();
+                    }
                 }
 
                 return CreatedAtAction(nameof(GetContratoServicioByIdContratoAndIdServicio),

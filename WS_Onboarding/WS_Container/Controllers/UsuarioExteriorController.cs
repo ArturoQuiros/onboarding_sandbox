@@ -104,6 +104,39 @@ namespace WS_Onboarding.Controllers
             }
         }
 
+        [HttpGet("GetByIdCliente")]
+        public IActionResult GetByIdCliente([FromQuery] int Id_Cliente)
+        {
+            try
+            {
+                var UsuarioModel = _context.UsuariosExternos
+                .Where(ue => ue.Id_Cliente == Id_Cliente).ToList()
+                .Select(ue => ue.ToUsuarioExternoDto());
+
+                if (UsuarioModel == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(UsuarioModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorDetails = new
+                {
+                    Message = ex.Message,             // Main error message
+                    Type = ex.GetType().Name,         // Type of the exception
+                    StackTrace = ex.StackTrace,       // Stack trace (debug info)
+                    Inner = ex.InnerException?.Message, // Deeper cause if any
+                    Source = ex.Source                // Where the error came from
+                };
+
+                return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
+            }
+        }
+
         //[HttpGet("ByEmail")]
         /*public IActionResult GetUsuariosByEmail([FromQuery] string Email)
         {
