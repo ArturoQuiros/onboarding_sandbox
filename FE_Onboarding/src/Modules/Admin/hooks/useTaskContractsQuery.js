@@ -1,114 +1,158 @@
-// src/Modules/Admin/hooks/useTaskContractsQuery.js
+// src/Modules/Client/hooks/useContractTasksQuery.js
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import axiosClient from "../../../Api/axiosClient";
-import { useTasksQuery } from "./useTasksQuery";
-import { useTaskStatesQuery } from "./useTaskStatesQuery";
-import { useInternalUsersQuery } from "../../Admin/hooks/useInternalUsersQuery";
-import { useContractsQuery } from "./useContractsQuery";
 
-export const useTaskContractsQuery = () => {
+// 🔹 Helper: Parsear descripción de tarea a formulario
+const parseTaskForm = (descripcion) => {
+  if (!descripcion) return null;
+
+  try {
+    const parsed = JSON.parse(descripcion);
+    // Validar que tenga estructura de formulario
+    if (parsed.fields || parsed.sections) {
+      return parsed;
+    }
+  } catch (e) {
+    console.warn("Descripción no es JSON válido:", descripcion);
+  }
+
+  return null;
+};
+
+// 🔹 Helper: Parsear JSON guardado
+const parseJSON = (jsonString) => {
+  if (!jsonString) return null;
+
+  try {
+    return JSON.parse(jsonString);
+  } catch (e) {
+    console.warn("Error parseando json_Respuesta:", e);
+    return null;
+  }
+};
+
+export const useContractTasksQuery = (contractId) => {
   const queryClient = useQueryClient();
 
-  // 🔹 Dependencias
-  const { tasksQuery, taskMap } = useTasksQuery();
-  const { taskStatesQuery, taskStateMap } = useTaskStatesQuery();
-  const { internalUsersQuery } = useInternalUsersQuery();
-  const { contractsQuery } = useContractsQuery();
-
-  // Crear mapa de usuarios internos
-  const userMap =
-    internalUsersQuery.data?.reduce((acc, u) => {
-      acc[u.id] = u.name;
-      return acc;
-    }, {}) || {};
-
-  // Crear mapa de contratos
-  const contractMap =
-    contractsQuery.data?.reduce((acc, c) => {
-      acc[c.id] = c.client;
-      return acc;
-    }, {}) || {};
-
-  // 🔹 GET: Obtener todas las tareas asociadas a contratos
-  const taskContractsQuery = useQuery({
-    queryKey: ["taskContracts"],
+  // 🔹 GET: Obtener tareas del contrato agrupadas por servicio
+  const contractTasksQuery = useQuery({
+    queryKey: ["contractTasks", contractId],
     queryFn: async () => {
-      const { data } = await axiosClient.get("/TareaContrato/GetAllFull");
-      return data.map((t) => ({
-        id: t.id,
-        contract: contractMap[t.id_Contrato] || `Contract ID ${t.id_Contrato}`,
-        task: taskMap[t.id_Tarea] || `Task ID ${t.id_Tarea}`,
-        responsible:
-          userMap[t.id_UsuarioResponsable] ||
-          `User ID ${t.id_UsuarioResponsable}`,
-        state: taskStateMap[t.id_Estado] || `State ID ${t.id_Estado}`,
-        jsonResponse: t.json_Respuesta,
-        notes: t.observaciones,
-      }));
-    },
-    enabled:
-      tasksQuery.isSuccess &&
-      taskStatesQuery.isSuccess &&
-      internalUsersQuery.isSuccess &&
-      contractsQuery.isSuccess,
-  });
-
-  // 🔹 CREATE
-  const createTaskContract = useMutation({
-    mutationFn: async (taskContract) => {
-      const payload = {
-        id_Contrato: taskContract.id_Contrato,
-        id_Tarea: taskContract.id_Tarea,
-        id_UsuarioResponsable: taskContract.id_UsuarioResponsable,
-        id_Estado: taskContract.id_Estado,
-        json_Respuesta: taskContract.json_Respuesta,
-        observaciones: taskContract.observaciones,
-      };
-      const { data } = await axiosClient.post("/TareaContrato", payload);
+      const { data } = await axiosClient.get(
+        `/TareaContrato/GetByContratoSimple`,
+        {
+          params: { Id_Contrato: contractId },
+        }
+      );
       return data;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["taskContracts"] }),
+    enabled: !!contractId,
   });
 
-  // 🔹 UPDATE
-  const updateTaskContract = useMutation({
-    mutationFn: async (taskContract) => {
-      const payload = {
-        id_Contrato: taskContract.id_Contrato,
-        id_Tarea: taskContract.id_Tarea,
-        id_UsuarioResponsable: taskContract.id_UsuarioResponsable,
-        id_Estado: taskContract.id_Estado,
-        json_Respuesta: taskContract.json_Respuesta,
-        observaciones: taskContract.observaciones,
+  // 🔹 GET: Obtener TODAS las definiciones de tareas
+  const tasksDefinitionsQuery = useQuery({
+    queryKey: ["tasksDefinitions"],
+    queryFn: async () => {
+      const { data } = await axiosClient.get("/Tareas");
+      return data;
+    },
+  });
+
+  // 🔹 Crear mapa de definiciones de tareas por ID
+  const tasksMap =
+    tasksDefinitionsQuery.data?.reduce((acc, task) => {
+      acc[task.id] = task;
+      return acc;
+    }, {}) || {};
+
+  // 🔹 Combinar datos: Tareas del contrato + Definiciones
+  const services =
+    contractTasksQuery.data?.map((service) => {
+      return {
+        serviceId: service.id_Servicio,
+        title: `Service ${service.id_Servicio}`, // Nombre genérico (mejorará con API de servicios)
+        tasks: service.tasks
+          .filter((taskContract) => taskContract.estado) // Solo tareas activas
+          .map((taskContract) => {
+            const taskDef = tasksMap[taskContract.id_Tarea];
+
+            return {
+              // IDs
+              taskId: taskContract.id,
+              taskDefinitionId: taskContract.id_Tarea,
+              contractId: taskContract.id_Contrato,
+
+              // Info de la tarea
+              label: taskDef?.nombre || `Task ${taskContract.id_Tarea}`,
+              status: taskContract.id_Estado, // 1: Pending, 2: Completed, 3: Returned, 4: Accepted
+
+              // Form y datos
+              form: parseTaskForm(taskDef?.descripcion),
+              savedData: parseJSON(taskContract.json_Respuesta),
+
+              // Metadata
+              observations: taskContract.observaciones,
+              responsible: taskContract.id_UsuarioResponsable,
+              isActive: taskContract.estado,
+              isInternal: taskDef?.esInterno || false,
+            };
+          }),
       };
+    }) || [];
+
+  // 🔹 UPDATE: Actualizar una tarea del contrato
+  const updateTaskContract = useMutation({
+    mutationFn: async ({ taskId, formData, newState }) => {
+      // Primero obtener los datos actuales de la tarea
+      const currentTask = services
+        .flatMap((s) => s.tasks)
+        .find((t) => t.taskId === taskId);
+
+      if (!currentTask) {
+        throw new Error(`Task ${taskId} not found`);
+      }
+
+      const payload = {
+        id_Contrato: currentTask.contractId,
+        id_Tarea: currentTask.taskDefinitionId,
+        id_UsuarioResponsable: currentTask.responsible,
+        id_Estado: newState || currentTask.status,
+        estado: true,
+        json_Respuesta: formData
+          ? JSON.stringify(formData)
+          : currentTask.savedData
+          ? JSON.stringify(currentTask.savedData)
+          : null,
+        observaciones: currentTask.observations || "",
+      };
+
       const { data } = await axiosClient.put(
-        `/TareaContrato/${taskContract.id}`,
+        `/TareaContrato/${taskId}`,
         payload
       );
       return data;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["taskContracts"] }),
+    onSuccess: () => {
+      // Invalidar queries para refrescar datos
+      queryClient.invalidateQueries({
+        queryKey: ["contractTasks", contractId],
+      });
+    },
   });
 
-  // 🔹 DELETE
-  const deleteTaskContract = useMutation({
-    mutationFn: async (id) => {
-      await axiosClient.delete(`/TareaContrato/${id}`);
-    },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["taskContracts"] }),
-  });
+  // 🔹 Estados de carga y error
+  const isLoading =
+    contractTasksQuery.isLoading || tasksDefinitionsQuery.isLoading;
+  const error = contractTasksQuery.error || tasksDefinitionsQuery.error;
 
   return {
-    taskContractsQuery,
-    createTaskContract,
+    services,
+    isLoading,
+    error,
     updateTaskContract,
-    deleteTaskContract,
-    taskMap,
-    taskStateMap,
-    userMap,
-    contractMap,
+    refetch: () => {
+      contractTasksQuery.refetch();
+      tasksDefinitionsQuery.refetch();
+    },
   };
 };

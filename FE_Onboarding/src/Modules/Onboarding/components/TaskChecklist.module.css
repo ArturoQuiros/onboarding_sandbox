@@ -55,7 +55,7 @@
 .accordionContent {
   padding: 0 0 10px 0;
   overflow: hidden;
-  max-height: 1000px; /* Temporal, será controlado por JS */
+  max-height: 1000px;
   transition: max-height 0.3s ease;
 }
 
@@ -63,10 +63,10 @@
 .checklistItem,
 .checklistItemActive {
   display: flex;
-  align-items: center; /* 🔹 centra verticalmente icono y texto */
+  align-items: center;
   padding: 8px 0;
   cursor: pointer;
-  position: relative; /* necesario para la línea vertical */
+  position: relative;
   margin-left: 5px;
   font-size: 0.95rem;
   color: var(--bdo-charcoal);
@@ -86,7 +86,7 @@
 /* Wrapper para icono de estado */
 .statusIconWrapper {
   position: relative;
-  z-index: 1; /* asegura que el ícono quede sobre la línea */
+  z-index: 1;
   min-width: 25px;
   display: flex;
   justify-content: center;
@@ -94,9 +94,61 @@
   margin-right: 15px;
 }
 
-/* Íconos de estado */
-.statusCompleted,
-.statusActive,
+/* Íconos de estado - 4 estados del API */
+
+/* Estado 4: ACCEPTED - ✅ Verde - Tarea aprobada */
+.statusCompleted {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2em;
+  height: 1.2em;
+  background-color: var(--bdo-jade);
+  color: #fff;
+  z-index: 2;
+}
+
+/* Estado 2: COMPLETED - 🕐 Amarillo - En revisión por el staff */
+.statusInReview {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2em;
+  height: 1.2em;
+  background-color: #ff9500;
+  color: #fff;
+  z-index: 2;
+}
+
+/* Estado 3: RETURNED - ⚠️ Rojo - Requiere correcciones con animación */
+.statusReturned {
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.2em;
+  height: 1.2em;
+  background-color: var(--bdo-red);
+  color: #fff;
+  z-index: 2;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.08);
+  }
+}
+
+/* Estado 1: PENDING - ● Gris - No iniciada */
 .statusPending {
   border-radius: 50%;
   display: inline-flex;
@@ -104,23 +156,10 @@
   justify-content: center;
   width: 1.2em;
   height: 1.2em;
-  color: #fff;
-  z-index: 2; /* sobre la línea */
-}
-
-/* ✅ Completado → Verde */
-.statusCompleted {
-  background-color: var(--bdo-jade);
-}
-
-/* 🔶 En progreso → Naranja */
-.statusActive {
-  background-color: #ff9500;
-}
-
-/* 🔴 Pendiente → Rojo */
-.statusPending {
-  background-color: var(--bdo-red);
+  border: 2px solid var(--bdo-slate);
+  background-color: transparent;
+  color: var(--bdo-slate);
+  z-index: 2;
 }
 
 /* Línea conectora vertical */
@@ -153,10 +192,9 @@
   word-break: break-word;
 }
 
-/* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
+/* Botones de navegación (Home y Contract) */
 .homeButton,
 .contractButton {
-  /* Derivado de .formButton */
   width: 100%;
   padding: 15px 20px;
   border: none;
@@ -169,6 +207,7 @@
   font-weight: 600;
   color: #fff;
   margin-bottom: 10px;
+  transition: background-color 0.2s;
 }
 
 .homeButton {
@@ -179,13 +218,20 @@
   background-color: var(--bdo-red);
 }
 
-/* 🏠 Estilo para el botón de Home (similar a .formButton pero más pequeño) */
 .homeButton:hover {
-  /* Derivado de .formButton */
   background-color: color-mix(in srgb, var(--bdo-burgundy) 80%, black 20%);
 }
 
 .contractButton:hover {
-  /* Derivado de .formButton */
   background-color: color-mix(in srgb, var(--bdo-red) 90%, black 10%);
+}
+
+/* Contenedor del checklist */
+.checklistContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
 }

@@ -1,33 +1,42 @@
 import React from "react";
 import styles from "./TaskChecklist.module.css";
-// 💡 Importa el ícono de check de la librería que estés usando (ejemplo con Font Awesome)
-import { FaCheck, FaCircle } from "react-icons/fa6";
-// Si quieres que el círculo rojo tenga un punto dentro, podrías importar MdCircle, etc.
+import {
+  FaCheck,
+  FaCircle,
+  FaClock,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 
 /**
  * Componente de Tarea individual.
  */
 export const ChecklistItem = ({ task, onClick, isActive }) => {
-  // Función para obtener el ícono de estado según el status
+  // Función para obtener el ícono de estado según el status del API
   const getStatusIcon = (status) => {
     switch (status) {
-      case "COMPLETED":
-        // 💡 Usamos el componente <FaCheck /> para el checkmark
+      case 4: // ACCEPTED - Tarea aprobada por el staff
         return (
           <span className={styles.statusCompleted}>
-            <FaCheck size={12} /> {/* Ajusta el 'size' si es necesario */}
+            <FaCheck size={12} />
           </span>
         );
-      case "IN_PROGRESS":
-        // 💡 Usamos un <span> vacío. El CSS crea el anillo de color.
+
+      case 2: // COMPLETED - Enviada, en revisión por el staff
         return (
-          <span className={styles.statusActive}>
-            <FaCircle size={8} />
+          <span className={styles.statusInReview}>
+            <FaClock size={12} />
           </span>
         );
-      case "PENDING":
+
+      case 3: // RETURNED - Devuelta al cliente, requiere correcciones
+        return (
+          <span className={styles.statusReturned}>
+            <FaExclamationTriangle size={12} />
+          </span>
+        );
+
+      case 1: // PENDING - No iniciada
       default:
-        // 💡 Usamos un <span> vacío. El CSS crea el anillo de color.
         return (
           <span className={styles.statusPending}>
             <FaCircle size={8} />
