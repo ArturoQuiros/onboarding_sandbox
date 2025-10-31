@@ -305,5 +305,50 @@ namespace WS_Onboarding.Controllers
                 return StatusCode(500, $"Error interno del servidor:\n {errorDetails}");
             }
         }
+
+        [HttpPut("RefreshTareas")]
+        public IActionResult RefreshTareas([FromQuery] int IdContrato)
+        {
+            var ContratoServiciosModel = _context.Contrato_Servicios
+            .Where(c => c.Id_Contrato == IdContrato).ToList();
+
+            if (ContratoServiciosModel != null)
+            {
+                foreach (var ContratoServicio in ContratoServiciosModel)
+                {
+                    var ListaTareas = _context.Tareas.Where(t => t.Id_Servicio == ContratoServicio.Id_Servicio).ToList();
+
+                    foreach (var Tarea in ListaTareas)
+                    {
+                        var TareaContratoModel = _context.Tarea_Contrato
+                        .FirstOrDefault(tc => tc.Id_Tarea == Tarea.Id && tc.Id_Contrato == IdContrato);
+
+                        if (TareaContratoModel == null)
+                        {
+                            var tareaContrato = new Models.TareaContrato
+                            {
+                                Id_Contrato = IdContrato,
+                                Id_Tarea = Tarea.Id,
+                                Id_UsuarioResponsable = null,
+                                Id_Estado = 1,
+                                Estado = ContratoServicio.Estado,
+                                Json_Respuesta = "",
+                                Observaciones = ""
+                            };
+
+                            _context.Tarea_Contrato.AddRange(tareaContrato);
+                            _context.SaveChanges();
+                        }
+
+                        _context.SaveChanges();
+                    }
+                }
+                return GetByContratoSimple(IdContrato);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
     }
 }

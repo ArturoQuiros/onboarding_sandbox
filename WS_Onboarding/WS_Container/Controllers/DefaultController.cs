@@ -487,7 +487,6 @@ namespace WS_Onboarding.Controllers
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Clientes', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Contratos', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Contrato_Servicios', RESEED, 0);");
-                _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Estados_Tarea', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Tareas', RESEED, 0);");
                 _context.Database.ExecuteSqlRaw("DBCC CHECKIDENT ('Tarea_Contrato', RESEED, 0);");
 
