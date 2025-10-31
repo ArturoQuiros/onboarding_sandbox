@@ -1,6 +1,6 @@
 /* Contenedor principal del navbar */
 .navbar {
-  height: var(--navbar-height);
+  height: 70px;
   background-color: white;
   z-index: 1000;
   display: flex;
