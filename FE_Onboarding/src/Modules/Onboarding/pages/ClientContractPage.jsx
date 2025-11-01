@@ -3,17 +3,14 @@ import { useParams } from "react-router-dom";
 import { useContractFlow } from "../../../Global/Context";
 import { useTaskContractDetailQuery } from "../../../Modules/Admin/hooks";
 import { DynamicForm } from "../components";
-import styles from "./ClientContractPage.module.css";
 
 export const ClientContractPage = () => {
   const { taskId } = useParams();
   const { setActiveTask } = useContractFlow();
 
-  // 🔹 Lazy load: solo carga formulario de esta tarea
   const { taskDetail, isLoading, error, updateTaskContract } =
     useTaskContractDetailQuery(taskId);
 
-  // Actualizar contexto cuando cargue
   useEffect(() => {
     if (taskDetail) {
       setActiveTask(taskDetail);
@@ -24,73 +21,64 @@ export const ClientContractPage = () => {
     try {
       await updateTaskContract.mutateAsync({
         formData: formData,
-        newState: 2, // Completed
+        newState: 2,
       });
-      alert("✅ Formulario enviado exitosamente");
+      alert("✅ Form submitted successfully");
     } catch (error) {
-      console.error("Error guardando formulario:", error);
-      alert("❌ Error al guardar el formulario");
+      alert("❌ Error saving form");
     }
   };
 
+  // 🔹 Loading state
   if (isLoading) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
-        Cargando formulario...
+        Loading form...
       </div>
     );
   }
 
+  // 🔹 Error state
   if (error) {
     return (
       <div style={{ padding: "20px", textAlign: "center", color: "red" }}>
-        Error: {error.message}
+        <h3>Error loading task</h3>
+        <p>{error?.message || "Unknown error"}</p>
       </div>
     );
   }
 
-  if (!taskDetail?.form) {
+  // 🔹 No task detail
+  if (!taskDetail) {
+    return (
+      <div style={{ padding: "20px", textAlign: "center" }}>Task not found</div>
+    );
+  }
+
+  // 🔹 No form
+  if (!taskDetail.form) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
-        Esta tarea no tiene formulario disponible.
+        This task has no form available.
+        <br />
+        <small>Task ID: {taskId}</small>
       </div>
     );
   }
 
   const isTaskAccepted = taskDetail.status === 4;
-  const isTaskReturned = taskDetail.status === 3;
-  const isTaskCompleted = taskDetail.status === 2;
 
   return (
     <div style={{ padding: "20px" }}>
-      {isTaskAccepted && (
-        <div className={styles.successBanner}>
-          ✅ Esta tarea ha sido aprobada
-        </div>
-      )}
-
-      {isTaskReturned && (
-        <div className={styles.warningBanner}>
-          ⚠️ Requiere correcciones
-          {taskDetail.observations && (
-            <div style={{ marginTop: "8px" }}>
-              <strong>Observaciones:</strong> {taskDetail.observations}
-            </div>
-          )}
-        </div>
-      )}
-
-      {isTaskCompleted && (
-        <div className={styles.infoBanner}>⏳ En revisión</div>
-      )}
-
-      <h2>{taskDetail.label}</h2>
+      <h2 style={{ marginBottom: "20px" }}>{taskDetail.label || "Form"}</h2>
 
       <DynamicForm
         formData={taskDetail.form}
         onSubmit={handleSubmit}
-        initialData={taskDetail.savedData}
+        initialData={taskDetail.savedData || null}
         disabled={updateTaskContract.isLoading || isTaskAccepted}
+        taskStatus={taskDetail.status}
+        taskObservations={taskDetail.observations || ""}
       />
 
       {updateTaskContract.isLoading && (
@@ -105,7 +93,7 @@ export const ClientContractPage = () => {
             borderRadius: "8px",
           }}
         >
-          Guardando...
+          Saving...
         </div>
       )}
     </div>

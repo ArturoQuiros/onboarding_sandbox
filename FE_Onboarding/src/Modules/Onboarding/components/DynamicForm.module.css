@@ -442,3 +442,94 @@
     font-size: 22px;
   }
 }
+
+/* DynamicForm.module.css - Agregar al final */
+
+/* Banner de Estado de Tarea */
+.taskStatusBanner {
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  border-left: 4px solid;
+}
+
+.statusHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.statusIcon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.statusInfo {
+  flex: 1;
+}
+
+.statusLabel {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.statusMessage {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.observationsBox {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.observationsBox strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.observationsBox p {
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Estilos específicos por estado */
+.statusAccepted {
+  background: #d1fae5;
+  border-left-color: #10b981;
+  color: #065f46;
+}
+
+.statusReturned {
+  background: #fef3c7;
+  border-left-color: #f59e0b;
+  color: #92400e;
+  animation: pulse-warning 2s ease-in-out infinite;
+}
+
+@keyframes pulse-warning {
+  0%,
+  100% {
+    background: #fef3c7;
+  }
+  50% {
+    background: #fde68a;
+  }
+}
+
+.statusInReview {
+  background: #dbeafe;
+  border-left-color: #3b82f6;
+  color: #1e40af;
+}
+
+.statusPending {
+  background: #f1f5f9;
+  border-left-color: #64748b;
+  color: #334155;
+}

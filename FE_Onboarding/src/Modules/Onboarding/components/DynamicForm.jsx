@@ -9,13 +9,71 @@ const getOptionDetails = (opt) => {
   return { value: opt.value, label: opt.label, details: opt.details };
 };
 
+// 🆕 Componente de Estado de Tarea
+const TaskStatusBanner = ({ status, observations }) => {
+  const getStatusConfig = (statusId) => {
+    switch (statusId) {
+      case 4: // ACCEPTED
+        return {
+          className: styles.statusAccepted,
+          icon: "✅",
+          label: "Task Approved",
+          message: "This task has been approved by the team",
+        };
+      case 3: // RETURNED
+        return {
+          className: styles.statusReturned,
+          icon: "⚠️",
+          label: "Requires Corrections",
+          message: "This task needs corrections before continuing",
+        };
+      case 2: // COMPLETED
+        return {
+          className: styles.statusInReview,
+          icon: "⏳",
+          label: "Under Review",
+          message: "This task is being reviewed by the team",
+        };
+      case 1: // PENDING
+      default:
+        return {
+          className: styles.statusPending,
+          icon: "📝",
+          label: "Pending",
+          message: "This task is pending completion",
+        };
+    }
+  };
+
+  const config = getStatusConfig(status);
+
+  return (
+    <div className={`${styles.taskStatusBanner} ${config.className}`}>
+      <div className={styles.statusHeader}>
+        <span className={styles.statusIcon}>{config.icon}</span>
+        <div className={styles.statusInfo}>
+          <h3 className={styles.statusLabel}>{config.label}</h3>
+          <p className={styles.statusMessage}>{config.message}</p>
+        </div>
+      </div>
+
+      {observations && status === 3 && (
+        <div className={styles.observationsBox}>
+          <strong>Reviewer's observations:</strong>
+          <p>{observations}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // 🆕 Botón Flotante de Contacto
 const FloatingContactButton = ({ onClick }) => (
   <button
     type="button"
     className={styles.floatingButton}
     onClick={onClick}
-    title="Contactar al Account Manager"
+    title="Contact Account Manager"
   >
     💬
   </button>
@@ -26,12 +84,13 @@ export const DynamicForm = ({
   onSubmit,
   initialData,
   disabled = false,
+  taskStatus, // 🔹 NUEVO
+  taskObservations, // 🔹 NUEVO
 }) => {
   const [sectionEntries, setSectionEntries] = useState(
     formData.sections ? formData.sections.map(() => [{}]) : [[]]
   );
 
-  // 🔁 Resetea sectionEntries solo si realmente cambió formData
   useEffect(() => {
     const newEntries = formData.sections
       ? formData.sections.map(() => [{}])
@@ -44,7 +103,6 @@ export const DynamicForm = ({
     if (isDifferent) {
       setSectionEntries(newEntries);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData]);
 
   const handleAdd = (sectionIndex) => {
@@ -103,11 +161,16 @@ export const DynamicForm = ({
   };
 
   const handleContactClick = () => {
-    alert("Iniciando contacto con el Account Manager...");
+    alert("Contacting Account Manager...");
   };
 
   return (
     <>
+      {/* 🔹 ÚNICO BANNER DE ESTADO */}
+      {taskStatus && (
+        <TaskStatusBanner status={taskStatus} observations={taskObservations} />
+      )}
+
       <form className={styles.formContainer} onSubmit={handleSubmit}>
         {/* Formularios con secciones repetibles */}
         {formData.sections?.map((section, sIndex) => (
@@ -239,7 +302,7 @@ export const DynamicForm = ({
                       className={styles.removeButton}
                       onClick={() => handleRemove(sIndex, entryIndex)}
                     >
-                      Eliminar
+                      Remove
                     </button>
                   )}
               </div>
@@ -251,7 +314,7 @@ export const DynamicForm = ({
                 className={styles.addButton}
                 onClick={() => handleAdd(sIndex)}
               >
-                + Agregar {section.title}
+                + Add {section.title}
               </button>
             )}
           </div>
@@ -358,7 +421,7 @@ export const DynamicForm = ({
           disabled={disabled}
           style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          {disabled ? "Formulario bloqueado" : "Guardar"}
+          {disabled ? "Form Locked" : "Save"}
         </button>
       </form>
 
