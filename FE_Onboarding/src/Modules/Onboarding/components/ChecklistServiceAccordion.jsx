@@ -1,8 +1,8 @@
 import React from "react";
 import { ChecklistItem } from "./ChecklistItem";
 import { useContractFlow } from "../../../Global/Context";
-import { useNavigate, useParams } from "react-router-dom";
 import styles from "./TaskChecklist.module.css";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
   const { activeTask, activeService, setActiveService, setActiveTask, role } =
@@ -17,14 +17,13 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
   const arrowClass = isOpen ? styles.arrowUp : styles.arrowDown;
 
   const handleTaskClick = (task) => {
-    if (activeTask?.taskId !== task.taskId) {
-      setActiveTask(task);
-    }
     if (activeService?.serviceId !== service.serviceId) {
       setActiveService(service);
     }
+    if (activeTask?.taskId !== task.taskId) {
+      setActiveTask(task);
+    }
 
-    // 🔹 Navegar a la ruta de la tarea
     const basePath = role === "staff" ? "/staff" : "/client";
     navigate(
       `${basePath}/contract/${contractId}/service/${service.serviceId}/task/${task.taskId}`
@@ -43,7 +42,7 @@ export const ChecklistServiceAccordion = ({ service, isOpen, onToggle }) => {
 
       {isOpen && (
         <div className={styles.accordionContent}>
-          {service.tasks?.map((task) => (
+          {service.tasks.map((task) => (
             <ChecklistItem
               key={task.taskId}
               task={task}

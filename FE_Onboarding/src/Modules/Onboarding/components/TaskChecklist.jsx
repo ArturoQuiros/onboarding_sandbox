@@ -4,11 +4,9 @@ import { useContractFlow } from "../../../Global/Context";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./TaskChecklist.module.css";
 
-/**
- * Sidebar de lista de tareas por servicio
- */
 export const TaskChecklist = () => {
-  const { services, activeService, handleSelectService } = useContractFlow();
+  const { services, activeService, handleSelectService, role } =
+    useContractFlow();
   const navigate = useNavigate();
   const { contractId } = useParams();
 
@@ -26,33 +24,33 @@ export const TaskChecklist = () => {
   };
 
   const handleGoHome = () => {
-    const basePath = "/client"; // Ajusta según tu role si es necesario
+    const basePath = role === "staff" ? "/staff" : "/client";
     navigate(`${basePath}/contract/${contractId}`);
   };
 
   const handleGoContractMaintenance = () => {
-    const basePath = "/client"; // Solo para clientes
-    navigate(`${basePath}/contract/${contractId}/maintenance`);
+    if (role !== "client") return; // Solo clientes
+    navigate(`/client/contract/${contractId}/maintenance`);
   };
 
   return (
     <div className={styles.checklistContainer}>
       {/* Botones generales */}
-      <h4>-------BASE-------</h4>
-
       <div className={styles.buttonsContainer}>
         <button className={styles.homeButton} onClick={handleGoHome}>
           Home
         </button>
-        <button
-          className={styles.contractButton}
-          onClick={handleGoContractMaintenance}
-        >
-          Your Contract
-        </button>
-      </div>
 
-      <h4>-------TAREAS-------</h4>
+        {/* Solo mostrar para clientes */}
+        {role === "client" && (
+          <button
+            className={styles.contractButton}
+            onClick={handleGoContractMaintenance}
+          >
+            Your Contract
+          </button>
+        )}
+      </div>
 
       {/* Acordeones de servicios */}
       {services.map((service) => (
