@@ -9,3 +9,4 @@ export * from "./useContractServicesQuery";
 export * from "./useTasksQuery";
 export * from "./useTaskStatesQuery";
 export * from "./useTaskContractsQuery";
+export * from "./useTaskContractDetailQuery";

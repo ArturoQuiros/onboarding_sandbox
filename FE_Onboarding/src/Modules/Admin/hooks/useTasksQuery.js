@@ -18,7 +18,7 @@ export const useTasksQuery = (serviceId) => {
   const queryClient = useQueryClient();
   const numericServiceId = Number(serviceId);
 
-  // 🔹 GET
+  // 🔹 GET: Filtrado por servicio (comportamiento original)
   const tasksQuery = useQuery({
     queryKey: ["tasks", numericServiceId],
     queryFn: async () => {
@@ -38,6 +38,28 @@ export const useTasksQuery = (serviceId) => {
     enabled: !!numericServiceId,
   });
 
+  // 🔹 GET: TODAS las tareas (sin filtro) - NUEVO
+  const allTasksQuery = useQuery({
+    queryKey: ["allTasks"],
+    queryFn: async () => {
+      const { data } = await axiosClient.get("/Tareas");
+      return data.map((t) => ({
+        id: t.id,
+        id_Service: t.id_Servicio,
+        name: t.nombre,
+        isInternal: t.esInterno,
+      }));
+    },
+    staleTime: 10 * 60 * 1000, // Cache 10 minutos
+  });
+
+  // 🔹 Mapa de tareas para acceso rápido - NUEVO
+  const tasksMap =
+    allTasksQuery.data?.reduce((acc, task) => {
+      acc[task.id] = task;
+      return acc;
+    }, {}) || {};
+
   // 🔹 CREATE
   const createTask = useMutation({
     mutationFn: async (task) => {
@@ -52,8 +74,10 @@ export const useTasksQuery = (serviceId) => {
       const { data } = await axiosClient.post("/Tareas", payload);
       return data;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] });
+      queryClient.invalidateQueries({ queryKey: ["allTasks"] }); // 🔹 Invalida cache global
+    },
   });
 
   // 🔹 UPDATE
@@ -70,8 +94,10 @@ export const useTasksQuery = (serviceId) => {
       const { data } = await axiosClient.put(`/Tareas/${task.id}`, payload);
       return data;
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] });
+      queryClient.invalidateQueries({ queryKey: ["allTasks"] }); // 🔹 Invalida cache global
+    },
   });
 
   // 🔹 DELETE
@@ -79,12 +105,16 @@ export const useTasksQuery = (serviceId) => {
     mutationFn: async (id) => {
       await axiosClient.delete(`/Tareas/${id}`);
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", numericServiceId] });
+      queryClient.invalidateQueries({ queryKey: ["allTasks"] }); // 🔹 Invalida cache global
+    },
   });
 
   return {
-    tasksQuery,
+    tasksQuery, // Query filtrada por servicio (original)
+    allTasksQuery, // 🔹 NUEVA: Query de todas las tareas
+    tasksMap, // 🔹 NUEVO: Mapa para acceso rápido { id: task }
     createTask,
     updateTask,
     deleteTask,
